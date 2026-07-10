@@ -6,42 +6,230 @@ interface Props {
 const { type } = Astro.props;
 ---
 
-<!-- ==================== SCIENTIFIC CALCULATOR STANDALONE ==================== -->
+<!-- ==================== SCIENTIFIC CALCULATOR STANDALONE (4-MODE) ==================== -->
 {type === 'scientific-calculator' && (
-  <div class="space-y-6">
-    <p class="text-[11px] font-bold text-mute uppercase tracking-widest border-b border-canvas-card-border pb-3">Advanced Scientific Mode</p>
-    <!-- Output Display -->
-    <div class="bg-canvas-card-soft border border-canvas-card-border rounded-2xl p-6 flex flex-col items-end justify-between min-h-[100px] shadow-inner font-sans">
-      <div id="sci-display-expr" class="w-full text-right text-mute text-sm font-medium overflow-x-auto whitespace-nowrap min-h-[18px]">&nbsp;</div>
-      <div id="sci-display-result" class="w-full text-right text-ink text-3xl font-bold tracking-tighter overflow-x-auto whitespace-nowrap">0</div>
-    </div>
-    <!-- DEG/RAD indicator -->
-    <div class="flex items-center gap-3">
-      <span id="sci-deg-rad" class="font-mono text-[10px] font-bold text-mute uppercase tracking-widest bg-canvas-card border border-canvas-card-border px-2.5 py-1 rounded">DEG</span>
-      <button id="sci-toggle-rad" class="text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-lg border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider shadow-sm">Toggle RAD</button>
-    </div>
-    <!-- Scientific Row 1 -->
-    <div class="grid grid-cols-5 gap-2">
-      {['sin', 'cos', 'tan', 'log', 'ln', 'asin', 'acos', 'atan', 'sqrt', 'fact', 'pi', 'e', 'pow', 'open', 'close'].map(btn => (
-        <button class="sci-btn text-xs font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-brand-primary hover:text-canvas rounded-lg py-3.5 transition-all shadow-sm uppercase" data-sci={btn}>
-          {btn === 'fact' ? 'x!' : btn === 'pi' ? 'π' : btn === 'pow' ? 'xʸ' : btn === 'open' ? '(' : btn === 'close' ? ')' : btn}
+  <div class="space-y-4" id="sci-calc-root">
+    <!-- ===== MODE TAB BAR ===== -->
+    <div class="flex items-center p-1 bg-canvas-card-soft-2 rounded-lg gap-1 overflow-x-auto">
+      {['standard', 'programmable', 'graphing', 'cas'].map(mode => (
+        <button
+          class={`sci-mode-tab flex-1 min-w-[70px] px-2 py-1.5 rounded-md text-[10px] font-bold transition-all uppercase tracking-wider whitespace-nowrap ${mode === 'standard' ? 'bg-calc-btn text-ink shadow-sm' : 'text-mute hover:text-ink'}`}
+          data-mode={mode}
+        >
+          {mode === 'cas' ? 'CAS' : mode.charAt(0).toUpperCase() + mode.slice(1)}
         </button>
       ))}
     </div>
-    <!-- Standard Numpad -->
-    <div class="grid grid-cols-4 gap-2">
-      <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-4 transition-all" data-sci="clear">C</button>
-      <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-4 transition-all" data-sci="back">⌫</button>
-      <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-4 transition-all" data-sci="pct">%</button>
-      <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-4 transition-all" data-sci="÷">÷</button>
-      
-      {['7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+'].map(val => (
-        <button class={`sci-btn text-lg font-black ${['×', '-', '+'].includes(val) ? 'bg-calc-btn-soft border-canvas-card-border text-link' : 'bg-calc-btn border-canvas-card-border text-ink'} border rounded-lg py-4 transition-all shadow-sm hover:bg-canvas-card-soft-2`} data-sci={val}>{val}</button>
-      ))}
-      
-      <button class="sci-btn text-lg font-black bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-4 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci="0">0</button>
-      <button class="sci-btn text-lg font-black bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-4 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci=".">.</button>
-      <button class="sci-btn col-span-2 text-sm font-black bg-brand-primary hover:opacity-90 text-canvas rounded-lg py-4 shadow-lg transition-all" data-sci="=">=</button>
+
+    <!-- ===== MODE 1: STANDARD SCIENTIFIC ===== -->
+    <div id="sci-standard-panel" class="space-y-3">
+      <!-- Display -->
+      <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-4 flex flex-col items-end justify-between min-h-[90px] shadow-inner font-sans">
+        <div id="sci-display-expr" class="w-full text-right text-mute text-sm font-medium overflow-x-auto whitespace-nowrap min-h-[18px]">&nbsp;</div>
+        <div id="sci-display-result" class="w-full text-right text-ink text-3xl font-bold tracking-tighter overflow-x-auto whitespace-nowrap">0</div>
+      </div>
+      <!-- Angle Mode -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span id="sci-angle-mode" class="font-mono text-[10px] font-bold text-mute uppercase tracking-widest bg-canvas-card border border-canvas-card-border px-2 py-1 rounded">DEG</span>
+        <button id="sci-angle-toggle" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Cycle Mode</button>
+        <button id="sci-toggle-const" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Const</button>
+        <button id="sci-toggle-stats" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Stats</button>
+      </div>
+      <!-- Constants Drawer -->
+      <div id="sci-const-drawer" class="hidden bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3 max-h-[160px] overflow-y-auto">
+        <p class="text-[9px] font-bold text-mute uppercase tracking-widest mb-2">Physical Constants — click to insert</p>
+        <div class="grid grid-cols-2 gap-1.5" id="sci-const-list"></div>
+      </div>
+      <!-- Statistics Drawer -->
+      <div id="sci-stats-drawer" class="hidden bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3 space-y-2">
+        <p class="text-[9px] font-bold text-mute uppercase tracking-widest">Statistics — enter comma-separated data</p>
+        <input type="text" id="sci-stats-input" placeholder="e.g. 10, 20, 30, 40, 50" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-md h-8 px-3 text-xs font-bold focus:outline-none focus:border-hairline-strong transition-all" />
+        <div class="flex gap-1.5 flex-wrap">
+          {['Mean', 'StdDev', 'Variance', 'Count', 'Sum'].map(op => (
+            <button class="sci-stats-btn text-[9px] font-bold text-mute hover:text-ink px-2 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all" data-stat={op.toLowerCase()}>{op}</button>
+          ))}
+        </div>
+        <div id="sci-stats-result" class="text-xs font-bold text-link min-h-[16px]"></div>
+      </div>
+      <!-- Function Buttons Grid (5 cols) -->
+      <div class="grid grid-cols-5 gap-1.5">
+        {[
+          {k:'sin',l:'sin'},{k:'cos',l:'cos'},{k:'tan',l:'tan'},{k:'log',l:'log'},{k:'ln',l:'ln'},
+          {k:'asin',l:'sin⁻¹'},{k:'acos',l:'cos⁻¹'},{k:'atan',l:'tan⁻¹'},{k:'sqrt',l:'√'},{k:'fact',l:'x!'},
+          {k:'pi',l:'π'},{k:'e',l:'e'},{k:'pow',l:'xʸ'},{k:'open',l:'('},{k:'close',l:')'},
+          {k:'tenPow',l:'10ˣ'},{k:'ePow',l:'eˣ'},{k:'inv',l:'x⁻¹'},{k:'ncr',l:'nCr'},{k:'npr',l:'nPr'},
+          {k:'rectpol',l:'R↔P'},{k:'dms',l:'DMS'},{k:'abs',l:'|x|'},{k:'ans',l:'Ans'},{k:'pct',l:'%'},
+        ].map(btn => (
+          <button class="sci-btn text-[10px] sm:text-xs font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-brand-primary hover:text-canvas rounded-lg py-2.5 sm:py-3 transition-all shadow-sm uppercase" data-sci={btn.k}>
+            {btn.l}
+          </button>
+        ))}
+      </div>
+      <!-- Standard Numpad -->
+      <div class="grid grid-cols-4 gap-1.5">
+        <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-3 sm:py-3.5 transition-all" data-sci="clear">C</button>
+        <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-3 sm:py-3.5 transition-all" data-sci="back">⌫</button>
+        <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-3 sm:py-3.5 transition-all" data-sci="mem">MR</button>
+        <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-3 sm:py-3.5 transition-all" data-sci="÷">÷</button>
+        {['7','8','9','×','4','5','6','-','1','2','3','+'].map(val => (
+          <button class={`sci-btn text-lg font-black ${['×','-','+'].includes(val) ? 'bg-calc-btn-soft border-canvas-card-border text-link' : 'bg-calc-btn border-canvas-card-border text-ink'} border rounded-lg py-3 sm:py-3.5 transition-all shadow-sm hover:bg-canvas-card-soft-2`} data-sci={val}>{val}</button>
+        ))}
+        <button class="sci-btn text-lg font-black bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-3 sm:py-3.5 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci="0">0</button>
+        <button class="sci-btn text-lg font-black bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-3 sm:py-3.5 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci=".">.</button>
+        <button class="sci-btn col-span-2 text-sm font-black bg-brand-primary hover:opacity-90 text-canvas rounded-lg py-3 sm:py-3.5 shadow-lg transition-all" data-sci="=">=</button>
+      </div>
+    </div>
+
+    <!-- ===== MODE 2: PROGRAMMABLE ===== -->
+    <div id="sci-prog-panel" class="hidden space-y-3">
+      <p class="text-[9px] font-bold text-mute uppercase tracking-widest border-b border-canvas-card-border pb-2">Programmable Mode — Write & Run Scripts</p>
+      <!-- Program Slots -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1">
+        <span class="text-[9px] font-bold text-mute uppercase tracking-wider shrink-0">Slot:</span>
+        {Array.from({length: 10}, (_, i) => (
+          <button class="prog-slot-btn text-[9px] font-bold text-mute hover:text-ink px-2 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all min-w-[28px]" data-slot={i.toString()}>{i}</button>
+        ))}
+      </div>
+      <!-- Code Editor -->
+      <div class="relative">
+        <div class="absolute top-2 left-2 text-[8px] font-bold text-mute uppercase tracking-widest z-10 pointer-events-none select-none">Script Editor</div>
+        <textarea id="prog-editor" class="w-full bg-canvas-card-soft border border-canvas-card-border text-ink rounded-lg p-3 pt-6 text-xs font-mono leading-5 focus:outline-none focus:border-hairline-strong transition-all resize-none" rows="10" placeholder="// Write your program here&#10;// Use print() to output results&#10;let sum = 0;&#10;for (let i = 1; i <= 10; i++) {&#10;  sum += i;&#10;}&#10;print('Sum 1-10:', sum);"></textarea>
+      </div>
+      <!-- Controls -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button id="prog-run" class="text-[10px] font-bold text-canvas bg-brand-primary hover:opacity-90 px-4 py-1.5 rounded-md transition-all shadow-sm uppercase tracking-wider">▶ Run</button>
+        <button id="prog-clear" class="text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Clear</button>
+        <button id="prog-save" class="text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Save</button>
+        <button id="prog-load" class="text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Load</button>
+        <span class="text-[8px] text-mute">|</span>
+        <button id="prog-record" class="text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">⏺ Record Macro</button>
+      </div>
+      <!-- Output Console -->
+      <div class="relative">
+        <div class="absolute top-2 left-2 text-[8px] font-bold text-mute uppercase tracking-widest z-10 pointer-events-none select-none">Console Output</div>
+        <div id="prog-output" class="w-full bg-canvas-card-soft border border-canvas-card-border text-ink rounded-lg p-3 pt-6 text-xs font-mono leading-5 min-h-[100px] max-h-[200px] overflow-y-auto whitespace-pre-wrap">Ready.</div>
+      </div>
+      <!-- Variables Panel -->
+      <div class="bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3">
+        <p class="text-[8px] font-bold text-mute uppercase tracking-widest mb-2">Live Variables</p>
+        <div id="prog-variables" class="text-xs font-mono text-body">No variables.</div>
+      </div>
+    </div>
+
+    <!-- ===== MODE 3: GRAPHING ===== -->
+    <div id="sci-graph-panel" class="hidden space-y-3">
+      <p class="text-[9px] font-bold text-mute uppercase tracking-widest border-b border-canvas-card-border pb-2">Graphing Mode — Plot & Analyze Functions</p>
+      <!-- Plot Mode Selector -->
+      <div class="flex items-center gap-2">
+        <span class="text-[9px] font-bold text-mute uppercase tracking-wider">Type:</span>
+        {['cartesian', 'polar', 'parametric'].map(pm => (
+          <button class={`graph-plotmode-btn text-[9px] font-bold px-2.5 py-1 rounded border border-canvas-card-border transition-all uppercase tracking-wider ${pm === 'cartesian' ? 'bg-calc-btn text-ink shadow-sm' : 'text-mute hover:text-ink bg-canvas-card-soft-2'}`} data-plotmode={pm}>
+            {pm === 'cartesian' ? 'y = f(x)' : pm === 'polar' ? 'r = f(θ)' : 'x(t), y(t)'}
+          </button>
+        ))}
+      </div>
+      <!-- Function Inputs -->
+      <div class="space-y-1.5" id="graph-fn-inputs">
+        {[
+          {idx: '0', color: '#0070f3', ph: 'e.g. sin(x)'},
+          {idx: '1', color: '#ff0080', ph: 'e.g. x^2'},
+          {idx: '2', color: '#50e3c2', ph: 'e.g. cos(x)'},
+          {idx: '3', color: '#7928ca', ph: 'e.g. ln(x)'}
+        ].map(f => (
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full shrink-0" style={`background:${f.color}`}></span>
+            <span class="text-[9px] font-bold text-mute shrink-0">f{parseInt(f.idx)+1}</span>
+            <input type="text" class="graph-fn-input flex-1 bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-md h-7 px-2 text-xs font-mono focus:outline-none focus:border-hairline-strong transition-all" data-fnidx={f.idx} placeholder={f.ph} />
+          </div>
+        ))}
+      </div>
+      <!-- Canvas -->
+      <div class="relative bg-canvas-card-soft border border-canvas-card-border rounded-lg overflow-hidden">
+        <canvas id="graph-canvas" width="600" height="400" class="w-full cursor-crosshair" style="aspect-ratio:3/2;"></canvas>
+        <div id="graph-trace-info" class="hidden absolute top-2 right-2 bg-canvas-card/90 border border-canvas-card-border rounded px-2 py-1 text-[10px] font-mono font-bold text-ink shadow-sm"></div>
+      </div>
+      <!-- Graph Controls -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button id="graph-zoom-in" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Zoom +</button>
+        <button id="graph-zoom-out" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Zoom −</button>
+        <button id="graph-reset" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Reset</button>
+        <button id="graph-toggle-grid" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Grid</button>
+        <button id="graph-toggle-trace" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Trace</button>
+        <span class="text-[8px] text-mute">|</span>
+        <button id="graph-find-zeros" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Zeros</button>
+        <button id="graph-find-extrema" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Min/Max</button>
+        <button id="graph-integral" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">∫ Area</button>
+        <button id="graph-derivative" class="text-[9px] font-bold text-mute hover:text-ink px-2.5 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">d/dx</button>
+      </div>
+      <!-- Analysis Results -->
+      <div id="graph-analysis" class="hidden bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3 text-xs font-mono text-body max-h-[100px] overflow-y-auto"></div>
+      <!-- Table View Toggle -->
+      <button id="graph-toggle-table" class="w-full text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider">Show Value Table</button>
+      <div id="graph-table-container" class="hidden bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3 max-h-[200px] overflow-auto">
+        <table class="w-full text-[10px] font-mono" id="graph-table"><thead></thead><tbody></tbody></table>
+      </div>
+      <!-- Scatter Data Input -->
+      <details class="group">
+        <summary class="text-[9px] font-bold text-mute hover:text-ink cursor-pointer uppercase tracking-wider">Data Overlay (Scatter Points)</summary>
+        <div class="mt-2 space-y-2">
+          <textarea id="graph-scatter-input" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-md p-2 text-[10px] font-mono leading-4 focus:outline-none resize-none" rows="4" placeholder="Paste x,y data (one point per line)&#10;1, 2&#10;3, 5&#10;4, 7"></textarea>
+          <button id="graph-scatter-plot" class="text-[9px] font-bold text-mute hover:text-ink px-3 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all">Plot Points</button>
+        </div>
+      </details>
+    </div>
+
+    <!-- ===== MODE 4: CAS (Computer Algebra System) ===== -->
+    <div id="sci-cas-panel" class="hidden space-y-3">
+      <p class="text-[9px] font-bold text-mute uppercase tracking-widest border-b border-canvas-card-border pb-2">CAS Mode — Symbolic Mathematics</p>
+      <!-- CAS Display -->
+      <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-4 shadow-inner min-h-[80px]">
+        <div id="cas-display-label" class="text-[9px] font-bold text-mute uppercase tracking-widest mb-1">Result</div>
+        <div id="cas-display-result" class="text-lg sm:text-xl font-bold text-link tracking-tight font-mono overflow-x-auto whitespace-nowrap">Ready</div>
+      </div>
+      <!-- CAS Input -->
+      <div class="relative">
+        <input type="text" id="cas-input" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-10 px-3 text-sm font-mono font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" placeholder="Enter expression, e.g. x^2 + 2*x + 1" />
+      </div>
+      <!-- Operations Toolbar -->
+      <div class="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
+        {[
+          {k:'cas-eval',l:'Evaluate'},{k:'cas-simplify',l:'Simplify'},{k:'cas-factor',l:'Factor'},{k:'cas-expand',l:'Expand'},
+          {k:'cas-derivative',l:'d/dx'},{k:'cas-integrate',l:'∫dx'},
+          {k:'cas-solve',l:'Solve'},{k:'cas-taylor',l:'Taylor'},
+          {k:'cas-limit',l:'Limit'},{k:'cas-det',l:'det(M)'},
+          {k:'cas-inv-matrix',l:'M⁻¹'},{k:'cas-clear',l:'Clear'}
+        ].map(op => (
+          <button class="cas-op-btn text-[9px] font-bold text-mute hover:text-ink px-2 py-1.5 rounded-md border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all uppercase tracking-wider" data-cas-op={op.k}>{op.l}</button>
+        ))}
+      </div>
+      <!-- CAS Options (variable, bounds) -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <label class="text-[9px] font-bold text-mute uppercase tracking-wider">Var:</label>
+        <input type="text" id="cas-variable" value="x" class="w-10 bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded h-6 px-1.5 text-xs font-mono font-bold focus:outline-none text-center" />
+        <label class="text-[9px] font-bold text-mute uppercase tracking-wider">From:</label>
+        <input type="number" id="cas-bound-a" value="0" class="w-14 bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded h-6 px-1.5 text-xs font-mono font-bold focus:outline-none text-center" />
+        <label class="text-[9px] font-bold text-mute uppercase tracking-wider">To:</label>
+        <input type="number" id="cas-bound-b" value="1" class="w-14 bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded h-6 px-1.5 text-xs font-mono font-bold focus:outline-none text-center" />
+        <label class="text-[9px] font-bold text-mute uppercase tracking-wider">Order:</label>
+        <input type="number" id="cas-taylor-order" value="5" min="1" max="20" class="w-10 bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded h-6 px-1.5 text-xs font-mono font-bold focus:outline-none text-center" />
+      </div>
+      <!-- Complex & Matrix shortcuts -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-[8px] font-bold text-mute uppercase tracking-widest">Insert:</span>
+        {['i', 'pi', 'e', 'inf', 'sqrt(', 'abs(', 'log(', 'sin(', 'cos('].map(s => (
+          <button class="cas-insert-btn text-[9px] font-bold text-mute hover:text-ink px-1.5 py-0.5 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all font-mono" data-insert={s}>{s === 'inf' ? '∞' : s}</button>
+        ))}
+      </div>
+      <!-- CAS History -->
+      <details class="group">
+        <summary class="text-[9px] font-bold text-mute hover:text-ink cursor-pointer uppercase tracking-wider flex items-center gap-2">
+          <svg class="w-3 h-3 transition-transform group-open:rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Computation History
+        </summary>
+        <div id="cas-history" class="mt-2 bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3 max-h-[200px] overflow-y-auto text-xs font-mono text-body space-y-1">
+          <div class="text-mute">No history yet.</div>
+        </div>
+      </details>
     </div>
   </div>
 )}

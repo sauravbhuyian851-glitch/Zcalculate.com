@@ -78,6 +78,7 @@ const breadcrumbSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} is:inline slot="head" />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline slot="head" />}
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline slot="head" />
+  {calc.slug === 'scientific-calculator' && <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.2/math.min.js" is:inline slot="head" />}
 
   <div class="mx-auto max-w-5xl px-6 py-16">
     <!-- Breadcrumb Navigation -->
@@ -781,94 +782,486 @@ const breadcrumbSchema = {
       }
     }
 
-    // --- Scientific Calculator Standalone ---
+    // --- Scientific Calculator Standalone (4-Mode) ---
     if (slug === 'scientific-calculator') {
-      let expr = '';
-      let isRadians = false;
-      const resDisp = document.getElementById('sci-display-result');
-      const exprDisp = document.getElementById('sci-display-expr');
-      const degRadEl = document.getElementById('sci-deg-rad');
-      const toggleRadBtn = document.getElementById('sci-toggle-rad');
+      import('../../utils/scientificCalculator').then(mod => {
+        const ctrl = new mod.ScientificCalculatorController();
+        const { StandardEngine, ProgrammableEngine, GraphingEngine, CASEngine, PHYSICAL_CONSTANTS, mean, stddev, variance } = mod;
 
-      if (toggleRadBtn && degRadEl) {
-        toggleRadBtn.onclick = () => {
-          isRadians = !isRadians;
-          degRadEl.textContent = isRadians ? 'RAD' : 'DEG';
-          toggleRadBtn.textContent = isRadians ? 'Toggle DEG' : 'Toggle RAD';
+        let expr = '';
+        const resDisp = document.getElementById('sci-display-result');
+        const exprDisp = document.getElementById('sci-display-expr');
+        const angleModeEl = document.getElementById('sci-angle-mode');
+        const panels = {
+          standard: document.getElementById('sci-standard-panel'),
+          programmable: document.getElementById('sci-prog-panel'),
+          graphing: document.getElementById('sci-graph-panel'),
+          cas: document.getElementById('sci-cas-panel'),
         };
-      }
 
-      document.querySelectorAll('.sci-btn').forEach(b => {
-        (b as HTMLButtonElement).onclick = () => {
-          const v = b.getAttribute('data-sci');
-          if (!v) return;
-
-          if (v === '=') {
-            try {
-              let prep = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/π/g, 'Math.PI');
-              // Replace standalone 'e' but not inside function names
-              prep = prep.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
-              // Handle factorial
-              prep = prep.replace(/(\d+(?:\.\d+)?)\!/g, (_, n) => {
-                let r = 1; for (let i = 2; i <= parseFloat(n); i++) r *= i; return r.toString();
-              });
-              const d2r = Math.PI / 180;
-              if (!isRadians) {
-                prep = prep.replace(/sin\(/g, `Math.sin(${d2r}*`)
-                           .replace(/cos\(/g, `Math.cos(${d2r}*`)
-                           .replace(/tan\(/g, `Math.tan(${d2r}*`)
-                           .replace(/asin\(/g, `(1/${d2r})*Math.asin(`)
-                           .replace(/acos\(/g, `(1/${d2r})*Math.acos(`)
-                           .replace(/atan\(/g, `(1/${d2r})*Math.atan(`);
+        // ===== MODE TAB SWITCHING =====
+        document.querySelectorAll('.sci-mode-tab').forEach(tab => {
+          (tab as HTMLButtonElement).onclick = () => {
+            const mode = tab.getAttribute('data-mode') as any;
+            if (!mode) return;
+            ctrl.switchMode(mode);
+            document.querySelectorAll('.sci-mode-tab').forEach(t => {
+              (t as HTMLElement).className = (t as HTMLElement).className.replace(/bg-calc-btn text-ink shadow-sm/g, 'text-mute hover:text-ink');
+            });
+            (tab as HTMLElement).className = (tab as HTMLElement).className.replace(/text-mute hover:text-ink/g, 'bg-calc-btn text-ink shadow-sm');
+            Object.entries(panels).forEach(([k, panel]) => {
+              if (panel) panel.classList.toggle('hidden', k !== mode);
+            });
+            // Init graphing canvas when switching to graphing mode
+            if (mode === 'graphing') {
+              const canvas = document.getElementById('graph-canvas') as HTMLCanvasElement;
+              if (canvas && !ctrl.graphing.canvas) {
+                ctrl.graphing.init(canvas);
               } else {
-                prep = prep.replace(/sin\(/g, 'Math.sin(')
-                           .replace(/cos\(/g, 'Math.cos(')
-                           .replace(/tan\(/g, 'Math.tan(')
-                           .replace(/asin\(/g, 'Math.asin(')
-                           .replace(/acos\(/g, 'Math.acos(')
-                           .replace(/atan\(/g, 'Math.atan(');
+                ctrl.graphing.render();
               }
-              prep = prep.replace(/ln\(/g, 'Math.log(')
-                         .replace(/log\(/g, 'Math.log10(')
-                         .replace(/sqrt\(/g, 'Math.sqrt(')
-                         .replace(/\^/g, '**');
+            }
+          };
+        });
 
-              const result = new Function(`return ${prep}`)();
-              if (resDisp) resDisp.textContent = typeof result === 'number' && !isNaN(result) ? Number(result.toFixed(10)).toString() : 'Error';
-              expr = typeof result === 'number' ? result.toString() : '';
-            } catch (e) {
-              if (resDisp) resDisp.textContent = 'Error';
+        // ===== STANDARD MODE =====
+        // Angle mode cycling (DEG -> RAD -> GRAD -> DEG)
+        const angleToggle = document.getElementById('sci-angle-toggle');
+        if (angleToggle && angleModeEl) {
+          angleToggle.onclick = () => {
+            const modes: Array<'DEG'|'RAD'|'GRAD'> = ['DEG', 'RAD', 'GRAD'];
+            const idx = modes.indexOf(ctrl.standard.angleMode);
+            ctrl.standard.angleMode = modes[(idx + 1) % 3];
+            angleModeEl.textContent = ctrl.standard.angleMode;
+          };
+        }
+
+        // Constants drawer
+        const constToggle = document.getElementById('sci-toggle-const');
+        const constDrawer = document.getElementById('sci-const-drawer');
+        const constList = document.getElementById('sci-const-list');
+        if (constToggle && constDrawer && constList) {
+          // Populate constants
+          constList.innerHTML = Object.entries(PHYSICAL_CONSTANTS).map(([key, c]) =>
+            `<button class="sci-const-item text-left text-[9px] font-mono text-body hover:text-ink px-2 py-1 rounded border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all" data-const-val="${c.value}" title="${c.label}: ${c.value} ${c.unit}"><strong>${key}</strong> <span class="text-mute">${c.value.toExponential(2)}</span></button>`
+          ).join('');
+          constToggle.onclick = () => constDrawer.classList.toggle('hidden');
+          constList.querySelectorAll('.sci-const-item').forEach(btn => {
+            (btn as HTMLButtonElement).onclick = () => {
+              const val = btn.getAttribute('data-const-val') || '';
+              expr += val;
+              if (exprDisp) exprDisp.textContent = expr;
+            };
+          });
+        }
+
+        // Statistics drawer
+        const statsToggle = document.getElementById('sci-toggle-stats');
+        const statsDrawer = document.getElementById('sci-stats-drawer');
+        if (statsToggle && statsDrawer) {
+          statsToggle.onclick = () => statsDrawer.classList.toggle('hidden');
+        }
+        document.querySelectorAll('.sci-stats-btn').forEach(btn => {
+          (btn as HTMLButtonElement).onclick = () => {
+            const op = btn.getAttribute('data-stat');
+            const input = (document.getElementById('sci-stats-input') as HTMLInputElement)?.value || '';
+            const data = input.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+            const resultEl = document.getElementById('sci-stats-result');
+            if (data.length === 0) { if (resultEl) resultEl.textContent = 'No valid data'; return; }
+            let result = '';
+            switch (op) {
+              case 'mean': result = `Mean: ${mean(data).toFixed(6)}`; break;
+              case 'stddev': result = `Std Dev: ${stddev(data).toFixed(6)}`; break;
+              case 'variance': result = `Variance: ${variance(data).toFixed(6)}`; break;
+              case 'count': result = `Count: ${data.length}`; break;
+              case 'sum': result = `Sum: ${data.reduce((a, b) => a + b, 0).toFixed(6)}`; break;
+            }
+            if (resultEl) resultEl.textContent = result;
+          };
+        });
+
+        // Standard scientific buttons
+        document.querySelectorAll('.sci-btn').forEach(b => {
+          (b as HTMLButtonElement).onclick = () => {
+            const v = b.getAttribute('data-sci');
+            if (!v) return;
+            // Record macro if recording
+            ctrl.programmable.recordKeystroke(v);
+
+            if (v === '=') {
+              const result = ctrl.standard.evaluate(expr);
+              if (resDisp) resDisp.textContent = ctrl.standard.formatResult(result);
+              expr = !isNaN(result) ? result.toString() : '';
+            }
+            else if (v === 'clear') {
+              expr = '';
+              if (resDisp) resDisp.textContent = '0';
+              if (exprDisp) exprDisp.textContent = '\u00A0';
+            }
+            else if (v === 'back') {
+              const funcMatch = ['asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 'tenPow(', 'ePow(', 'inv(', 'nCr(', 'nPr('].find(f => expr.endsWith(f));
+              expr = funcMatch ? expr.substring(0, expr.length - funcMatch.length) : expr.substring(0, expr.length - 1);
+              if (exprDisp) exprDisp.textContent = expr || '\u00A0';
+              if (!expr && resDisp) resDisp.textContent = '0';
+            }
+            else if (v === 'mem') {
+              expr += ctrl.standard.memory.toString();
+              if (exprDisp) exprDisp.textContent = expr;
+            }
+            else {
+              let insert = v;
+              const fnMap: Record<string, string> = {
+                'sin': 'sin(', 'cos': 'cos(', 'tan': 'tan(',
+                'asin': 'asin(', 'acos': 'acos(', 'atan': 'atan(',
+                'log': 'log(', 'ln': 'ln(', 'sqrt': 'sqrt(', 'abs': 'abs(',
+                'tenPow': 'tenPow(', 'ePow': 'ePow(', 'inv': 'inv(',
+                'ncr': 'nCr(', 'npr': 'nPr(',
+                'fact': '!', 'pi': 'π', 'pow': '^',
+                'open': '(', 'close': ')',
+                'e': 'e', 'pct': '%', 'ans': 'Ans',
+              };
+              if (fnMap[v]) insert = fnMap[v];
+              else if (v === 'rectpol') {
+                // Insert dialog placeholder
+                const x = prompt('Enter X (or R):');
+                const y = prompt('Enter Y (or θ):');
+                if (x && y) {
+                  const xn = parseFloat(x), yn = parseFloat(y);
+                  const result = mod.rectToPol(xn, yn);
+                  if (resDisp) resDisp.textContent = `r=${result.r.toFixed(6)}, θ=${(result.theta * 180 / Math.PI).toFixed(4)}°`;
+                  if (exprDisp) exprDisp.textContent = `Rect→Pol(${x}, ${y})`;
+                }
+                return;
+              }
+              else if (v === 'dms') {
+                const dec = prompt('Enter decimal degrees:');
+                if (dec) {
+                  const result = mod.decToDms(parseFloat(dec));
+                  if (resDisp) resDisp.textContent = `${result.deg}° ${result.min}' ${result.sec}"`;
+                  if (exprDisp) exprDisp.textContent = `Dec→DMS(${dec})`;
+                }
+                return;
+              }
+              expr += insert;
+              if (exprDisp) exprDisp.textContent = expr;
+            }
+          };
+        });
+
+        // ===== PROGRAMMABLE MODE =====
+        const progEditor = document.getElementById('prog-editor') as HTMLTextAreaElement;
+        const progOutput = document.getElementById('prog-output');
+        const progVars = document.getElementById('prog-variables');
+        let currentProgSlot = 0;
+
+        // Run button
+        const progRun = document.getElementById('prog-run');
+        if (progRun) {
+          progRun.onclick = () => {
+            const code = progEditor?.value || '';
+            if (!code.trim()) return;
+            if (progOutput) progOutput.textContent = 'Running...\n';
+            setTimeout(() => {
+              const result = ctrl.programmable.run(code, ctrl.standard);
+              if (progOutput) {
+                progOutput.textContent = result.output.length > 0 ? result.output.join('\n') : '(No output)';
+                if (result.error) progOutput.textContent += `\n\nError: ${result.error}`;
+              }
+              if (progVars) {
+                const entries = Object.entries(result.variables);
+                progVars.textContent = entries.length > 0 ? entries.map(([k, v]) => `${k} = ${v}`).join('\n') : 'No variables.';
+              }
+            }, 50);
+          };
+        }
+
+        // Clear
+        const progClear = document.getElementById('prog-clear');
+        if (progClear) progClear.onclick = () => {
+          if (progEditor) progEditor.value = '';
+          if (progOutput) progOutput.textContent = 'Ready.';
+          if (progVars) progVars.textContent = 'No variables.';
+        };
+
+        // Save / Load
+        document.querySelectorAll('.prog-slot-btn').forEach(btn => {
+          (btn as HTMLButtonElement).onclick = () => {
+            currentProgSlot = parseInt(btn.getAttribute('data-slot') || '0');
+            document.querySelectorAll('.prog-slot-btn').forEach(b => {
+              (b as HTMLElement).className = (b as HTMLElement).className.replace(/text-ink bg-calc-btn-soft/g, 'text-mute');
+            });
+            (btn as HTMLElement).className = (btn as HTMLElement).className.replace(/text-mute/g, 'text-ink bg-calc-btn-soft');
+          };
+        });
+
+        const progSave = document.getElementById('prog-save');
+        if (progSave) progSave.onclick = () => {
+          const code = progEditor?.value || '';
+          const name = prompt('Program name:', `Program ${currentProgSlot}`) || `Program ${currentProgSlot}`;
+          ctrl.programmable.saveProgram(currentProgSlot, name, code);
+          if (progOutput) progOutput.textContent = `Saved to slot ${currentProgSlot}: "${name}"`;
+        };
+
+        const progLoad = document.getElementById('prog-load');
+        if (progLoad) progLoad.onclick = () => {
+          const prog = ctrl.programmable.getProgram(currentProgSlot);
+          if (progEditor) progEditor.value = prog.code;
+          if (progOutput) progOutput.textContent = `Loaded slot ${currentProgSlot}: "${prog.name}"`;
+        };
+
+        // Macro recorder
+        const progRecord = document.getElementById('prog-record');
+        if (progRecord) {
+          progRecord.onclick = () => {
+            if (ctrl.programmable.isRecording) {
+              const macroCode = ctrl.programmable.stopRecording();
+              if (progEditor) progEditor.value = macroCode;
+              progRecord.textContent = '⏺ Record Macro';
+              if (progOutput) progOutput.textContent = 'Macro recorded. Switch to Standard mode to test.';
+            } else {
+              ctrl.programmable.startRecording();
+              progRecord.textContent = '⏹ Stop Recording';
+              if (progOutput) progOutput.textContent = 'Recording... Use Standard mode buttons, then click Stop.';
+            }
+          };
+        }
+
+        // ===== GRAPHING MODE =====
+        const graphCanvas = document.getElementById('graph-canvas') as HTMLCanvasElement;
+
+        // Function input handlers
+        document.querySelectorAll('.graph-fn-input').forEach(input => {
+          (input as HTMLInputElement).oninput = () => {
+            const idx = parseInt(input.getAttribute('data-fnidx') || '0');
+            ctrl.graphing.functions[idx].expr = (input as HTMLInputElement).value;
+            ctrl.graphing.render();
+          };
+        });
+
+        // Plot mode selector
+        document.querySelectorAll('.graph-plotmode-btn').forEach(btn => {
+          (btn as HTMLButtonElement).onclick = () => {
+            const mode = btn.getAttribute('data-plotmode') as any;
+            ctrl.graphing.plotMode = mode;
+            document.querySelectorAll('.graph-plotmode-btn').forEach(b => {
+              (b as HTMLElement).className = (b as HTMLElement).className.replace(/bg-calc-btn text-ink shadow-sm/g, 'text-mute hover:text-ink bg-canvas-card-soft-2');
+            });
+            (btn as HTMLElement).className = (btn as HTMLElement).className.replace(/text-mute hover:text-ink bg-canvas-card-soft-2/g, 'bg-calc-btn text-ink shadow-sm');
+            ctrl.graphing.render();
+          };
+        });
+
+        // Zoom / Pan / Reset / Grid / Trace
+        document.getElementById('graph-zoom-in')?.addEventListener('click', () => ctrl.graphing.zoom(0.7));
+        document.getElementById('graph-zoom-out')?.addEventListener('click', () => ctrl.graphing.zoom(1.4));
+        document.getElementById('graph-reset')?.addEventListener('click', () => ctrl.graphing.resetView());
+        document.getElementById('graph-toggle-grid')?.addEventListener('click', () => { ctrl.graphing.showGrid = !ctrl.graphing.showGrid; ctrl.graphing.render(); });
+
+        const traceBtn = document.getElementById('graph-toggle-trace');
+        if (traceBtn) {
+          traceBtn.onclick = () => {
+            ctrl.graphing.traceMode = !ctrl.graphing.traceMode;
+            traceBtn.classList.toggle('text-link', ctrl.graphing.traceMode);
+            if (!ctrl.graphing.traceMode) {
+              ctrl.graphing.tracePoint = null;
+              ctrl.graphing.render();
+            }
+          };
+        }
+
+        // Canvas mouse interaction
+        if (graphCanvas) {
+          let isPanning = false;
+          let panStartX = 0, panStartY = 0;
+
+          graphCanvas.onmousemove = (e) => {
+            if (isPanning) {
+              const dx = (e.movementX / graphCanvas.width);
+              const dy = (e.movementY / graphCanvas.height);
+              ctrl.graphing.pan(dx, dy);
+            } else if (ctrl.graphing.traceMode) {
+              const rect = graphCanvas.getBoundingClientRect();
+              const scaleX = graphCanvas.width / rect.width;
+              const scaleY = graphCanvas.height / rect.height;
+              const mx = (e.clientX - rect.left) * scaleX;
+              const my = (e.clientY - rect.top) * scaleY;
+              const mathX = ctrl.graphing.toMathX(mx);
+              const mathY = ctrl.graphing.toMathY(my);
+              ctrl.graphing.tracePoint = { x: mathX, y: mathY };
+              // Snap to first visible function
+              const fn = ctrl.graphing.functions.find(f => f.expr && f.visible);
+              if (fn) {
+                try {
+                  const mathjs = (window as any).math;
+                  if (mathjs) {
+                    const fy = mathjs.evaluate(fn.expr, { x: mathX, pi: Math.PI, e: Math.E });
+                    if (typeof fy === 'number' && isFinite(fy)) {
+                      ctrl.graphing.tracePoint = { x: mathX, y: fy };
+                    }
+                  }
+                } catch {}
+              }
+              ctrl.graphing.render();
+              const traceInfo = document.getElementById('graph-trace-info');
+              if (traceInfo && ctrl.graphing.tracePoint) {
+                traceInfo.classList.remove('hidden');
+                traceInfo.textContent = `(${ctrl.graphing.tracePoint.x.toFixed(4)}, ${ctrl.graphing.tracePoint.y.toFixed(4)})`;
+              }
+            }
+          };
+
+          graphCanvas.onmousedown = (e) => { if (e.button === 0 && !ctrl.graphing.traceMode) { isPanning = true; } };
+          graphCanvas.onmouseup = () => { isPanning = false; };
+          graphCanvas.onmouseleave = () => { isPanning = false; };
+          graphCanvas.onwheel = (e) => { e.preventDefault(); ctrl.graphing.zoom(e.deltaY > 0 ? 1.15 : 0.87); };
+        }
+
+        // Analysis tools
+        const analysisEl = document.getElementById('graph-analysis');
+        const showAnalysis = (text: string) => {
+          if (analysisEl) { analysisEl.classList.remove('hidden'); analysisEl.textContent = text; }
+        };
+
+        document.getElementById('graph-find-zeros')?.addEventListener('click', () => {
+          const zeros = ctrl.graphing.findZeros(0);
+          showAnalysis(zeros.length > 0 ? `Zeros of f₁: x = ${zeros.join(', ')}` : 'No zeros found in current view.');
+        });
+        document.getElementById('graph-find-extrema')?.addEventListener('click', () => {
+          const ext = ctrl.graphing.findExtrema(0);
+          let text = '';
+          if (ext.minima.length > 0) text += `Minima: ${ext.minima.map(p => `(${p.x}, ${p.y})`).join(', ')}\n`;
+          if (ext.maxima.length > 0) text += `Maxima: ${ext.maxima.map(p => `(${p.x}, ${p.y})`).join(', ')}`;
+          showAnalysis(text || 'No extrema found in current view.');
+        });
+        document.getElementById('graph-integral')?.addEventListener('click', () => {
+          const a = parseFloat(prompt('Lower bound (a):', String(ctrl.graphing.xMin)) || '');
+          const b = parseFloat(prompt('Upper bound (b):', String(ctrl.graphing.xMax)) || '');
+          if (!isNaN(a) && !isNaN(b)) {
+            const result = ctrl.graphing.numericalIntegral(0, a, b);
+            showAnalysis(`∫f₁(x)dx from ${a} to ${b} ≈ ${result.toFixed(8)}`);
+          }
+        });
+        document.getElementById('graph-derivative')?.addEventListener('click', () => {
+          const x0 = parseFloat(prompt('Evaluate derivative at x =', '0') || '');
+          if (!isNaN(x0)) {
+            const result = ctrl.graphing.numericalDerivative(0, x0);
+            showAnalysis(`f₁'(${x0}) ≈ ${result.toFixed(8)}`);
+          }
+        });
+
+        // Table view
+        document.getElementById('graph-toggle-table')?.addEventListener('click', () => {
+          const container = document.getElementById('graph-table-container');
+          if (container) {
+            container.classList.toggle('hidden');
+            if (!container.classList.contains('hidden')) {
+              const table = ctrl.graphing.generateTable();
+              const graphTable = document.getElementById('graph-table');
+              if (graphTable && table.length > 0) {
+                const activeFns = ctrl.graphing.functions.filter(f => f.expr && f.visible);
+                let html = '<thead><tr class="text-mute border-b border-canvas-card-border"><th class="pb-2 pr-3">x</th>';
+                activeFns.forEach((_, i) => { html += `<th class="pb-2 pr-3">f${i+1}(x)</th>`; });
+                html += '</tr></thead><tbody>';
+                table.forEach(row => {
+                  html += `<tr class="border-b border-canvas-card-border/30"><td class="py-1 pr-3 text-mute">${row.x}</td>`;
+                  row.values.forEach(v => { html += `<td class="py-1 pr-3 text-ink font-bold">${isNaN(v) ? '-' : v.toFixed(4)}</td>`; });
+                  html += '</tr>';
+                });
+                graphTable.innerHTML = html + '</tbody>';
+              }
             }
           }
-          else if (v === 'clear') {
-            expr = '';
-            if (resDisp) resDisp.textContent = '0';
-            if (exprDisp) exprDisp.textContent = '\u00A0';
-          }
-          else if (v === 'back') {
-            const funcMatch = ['asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt('].find(f => expr.endsWith(f));
-            expr = funcMatch ? expr.substring(0, expr.length - funcMatch.length) : expr.substring(0, expr.length - 1);
-            if (exprDisp) exprDisp.textContent = expr || '\u00A0';
-            if (!expr && resDisp) resDisp.textContent = '0';
-          }
-          else if (v === 'pct') {
-            expr += '%';
-            if (exprDisp) exprDisp.textContent = expr;
-          }
-          else {
-            let insert = v;
-            if (['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'log', 'ln', 'sqrt'].includes(v)) insert = v + '(';
-            else if (v === 'fact') insert = '!';
-            else if (v === 'pi') insert = 'π';
-            else if (v === 'pow') insert = '^';
-            else if (v === 'open') insert = '(';
-            else if (v === 'close') insert = ')';
-            else if (v === 'e') insert = 'e';
+        });
 
-            expr += insert;
-            if (exprDisp) exprDisp.textContent = expr;
+        // Scatter plot
+        document.getElementById('graph-scatter-plot')?.addEventListener('click', () => {
+          const input = (document.getElementById('graph-scatter-input') as HTMLTextAreaElement)?.value || '';
+          ctrl.graphing.parseScatterData(input);
+        });
+
+        // ===== CAS MODE =====
+        const casInput = document.getElementById('cas-input') as HTMLInputElement;
+        const casResult = document.getElementById('cas-display-result');
+        const casLabel = document.getElementById('cas-display-label');
+        const casHistory = document.getElementById('cas-history');
+
+        const updateCASResult = (label: string, result: string) => {
+          if (casResult) casResult.textContent = result;
+          if (casLabel) casLabel.textContent = label;
+          if (casHistory) {
+            const entries = ctrl.cas.history.map(h => `<div><span class="text-mute">▸ ${h.input}</span><br/><span class="text-ink font-bold">${h.output}</span></div>`).join('');
+            casHistory.innerHTML = entries || '<div class="text-mute">No history yet.</div>';
           }
         };
+
+        // CAS insert buttons
+        document.querySelectorAll('.cas-insert-btn').forEach(btn => {
+          (btn as HTMLButtonElement).onclick = () => {
+            const val = btn.getAttribute('data-insert') || '';
+            if (casInput) {
+              const pos = casInput.selectionStart || casInput.value.length;
+              casInput.value = casInput.value.slice(0, pos) + val + casInput.value.slice(pos);
+              casInput.focus();
+            }
+          };
+        });
+
+        // CAS Enter key
+        if (casInput) {
+          casInput.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+              const result = ctrl.cas.evaluate(casInput.value);
+              updateCASResult('Result', result);
+            }
+          };
+        }
+
+        // CAS operation buttons
+        document.querySelectorAll('.cas-op-btn').forEach(btn => {
+          (btn as HTMLButtonElement).onclick = () => {
+            const op = btn.getAttribute('data-cas-op');
+            const input = casInput?.value || '';
+            const variable = (document.getElementById('cas-variable') as HTMLInputElement)?.value || 'x';
+            const a = parseFloat((document.getElementById('cas-bound-a') as HTMLInputElement)?.value || '0');
+            const b = parseFloat((document.getElementById('cas-bound-b') as HTMLInputElement)?.value || '1');
+            const order = parseInt((document.getElementById('cas-taylor-order') as HTMLInputElement)?.value || '5');
+
+            let result = '';
+            let label = 'Result';
+            switch (op) {
+              case 'cas-eval': result = ctrl.cas.evaluate(input); label = 'Evaluate'; break;
+              case 'cas-simplify': result = ctrl.cas.simplify(input); label = 'Simplify'; break;
+              case 'cas-factor': result = ctrl.cas.factor(input); label = 'Factor'; break;
+              case 'cas-expand': result = ctrl.cas.expand(input); label = 'Expand'; break;
+              case 'cas-derivative': result = ctrl.cas.derivative(input, variable); label = `d/d${variable}`; break;
+              case 'cas-integrate': result = ctrl.cas.integrate(input, variable, a, b); label = `∫d${variable} [${a},${b}]`; break;
+              case 'cas-solve': result = ctrl.cas.solve(input, variable); label = 'Solve'; break;
+              case 'cas-taylor': result = ctrl.cas.taylor(input, variable, a, order); label = `Taylor (order ${order})`; break;
+              case 'cas-limit': result = ctrl.cas.limit(input, variable, a); label = `Limit as ${variable}→${a}`; break;
+              case 'cas-det':
+                try {
+                  const mathjs = (window as any).math;
+                  if (mathjs) { result = mathjs.det(mathjs.evaluate(input)).toString(); } else result = 'math.js not loaded';
+                } catch (e: any) { result = `Error: ${e.message}`; }
+                label = 'Determinant';
+                break;
+              case 'cas-inv-matrix':
+                try {
+                  const mathjs = (window as any).math;
+                  if (mathjs) { result = mathjs.format(mathjs.inv(mathjs.evaluate(input)), { precision: 6 }); } else result = 'math.js not loaded';
+                } catch (e: any) { result = `Error: ${e.message}`; }
+                label = 'Inverse Matrix';
+                break;
+              case 'cas-clear':
+                if (casInput) casInput.value = '';
+                result = 'Ready';
+                label = 'Result';
+                ctrl.cas.variables = {};
+                break;
+            }
+            updateCASResult(label, result);
+          };
+        });
       });
     }
 

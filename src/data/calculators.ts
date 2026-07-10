@@ -561,13 +561,16 @@ export const calculatorsList: CalculatorMetadata[] = [
   // ==================== MATH CALCULATORS ====================
   {
     slug: 'scientific-calculator',
-    name: 'Scientific Calculator (Standalone)',
+    name: 'Scientific Calculator',
     category: 'math',
-    description: 'An advanced standalone scientific layout loaded with trigonometry constants, logs, powers, and custom DEG/RAD configurations.',
-    seoTitle: 'Free Online Scientific Calculator — Trig, Log, Powers & Constants',
-    seoDescription: 'Use our free online scientific calculator with trigonometry, logarithms, powers, factorial, and DEG/RAD mode. Full-featured and no download required.',
+    description: 'A professional 4-mode scientific calculator with Standard, Programmable, Graphing, and CAS (Computer Algebra System) capabilities. Includes trigonometry, statistics, physical constants, 2D function plotting, symbolic calculus, and a built-in scripting engine.',
+    seoTitle: 'Free Online Scientific Calculator — Standard, Graphing, Programmable & CAS Modes',
+    seoDescription: 'Use our free 4-in-1 scientific calculator with standard scientific functions, programmable scripting, interactive 2D graphing with trace and zoom, and a Computer Algebra System for symbolic math, derivatives, integrals, and equation solving.',
     faqs: [
-      { question: 'What functions does this scientific calculator support?', answer: 'This calculator supports sin, cos, tan and their inverses, natural log (ln), log base 10, square root, powers (xʸ), factorial (x!), constants π and e, and both degree and radian angle modes.' }
+      { question: 'What are the 4 modes of this scientific calculator?', answer: 'Standard mode provides trig, log, powers, factorial, nCr/nPr, statistics, physical constants, and DEG/RAD/GRAD angle modes. Programmable mode lets you write and run JavaScript-like scripts with loops, conditions, and math functions. Graphing mode plots up to 4 functions simultaneously with zoom, pan, trace, zero-finding, and numerical calculus. CAS mode performs symbolic algebra: simplify, factor, expand, differentiate, integrate, solve equations, and compute Taylor series.' },
+      { question: 'Does the CAS mode perform symbolic or numerical calculations?', answer: 'CAS mode uses the math.js library for true symbolic manipulation — it can compute exact derivatives, simplify expressions, factor polynomials, and solve equations algebraically. For integrals, it provides both symbolic antiderivatives for common patterns and high-precision numerical integration via Simpson\'s rule.' },
+      { question: 'Can I save programs in Programmable mode?', answer: 'Yes. Programmable mode has 10 save/load memory slots stored in your browser\'s local storage. You can also record macros from Standard mode button presses and replay them as scripts.' },
+      { question: 'What plotting types does Graphing mode support?', answer: 'Graphing mode supports Cartesian (y = f(x)), Polar (r = f(θ)), and Parametric (x(t), y(t)) plotting. You can also overlay scatter point data, find zeros and extrema, compute numerical derivatives and integrals, and generate value tables.' }
     ],
     relatedSlugs: ['fraction-calculator', 'percentage-calculator', 'triangle-calculator'],
     customUI: true,
