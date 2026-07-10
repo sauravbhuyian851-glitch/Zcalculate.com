@@ -1,0 +1,1180 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SpecializedCalculatorUIs from '../../components/SpecializedCalculatorUIs.astro';
+import { calculatorsList } from '../../data/calculators';
+
+export async function getStaticPaths() {
+  return calculatorsList.map(calc => ({
+    params: { slug: calc.slug },
+    props: { calc }
+  }));
+}
+
+const { calc } = Astro.props;
+const relatedCalcs = calculatorsList.filter(c => calc.relatedSlugs.includes(c.slug));
+const canonicalUrl = `https://zcalculate.com/calculator/${calc.slug}`;
+
+const cleanName = calc.name.replace(/\(.*\)/g, '').trim().toLowerCase();
+const nameBase = cleanName.endsWith('calculator') ? cleanName : `${cleanName} calculator`;
+const keywordsList = [
+  nameBase,
+  `free online ${nameBase}`,
+  `${cleanName} solver`,
+  `how to calculate ${cleanName.replace('calculator', '').trim()}`,
+  `calculate ${cleanName.replace('calculator', '').trim()}`,
+  calc.category,
+  ...calc.relatedSlugs.map(s => s.replace(/-/g, ' '))
+];
+const pageKeywords = keywordsList.join(', ');
+
+// JSON-LD WebApplication schema
+const webAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": calc.name,
+  "url": canonicalUrl,
+  "description": calc.seoDescription,
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "browserRequirements": "Requires JavaScript",
+  "creator": {
+    "@type": "Organization",
+    "name": "Zcalculate"
+  }
+};
+
+// JSON-LD FAQPage schema
+const faqSchema = calc.faqs.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": calc.faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+} : null;
+
+// BreadcrumbList schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://zcalculate.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://zcalculate.com/#all-calculators" },
+    { "@type": "ListItem", "position": 3, "name": calc.name, "item": canonicalUrl }
+  ]
+};
+---
+<Layout title={calc.seoTitle} description={calc.seoDescription} canonicalUrl={canonicalUrl} ogType="website" keywords={pageKeywords}>
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} is:inline slot="head" />
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline slot="head" />}
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline slot="head" />
+
+  <div class="mx-auto max-w-5xl px-6 py-16">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+      <ol class="flex items-center gap-2 text-[11px] font-mono text-mute uppercase tracking-widest">
+        <li><a href="/" class="hover:text-ink transition-colors">Home</a></li>
+        <li class="text-hairline-strong">/</li>
+        <li><a href="/#all-calculators" class="hover:text-ink transition-colors">Calculators</a></li>
+        <li class="text-hairline-strong">/</li>
+        <li class="text-ink font-bold">{calc.name}</li>
+      </ol>
+    </nav>
+
+    <!-- Back to home -->
+    <a href="/#all-calculators" class="inline-flex items-center gap-2 text-[11px] font-bold text-mute hover:text-ink transition-colors uppercase tracking-widest mb-10 group">
+      <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Library Index
+    </a>
+
+    <!-- Calculator Title Headers -->
+    <div class="border-b border-hairline pb-10 mb-12 text-left">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="inline-block px-2.5 py-1 bg-canvas-soft border border-hairline text-[10px] font-bold text-mute rounded-md uppercase tracking-wider">{calc.category}</span>
+        <span class="text-hairline-strong font-mono text-xs">/</span>
+        <span class="text-mute text-xs font-semibold uppercase tracking-tight">Free Online Tool</span>
+      </div>
+      <h1 class="display-lg text-ink">{calc.name}.</h1>
+      <p class="text-body text-lg mt-3 leading-relaxed max-w-2xl">{calc.description}</p>
+    </div>
+
+    <!-- Main Flex Grid split -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      
+      <!-- Inputs Column (Forms or Custom UIs) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-canvas border border-hairline rounded-2xl p-8 shadow-xl text-left">
+          <h2 class="text-[11px] font-bold text-mute mb-8 font-mono uppercase tracking-[0.2em] border-b border-hairline pb-3">Input Parameters</h2>
+          
+          {calc.customUI ? (
+            <!-- Custom Interactive Calculator UI -->
+            <SpecializedCalculatorUIs type={calc.slug} />
+          ) : (
+            <!-- Standard Form-Based Layout -->
+            <form id="calc-form" class="space-y-6">
+              {calc.inputs.map(input => (
+                <div>
+                  <label for={input.id} class="block text-[11px] font-bold text-mute uppercase tracking-wider mb-2">{input.label}</label>
+                  
+                  <div class="relative rounded-lg">
+                    {input.type === 'select' ? (
+                      <select id={input.id} name={input.id} class="w-full bg-canvas-soft border border-hairline text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all appearance-none cursor-pointer">
+                        {input.options?.map(opt => (
+                          <option value={opt.value} selected={opt.value == input.default ? true : undefined}>{opt.label}</option>
+                        ))}
+                      </select>
+                    ) : input.type === 'checkbox' ? (
+                      <label class="flex items-center gap-3 cursor-pointer py-3 text-base font-bold text-body">
+                        <input type="checkbox" id={input.id} name={input.id} checked={input.default ? true : undefined} class="accent-link h-6 w-6 rounded border-hairline" />
+                        <span>Enable this option</span>
+                      </label>
+                    ) : input.type === 'date' ? (
+                      <div class="space-y-3 w-full">
+                        <div>
+                          <span class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1">Manual Keyboard Input / Calendar</span>
+                          <input 
+                            type="date" 
+                            id={input.id} 
+                            name={input.id} 
+                            value={input.default} 
+                            class="w-full bg-canvas-soft border border-hairline text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all calc-date-input"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <span class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1">Dropdown Selectors</span>
+                          <div class="grid grid-cols-3 gap-2">
+                            <select id={`${input.id}-month`} class="bg-canvas-soft border border-hairline text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-month">
+                              {Array.from({ length: 12 }, (_, i) => {
+                                const m = i + 1;
+                                const name = new Date(2000, i, 1).toLocaleString('en-US', { month: 'short' });
+                                return <option value={m}>{name}</option>;
+                              })}
+                            </select>
+                            
+                            <select id={`${input.id}-day`} class="bg-canvas-soft border border-hairline text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-day">
+                              {Array.from({ length: 31 }, (_, i) => {
+                                const d = i + 1;
+                                return <option value={d}>{d}</option>;
+                              })}
+                            </select>
+                            
+                            <select id={`${input.id}-year`} class="bg-canvas-soft border border-hairline text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-year">
+                              {Array.from({ length: 151 }, (_, i) => {
+                                const y = 1900 + i;
+                                return <option value={y}>{y}</option>;
+                              })}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <input 
+                        type={input.type} 
+                        id={input.id} 
+                        name={input.id} 
+                        value={input.default} 
+                        placeholder={input.placeholder}
+                        class="w-full bg-canvas-soft border border-hairline text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all"
+                        required
+                      />
+                    )}
+                    {input.unit && (
+                      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                        <span class="text-[10px] font-bold font-mono text-mute uppercase">{input.unit}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              <button type="submit" id="calc-submit-btn" class="w-full h-16 rounded-2xl bg-brand-primary hover:opacity-90 text-canvas font-black text-xl transition-all shadow-xl mt-8 flex items-center justify-center gap-4 tracking-tighter uppercase">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                CALCULATE RESULTS
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+
+      <!-- Outputs / Results Display Column -->
+      <div id="results-panel" class="hidden lg:col-span-7 space-y-8 text-left">
+        <div class="bg-canvas border border-hairline rounded-2xl p-8 shadow-xl">
+          <h2 class="text-[11px] font-bold text-mute mb-8 font-mono uppercase tracking-[0.2em] border-b border-hairline pb-3">Computed Results</h2>
+          
+          <!-- Large Prominent Display Card -->
+          <div class="bg-canvas-soft border border-hairline rounded-2xl p-8 text-center shadow-inner mb-8">
+            <span class="text-[10px] font-bold font-mono text-mute uppercase tracking-[0.2em] block mb-2">Primary Metric</span>
+            <div id="result-primary-val" class="text-6xl font-black text-link tracking-tighter">-</div>
+            <div id="result-primary-label" class="text-sm font-semibold text-body mt-2">-</div>
+          </div>
+
+          <!-- Secondary Metrics Grid -->
+          <div class="grid grid-cols-2 gap-4" id="result-secondary-grid">
+            <!-- Filled dynamically -->
+          </div>
+        </div>
+
+        <!-- Progressive Disclosure: Amortization/Breakdown Tables -->
+        <div id="breakdown-container" class="hidden">
+          <button id="breakdown-toggle" class="flex w-full items-center justify-between p-5 bg-canvas border border-hairline rounded-2xl hover:border-hairline-strong transition-all shadow-sm">
+            <span class="text-[11px] font-bold text-body uppercase tracking-widest flex items-center gap-3">
+              <svg class="w-4 h-4 text-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Detailed Breakdown
+            </span>
+            <svg id="breakdown-arrow" class="w-4 h-4 text-mute transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="breakdown-table-wrapper" class="hidden mt-4 bg-canvas border border-hairline rounded-2xl overflow-hidden shadow-inner p-4 overflow-x-auto">
+            <table class="w-full font-mono text-[11px] text-left" id="breakdown-table">
+              <!-- Rendered dynamically -->
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FAQ Section (SEO + UX) -->
+    {calc.faqs.length > 0 && (
+      <section class="mt-24 border-t border-hairline pt-16">
+        <h2 class="display-lg text-ink mb-10">Frequently asked questions.</h2>
+        <div class="space-y-6 max-w-3xl">
+          {calc.faqs.map(faq => (
+            <details class="group bg-canvas border border-hairline rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+              <summary class="text-base font-semibold text-ink cursor-pointer list-none flex items-center justify-between gap-4">
+                {faq.question}
+                <svg class="w-5 h-5 text-mute transition-transform group-open:rotate-180 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </summary>
+              <p class="mt-4 text-body text-sm leading-relaxed">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Related Calculators Section (Internal Linking for SEO) -->
+    {relatedCalcs.length > 0 && (
+      <section class="mt-24 border-t border-hairline pt-16">
+        <h2 class="display-lg text-ink mb-4">Related calculators.</h2>
+        <p class="text-body text-base mb-10">Explore more tools that complement this calculator.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {relatedCalcs.map(rc => (
+            <a href={`/calculator/${rc.slug}`} class="group p-6 bg-canvas border border-hairline hover:border-hairline-strong rounded-xl transition-all hover:shadow-lg">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="inline-block px-2 py-0.5 bg-canvas-soft border border-hairline text-[9px] font-bold text-mute rounded uppercase tracking-wider">{rc.category}</span>
+              </div>
+              <h3 class="text-base font-semibold text-ink group-hover:text-link transition-colors">{rc.name}</h3>
+              <p class="mt-2 text-sm text-body leading-relaxed line-clamp-2">{rc.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+  </div>
+</Layout>
+
+<script>
+  import * as calcMath from '../../utils/calculatorMath';
+
+  function initCalculators() {
+    const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
+    const calcForm = document.getElementById('calc-form') as HTMLFormElement;
+    const resultsPanel = document.getElementById('results-panel');
+    const primaryVal = document.getElementById('result-primary-val');
+    const primaryLabel = document.getElementById('result-primary-label');
+    const secondaryGrid = document.getElementById('result-secondary-grid');
+    
+    // Select dynamic elements
+    const breakdownToggle = document.getElementById('breakdown-toggle');
+    const breakdownWrapper = document.getElementById('breakdown-table-wrapper');
+    const breakdownArrow = document.getElementById('breakdown-arrow');
+    const breakdownContainer = document.getElementById('breakdown-container');
+    const breakdownTable = document.getElementById('breakdown-table');
+
+    // Attach Toggle Events
+    if (breakdownToggle && breakdownWrapper && breakdownArrow) {
+      breakdownToggle.onclick = () => {
+        breakdownWrapper.classList.toggle('hidden');
+        breakdownArrow.classList.toggle('rotate-180');
+      };
+    }
+
+    // Standard Form Logic
+    if (calcForm) {
+      const runForm = () => {
+        const formData = new FormData(calcForm);
+        const data: Record<string, any> = {};
+        formData.forEach((val, key) => {
+          const inputEl = calcForm.querySelector(`[name="${key}"]`) as HTMLInputElement | HTMLSelectElement;
+          if (inputEl) {
+            if (inputEl.type === 'checkbox') {
+              data[key] = (inputEl as HTMLInputElement).checked;
+            } else if (inputEl.type === 'number' || inputEl.type === 'range') {
+              data[key] = parseFloat(val as string);
+            } else if (inputEl.tagName === 'SELECT') {
+              const numVal = parseFloat(val as string);
+              data[key] = isNaN(numVal) ? val : numVal;
+            } else {
+              data[key] = val;
+            }
+          } else {
+            const numVal = parseFloat(val as string);
+            data[key] = isNaN(numVal) ? val : numVal;
+          }
+        });
+        // Handle checkbox (not included in FormData when unchecked)
+        const checkboxes = calcForm.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((cb) => {
+          const checkbox = cb as HTMLInputElement;
+          data[checkbox.name] = checkbox.checked;
+        });
+        evaluateForm(data);
+      };
+      // Synchronization for date inputs and dropdown selects
+      const dateInputs = calcForm.querySelectorAll('.calc-date-input');
+      dateInputs.forEach(di => {
+        const dateInput = di as HTMLInputElement;
+        const id = dateInput.id;
+        const monthSelect = document.getElementById(`${id}-month`) as HTMLSelectElement;
+        const daySelect = document.getElementById(`${id}-day`) as HTMLSelectElement;
+        const yearSelect = document.getElementById(`${id}-year`) as HTMLSelectElement;
+
+        if (monthSelect && daySelect && yearSelect) {
+          const syncSelectsFromInput = () => {
+            const val = dateInput.value;
+            if (val) {
+              const parts = val.split('-');
+              if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10);
+                const day = parseInt(parts[2], 10);
+                monthSelect.value = String(month);
+                daySelect.value = String(day);
+                yearSelect.value = String(year);
+              }
+            }
+          };
+
+          const syncInputFromSelects = () => {
+            const year = yearSelect.value;
+            const month = String(monthSelect.value).padStart(2, '0');
+            const day = String(daySelect.value).padStart(2, '0');
+            dateInput.value = `${year}-${month}-${day}`;
+            dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+          };
+
+          monthSelect.onchange = syncInputFromSelects;
+          daySelect.onchange = syncInputFromSelects;
+          yearSelect.onchange = syncInputFromSelects;
+
+          dateInput.onchange = syncSelectsFromInput;
+          dateInput.addEventListener('input', syncSelectsFromInput);
+
+          // Initial sync
+          syncSelectsFromInput();
+        }
+      });
+
+      calcForm.onsubmit = (e) => { e.preventDefault(); runForm(); };
+      calcForm.oninput = runForm;
+      // Also handle checkbox changes
+      calcForm.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        (cb as HTMLInputElement).onchange = runForm;
+      });
+      runForm();
+    }
+
+    function evaluateForm(data: Record<string, any>) {
+      if (!resultsPanel) return;
+      resultsPanel.classList.remove('hidden');
+      if (breakdownContainer) breakdownContainer.classList.add('hidden');
+      if (secondaryGrid) secondaryGrid.innerHTML = '';
+
+      // ==================== FINANCIAL CALCULATORS ====================
+
+      if (slug === 'mortgage-calculator') {
+        const res = calcMath.calculateMortgage(data.home_value, data.down_payment, data.interest_rate, data.loan_term);
+        setPrimary(`$${res.monthlyPayment.toFixed(2)}`, 'Estimated Monthly Payment');
+        addSecondary('Loan Principal', `$${res.principal.toLocaleString()}`);
+        addSecondary('Total Interest', `$${Math.round(res.totalInterest).toLocaleString()}`);
+        addSecondary('Total Loan Cost', `$${Math.round(res.totalCost).toLocaleString()}`);
+        addSecondary('Payoff Period', `${data.loan_term} years`);
+        showBreakdownTable(
+          ['Year', 'Paid', 'Interest', 'Balance'],
+          res.schedule.map(r => [`Yr ${r.year}`, `$${Math.round(r.accumulatedPrincipal).toLocaleString()}`, `$${Math.round(r.accumulatedInterest).toLocaleString()}`, `$${Math.round(r.balance).toLocaleString()}`])
+        );
+      }
+      else if (slug === 'loan-calculator') {
+        const res = calcMath.calculateLoan(data.loan_amount, data.interest_rate, data.loan_term);
+        setPrimary(`$${res.monthlyPayment.toFixed(2)}`, 'Monthly Payment');
+        addSecondary('Principal', `$${data.loan_amount.toLocaleString()}`);
+        addSecondary('Total Interest', `$${Math.round(res.totalInterest).toLocaleString()}`);
+        addSecondary('Total Cost', `$${Math.round(res.totalCost).toLocaleString()}`);
+        addSecondary('Term', `${data.loan_term} years`);
+      }
+      else if (slug === 'auto-loan-calculator') {
+        const res = calcMath.calculateAutoLoan(data.auto_price, data.down_payment, data.trade_in, data.interest_rate, data.loan_term, data.sales_tax);
+        setPrimary(`$${res.monthlyPayment.toFixed(2)}`, 'Monthly Auto Payment');
+        addSecondary('Financed Amount', `$${res.principal.toLocaleString()}`);
+        addSecondary('Sales Tax', `$${res.taxAmount.toFixed(2)}`);
+        addSecondary('Total Interest', `$${Math.round(res.totalInterest).toLocaleString()}`);
+        addSecondary('Total Cost', `$${Math.round(res.totalCost).toLocaleString()}`);
+      }
+      else if (slug === 'interest-calculator') {
+        const res = calcMath.calculateInterest(data.principal, data.interest_rate, data.time_years, data.compound_type);
+        setPrimary(`$${res.totalBalance.toFixed(2)}`, `Total Balance (${data.compound_type === 'simple' ? 'Simple' : 'Compound'})`);
+        addSecondary('Principal', `$${data.principal.toLocaleString()}`);
+        addSecondary('Interest Earned', `$${res.totalInterest.toFixed(2)}`);
+        addSecondary('Duration', `${data.time_years} years`);
+        addSecondary('Rate', `${data.interest_rate}%`);
+      }
+      else if (slug === 'payment-calculator') {
+        const res = calcMath.calculatePayment(data.item_price, data.down_payment, data.interest_rate, data.term_months);
+        setPrimary(`$${res.monthlyPayment.toFixed(2)}`, 'Monthly Payment');
+        addSecondary('Financed Amount', `$${(data.item_price - data.down_payment).toLocaleString()}`);
+        addSecondary('Total Interest', `$${res.totalInterest.toFixed(2)}`);
+        addSecondary('Total Cost', `$${res.totalCost.toFixed(2)}`);
+        addSecondary('Term', `${data.term_months} months`);
+      }
+      else if (slug === 'retirement-calculator') {
+        const res = calcMath.calculateRetirement(data.current_age, data.retirement_age, data.current_savings, data.monthly_deposit, data.return_rate, data.inflation_rate);
+        setPrimary(`$${Math.round(res.balanceAtRetirement).toLocaleString()}`, 'Projected Balance at Retirement');
+        addSecondary('Total Deposits', `$${Math.round(res.totalDeposits).toLocaleString()}`);
+        addSecondary('Interest Earned', `$${Math.round(res.interestEarned).toLocaleString()}`);
+        addSecondary('Monthly Income (4% rule)', `$${res.monthlyRetirementIncome.toFixed(2)}`);
+        addSecondary('Years to Retire', `${data.retirement_age - data.current_age} years`);
+      }
+      else if (slug === 'amortization-calculator') {
+        const res = calcMath.calculateMortgage(data.loan_amount + 0, 0, data.interest_rate, data.loan_term);
+        setPrimary(`$${res.monthlyPayment.toFixed(2)}`, 'Monthly Payment');
+        addSecondary('Loan Amount', `$${data.loan_amount.toLocaleString()}`);
+        addSecondary('Total Interest', `$${Math.round(res.totalInterest).toLocaleString()}`);
+        addSecondary('Total Cost', `$${Math.round(res.totalCost).toLocaleString()}`);
+        addSecondary('Duration', `${data.loan_term} years (${data.loan_term * 12} payments)`);
+        showBreakdownTable(
+          ['Year', 'Principal Paid', 'Interest Paid', 'Remaining'],
+          res.schedule.map(r => [`Yr ${r.year}`, `$${Math.round(r.accumulatedPrincipal).toLocaleString()}`, `$${Math.round(r.accumulatedInterest).toLocaleString()}`, `$${Math.round(r.balance).toLocaleString()}`])
+        );
+      }
+      else if (slug === 'investment-calculator') {
+        const res = calcMath.calculateInvestment(data.starting_amount, data.monthly_contribution, data.annual_return, data.years);
+        setPrimary(`$${Math.round(res.endBalance).toLocaleString()}`, 'Projected End Balance');
+        addSecondary('Starting Capital', `$${data.starting_amount.toLocaleString()}`);
+        addSecondary('Total Contributions', `$${Math.round(res.totalContributions).toLocaleString()}`);
+        addSecondary('Interest Earned', `$${Math.round(res.totalInterest).toLocaleString()}`);
+        addSecondary('Time Horizon', `${data.years} years`);
+      }
+      else if (slug === 'inflation-calculator') {
+        const res = calcMath.calculateInflation(data.starting_amount, data.inflation_rate, data.years);
+        setPrimary(`$${res.purchasingPower.toFixed(2)}`, `Purchasing Power of $${data.starting_amount} in ${data.years} years`);
+        addSecondary('Original Value', `$${data.starting_amount.toLocaleString()}`);
+        addSecondary('Future Equivalent Cost', `$${res.futureValue.toFixed(2)}`);
+        addSecondary('Inflation Rate', `${data.inflation_rate}%/yr`);
+        addSecondary('Loss of Value', `$${(data.starting_amount - res.purchasingPower).toFixed(2)}`);
+      }
+      else if (slug === 'finance-calculator') {
+        const res = calcMath.calculateFinanceTVM(data.pv, data.fv, data.annual_rate, data.periods);
+        setPrimary(`$${res.calculatedFv.toFixed(2)}`, 'Calculated Future Value');
+        addSecondary('Present Value', `$${data.pv.toLocaleString()}`);
+        addSecondary('Target FV', `$${data.fv.toLocaleString()}`);
+        addSecondary('Growth Multiplier', `${res.growthMultiplier.toFixed(4)}x`);
+        addSecondary('Annual Rate', `${data.annual_rate}%`);
+      }
+      else if (slug === 'income-tax-calculator') {
+        const res = calcMath.calculateIncomeTax(data.gross_income, data.filing_status);
+        setPrimary(`$${res.takeHome.toFixed(2)}`, 'Net Take-Home Salary');
+        addSecondary('Tax Liability', `$${res.taxLiability.toFixed(2)}`);
+        addSecondary('Effective Rate', `${res.effectiveRate.toFixed(1)}%`);
+        addSecondary('Taxable Income', `$${res.taxableIncome.toLocaleString()}`);
+        addSecondary('Filing Status', data.filing_status.charAt(0).toUpperCase() + data.filing_status.slice(1));
+      }
+      else if (slug === 'compound-interest-calculator') {
+        const res = calcMath.calculateCompoundInterest(data.principal, data.interest_rate, data.years, data.compounding);
+        setPrimary(`$${res.endBalance.toFixed(2)}`, 'End Balance');
+        addSecondary('Principal', `$${data.principal.toLocaleString()}`);
+        addSecondary('Interest Earned', `$${res.totalInterest.toFixed(2)}`);
+        const freqLabels: Record<number, string> = { 1: 'Annual', 4: 'Quarterly', 12: 'Monthly', 365: 'Daily' };
+        addSecondary('Compounding', freqLabels[data.compounding] || `${data.compounding}x/yr`);
+        addSecondary('Duration', `${data.years} years`);
+      }
+      else if (slug === 'salary-calculator') {
+        const res = calcMath.calculateSalary(data.salary_amount, data.hours_per_week);
+        setPrimary(`$${res.hourly.toFixed(2)}/hr`, 'Hourly Rate');
+        addSecondary('Monthly', `$${res.monthly.toFixed(2)}`);
+        addSecondary('Bi-Weekly', `$${res.biweekly.toFixed(2)}`);
+        addSecondary('Weekly', `$${res.weekly.toFixed(2)}`);
+        addSecondary('Daily', `$${res.daily.toFixed(2)}`);
+      }
+      else if (slug === 'interest-rate-calculator') {
+        const res = calcMath.calculateInterestRate(data.loan_amount, data.monthly_payment, data.term_months);
+        setPrimary(`${res.annualRate.toFixed(2)}%`, 'Estimated Annual Interest Rate (APR)');
+        addSecondary('Effective Rate (APY)', `${res.effectiveRate.toFixed(2)}%`);
+        addSecondary('Loan Amount', `$${data.loan_amount.toLocaleString()}`);
+        addSecondary('Monthly Payment', `$${data.monthly_payment}`);
+        addSecondary('Term', `${data.term_months} months`);
+      }
+      else if (slug === 'sales-tax-calculator') {
+        const res = calcMath.calculateSalesTax(data.base_price, data.tax_rate);
+        setPrimary(`$${res.total.toFixed(2)}`, 'Total Price (Incl. Tax)');
+        addSecondary('Base Price', `$${data.base_price.toFixed(2)}`);
+        addSecondary('Tax Amount', `$${res.taxAmount.toFixed(2)}`);
+        addSecondary('Tax Rate', `${data.tax_rate}%`);
+      }
+
+      // ==================== HEALTH CALCULATORS ====================
+
+      else if (slug === 'bmi-calculator') {
+        const res = calcMath.calculateBMI(data.weight_kg, data.height_cm);
+        setPrimary(`${res.bmi.toFixed(1)}`, `BMI Category: ${res.category}`);
+        if (primaryVal) primaryVal.className = `text-6xl font-black tracking-tighter ${res.colorClass}`;
+        addSecondary('Weight', `${data.weight_kg} kg`);
+        addSecondary('Height', `${data.height_cm} cm`);
+      }
+      else if (slug === 'calorie-calculator') {
+        const res = calcMath.calculateCalorieTDEE(data.age, data.gender, data.weight_kg, data.height_cm, data.activity_level);
+        setPrimary(`${Math.round(res.tdee)} cal`, 'Total Daily Energy Expenditure');
+        addSecondary('Basal Metabolic Rate', `${Math.round(res.bmr)} cal`);
+        addSecondary('Weight Loss Target', `${Math.round(res.weightLoss)} cal/day`);
+        addSecondary('Weight Gain Target', `${Math.round(res.weightGain)} cal/day`);
+        addSecondary('Activity Factor', `${data.activity_level}x`);
+      }
+      else if (slug === 'body-fat-calculator') {
+        const res = calcMath.calculateBodyFat(data.gender, data.height_cm, data.neck_cm, data.waist_cm, data.hip_cm);
+        setPrimary(`${res.bodyFatPercentage.toFixed(1)}%`, 'Estimated Body Fat Percentage');
+        addSecondary('Method', 'US Navy');
+        addSecondary('Gender', data.gender.charAt(0).toUpperCase() + data.gender.slice(1));
+        addSecondary('Height', `${data.height_cm} cm`);
+        addSecondary('Waist', `${data.waist_cm} cm`);
+      }
+      else if (slug === 'bmr-calculator') {
+        const res = calcMath.calculateBMR(data.age, data.gender, data.weight_kg, data.height_cm);
+        setPrimary(`${Math.round(res.bmr)} cal`, 'Basal Metabolic Rate');
+        addSecondary('Formula', 'Mifflin-St Jeor');
+        addSecondary('Gender', data.gender.charAt(0).toUpperCase() + data.gender.slice(1));
+        addSecondary('Weight', `${data.weight_kg} kg`);
+        addSecondary('Height', `${data.height_cm} cm`);
+      }
+      else if (slug === 'ideal-weight-calculator') {
+        const res = calcMath.calculateIdealWeight(data.gender, data.height_cm);
+        setPrimary(`${res.devineWeight.toFixed(1)} kg`, 'Ideal Weight (Devine Formula)');
+        addSecondary('Robinson Formula', `${res.robinsonWeight.toFixed(1)} kg`);
+        addSecondary('Gender', data.gender.charAt(0).toUpperCase() + data.gender.slice(1));
+        addSecondary('Height', `${data.height_cm} cm`);
+      }
+      else if (slug === 'pace-calculator') {
+        const res = calcMath.calculatePace(data.distance_km, data.time_minutes);
+        setPrimary(res.paceString, 'Average Pace');
+        addSecondary('Speed', `${res.speedKmh.toFixed(2)} km/h`);
+        addSecondary('Distance', `${data.distance_km} km`);
+        addSecondary('Time', `${data.time_minutes} min`);
+      }
+      else if (slug === 'pregnancy-calculator') {
+        const res = calcMath.calculatePregnancy(data.last_period);
+        setPrimary(`${res.gestationWeeks}w ${res.gestationDays}d`, `Trimester ${res.trimester}`);
+        addSecondary('Weeks Pregnant', `${res.gestationWeeks} weeks`);
+        addSecondary('Remaining Days', `${res.gestationDays} days`);
+        addSecondary('Due Date', res.dueDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+        addSecondary('Trimester', `${res.trimester} of 3`);
+      }
+      else if (slug === 'pregnancy-conception-calculator') {
+        const res = calcMath.calculateConception(data.due_date);
+        const fmtOpts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        setPrimary(res.conceptionStart.toLocaleDateString('en-US', fmtOpts), 'Estimated Conception Window Start');
+        addSecondary('Window End', res.conceptionEnd.toLocaleDateString('en-US', fmtOpts));
+        addSecondary('Due Date', new Date(data.due_date).toLocaleDateString('en-US', fmtOpts));
+      }
+      else if (slug === 'due-date-calculator') {
+        const res = calcMath.calculateDueDate(data.last_period, data.cycle_length);
+        const fmtOpts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        setPrimary(res.dueDate.toLocaleDateString('en-US', fmtOpts), 'Estimated Due Date');
+        addSecondary('Last Period', new Date(data.last_period).toLocaleDateString('en-US', fmtOpts));
+        addSecondary('Cycle Length', `${data.cycle_length} days`);
+      }
+
+      // ==================== MATH CALCULATORS ====================
+
+      else if (slug === 'percentage-calculator') {
+        const res = calcMath.calculatePercentage(data.value_x, data.value_y, data.calc_type);
+        const labels: Record<string, string> = {
+          'percent_of': `${data.value_x}% of ${data.value_y}`,
+          'what_percent': `${data.value_x} is what % of ${data.value_y}`,
+          'percent_change': `Change from ${data.value_x} to ${data.value_y}`
+        };
+        const unit = data.calc_type === 'percent_of' ? '' : '%';
+        setPrimary(`${res.result.toFixed(4)}${unit}`, labels[data.calc_type] || 'Result');
+        addSecondary('Value X', `${data.value_x}`);
+        addSecondary('Value Y', `${data.value_y}`);
+      }
+      else if (slug === 'random-number-generator') {
+        const res = calcMath.calculateRandomNumbers(data.min_val, data.max_val, data.count, data.allow_duplicates);
+        setPrimary(res.results.join(', '), `${res.results.length} Random Numbers`);
+        addSecondary('Range', `${data.min_val} – ${data.max_val}`);
+        addSecondary('Duplicates', data.allow_duplicates ? 'Allowed' : 'Excluded');
+      }
+      else if (slug === 'standard-deviation-calculator') {
+        const res = calcMath.calculateStandardDeviation(String(data.number_list || ''));
+        setPrimary(res.sdSample.toFixed(4), 'Sample Standard Deviation');
+        addSecondary('Mean', res.mean.toFixed(4));
+        addSecondary('Variance (Pop)', res.variance.toFixed(4));
+        addSecondary('Pop. Std Dev', res.sdPopulation.toFixed(4));
+        addSecondary('Data Points', `${res.count || 0}`);
+      }
+
+      // ==================== OTHER CALCULATORS ====================
+
+      else if (slug === 'age-calculator') {
+        const res = calcMath.calculateAge(data.dob, data.target_date);
+        setPrimary(`${res.years} years`, 'Exact Age');
+        addSecondary('Months', `${res.months} months`);
+        addSecondary('Days', `${res.days} days`);
+        addSecondary('Total Days', `${res.totalDays.toLocaleString()} days`);
+      }
+      else if (slug === 'date-calculator') {
+        const res = calcMath.calculateDateOffset(data.start_date, data.days_offset, data.operation);
+        const fmtOpts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        setPrimary(res.date.toLocaleDateString('en-US', fmtOpts), `${data.operation === 'add' ? 'Added' : 'Subtracted'} ${data.days_offset} days`);
+        addSecondary('Start Date', new Date(data.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+        addSecondary('Offset', `${data.operation === 'add' ? '+' : '-'}${data.days_offset} days`);
+      }
+      else if (slug === 'time-calculator') {
+        const res = calcMath.calculateTimeAdd(data.hours_1, data.mins_1, data.hours_2, data.mins_2, data.operation);
+        setPrimary(`${res.hours}h ${res.minutes}m`, `Time ${data.operation === 'add' ? 'Sum' : 'Difference'}`);
+        addSecondary('Duration 1', `${data.hours_1}h ${data.mins_1}m`);
+        addSecondary('Duration 2', `${data.hours_2}h ${data.mins_2}m`);
+        addSecondary('Operation', data.operation === 'add' ? 'Addition' : 'Subtraction');
+        addSecondary('Total Minutes', `${res.hours * 60 + res.minutes}`);
+      }
+      else if (slug === 'hours-calculator') {
+        const workdays = [
+          Math.max(0, data.mon_out - data.mon_in),
+          Math.max(0, data.tue_out - data.tue_in),
+          Math.max(0, data.wed_out - data.wed_in),
+          Math.max(0, data.thu_out - data.thu_in),
+          Math.max(0, data.fri_out - data.fri_in)
+        ];
+        const res = calcMath.calculateHoursWorked(workdays);
+        setPrimary(`${res.totalHours.toFixed(1)} hrs`, 'Total Weekly Hours');
+        addSecondary('Monday', `${workdays[0].toFixed(1)} hrs`);
+        addSecondary('Tuesday', `${workdays[1].toFixed(1)} hrs`);
+        addSecondary('Wednesday', `${workdays[2].toFixed(1)} hrs`);
+        addSecondary('Thursday', `${workdays[3].toFixed(1)} hrs`);
+        addSecondary('Friday', `${workdays[4].toFixed(1)} hrs`);
+      }
+      else if (slug === 'gpa-calculator') {
+        const courses = [
+          { credit: data.c1_credit, grade: data.c1_grade },
+          { credit: data.c2_credit, grade: data.c2_grade },
+          { credit: data.c3_credit, grade: data.c3_grade }
+        ];
+        const res = calcMath.calculateGPA(courses);
+        setPrimary(res.gpa.toFixed(2), 'Semester GPA');
+        const gradeMap: Record<number, string> = { 4: 'A', 3: 'B', 2: 'C', 1: 'D', 0: 'F' };
+        addSecondary('Course 1', `${gradeMap[data.c1_grade] || data.c1_grade} (${data.c1_credit} cr)`);
+        addSecondary('Course 2', `${gradeMap[data.c2_grade] || data.c2_grade} (${data.c2_credit} cr)`);
+        addSecondary('Course 3', `${gradeMap[data.c3_grade] || data.c3_grade} (${data.c3_credit} cr)`);
+        addSecondary('Total Credits', `${data.c1_credit + data.c2_credit + data.c3_credit}`);
+      }
+      else if (slug === 'grade-calculator') {
+        const res = calcMath.calculateGrade(data.current_grade, data.target_grade, data.exam_weight);
+        const achievable = res.required <= 100;
+        setPrimary(`${res.required.toFixed(1)}%`, achievable ? 'Required Final Exam Score' : 'Score Required (May Not Be Achievable)');
+        if (primaryVal && !achievable) primaryVal.classList.add('text-amber-600');
+        addSecondary('Current Grade', `${data.current_grade}%`);
+        addSecondary('Target Grade', `${data.target_grade}%`);
+        addSecondary('Exam Weight', `${data.exam_weight}%`);
+        addSecondary('Status', achievable ? '✓ Achievable' : '⚠ Needs >100%');
+      }
+      else if (slug === 'concrete-calculator') {
+        const res = calcMath.calculateConcrete(data.length_ft, data.width_ft, data.depth_in);
+        setPrimary(`${res.cubicYards.toFixed(2)} yd³`, 'Total Volume Required');
+        addSecondary('Cubic Feet', `${res.cubicFeet.toFixed(1)} ft³`);
+        addSecondary('80lb Bags', `${res.bags80lb} bags`);
+        addSecondary('Dimensions', `${data.length_ft}×${data.width_ft} ft`);
+        addSecondary('Thickness', `${data.depth_in} inches`);
+      }
+      else if (slug === 'conversion-calculator') {
+        const res = calcMath.calculateConversion(data.input_value, data.conv_type);
+        setPrimary(`${res.result.toFixed(4)} ${res.unit}`, 'Converted Value');
+        addSecondary('Input Value', `${data.input_value}`);
+        addSecondary('Conversion', data.conv_type.replace(/_/g, ' → ').toUpperCase());
+      }
+    }
+
+    // ==================== CUSTOM UI CALCULATORS ====================
+
+    // --- Password Generator ---
+    if (slug === 'password-generator') {
+      const lenSlider = document.getElementById('pass-length') as HTMLInputElement;
+      const lenVal = document.getElementById('pass-len-val');
+      const genBtn = document.getElementById('pass-generate');
+      const display = document.getElementById('pass-display');
+      const copyBtn = document.getElementById('pass-copy');
+      const strengthEl = document.getElementById('pass-strength');
+      const entropyEl = document.getElementById('pass-entropy');
+
+      if (lenSlider && lenVal) {
+        lenSlider.oninput = () => { lenVal.textContent = `${lenSlider.value} chars`; };
+      }
+
+      if (genBtn && display) {
+        genBtn.onclick = () => {
+          let chars = '';
+          if ((document.getElementById('pass-upper') as HTMLInputElement)?.checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          if ((document.getElementById('pass-lower') as HTMLInputElement)?.checked) chars += 'abcdefghijklmnopqrstuvwxyz';
+          if ((document.getElementById('pass-numbers') as HTMLInputElement)?.checked) chars += '0123456789';
+          if ((document.getElementById('pass-symbols') as HTMLInputElement)?.checked) chars += '!@#$%^&*()-_=+[]{}|;:,.<>?';
+          
+          if (chars.length === 0) {
+            display.textContent = 'Select at least one option';
+            return;
+          }
+
+          const length = parseInt(lenSlider?.value || '16');
+          const array = new Uint32Array(length);
+          crypto.getRandomValues(array);
+          let password = '';
+          for (let i = 0; i < length; i++) {
+            password += chars[array[i] % chars.length];
+          }
+          display.textContent = password;
+
+          // Entropy calculation
+          const poolSize = chars.length;
+          const entropy = Math.log2(poolSize) * length;
+          if (entropyEl) entropyEl.textContent = `${entropy.toFixed(1)} bits`;
+
+          // Strength assessment
+          if (strengthEl) {
+            if (entropy >= 80) { strengthEl.textContent = 'Very Strong'; strengthEl.className = 'text-base font-bold text-emerald-600'; }
+            else if (entropy >= 60) { strengthEl.textContent = 'Strong'; strengthEl.className = 'text-base font-bold text-link'; }
+            else if (entropy >= 40) { strengthEl.textContent = 'Moderate'; strengthEl.className = 'text-base font-bold text-amber-600'; }
+            else { strengthEl.textContent = 'Weak'; strengthEl.className = 'text-base font-bold text-rose-600'; }
+          }
+
+          resultsPanel?.classList.remove('hidden');
+          setPrimary('Generated', 'Secure Password Ready');
+        };
+      }
+
+      if (copyBtn && display) {
+        copyBtn.onclick = async () => {
+          const text = display.textContent || '';
+          if (text && text !== 'Generate a password' && text !== 'Select at least one option') {
+            await navigator.clipboard.writeText(text);
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<svg class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+            setTimeout(() => { copyBtn.innerHTML = originalHTML; }, 1500);
+          }
+        };
+      }
+    }
+
+    // --- Scientific Calculator Standalone ---
+    if (slug === 'scientific-calculator') {
+      let expr = '';
+      let isRadians = false;
+      const resDisp = document.getElementById('sci-display-result');
+      const exprDisp = document.getElementById('sci-display-expr');
+      const degRadEl = document.getElementById('sci-deg-rad');
+      const toggleRadBtn = document.getElementById('sci-toggle-rad');
+
+      if (toggleRadBtn && degRadEl) {
+        toggleRadBtn.onclick = () => {
+          isRadians = !isRadians;
+          degRadEl.textContent = isRadians ? 'RAD' : 'DEG';
+          toggleRadBtn.textContent = isRadians ? 'Toggle DEG' : 'Toggle RAD';
+        };
+      }
+
+      document.querySelectorAll('.sci-btn').forEach(b => {
+        (b as HTMLButtonElement).onclick = () => {
+          const v = b.getAttribute('data-sci');
+          if (!v) return;
+
+          if (v === '=') {
+            try {
+              let prep = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/π/g, 'Math.PI');
+              // Replace standalone 'e' but not inside function names
+              prep = prep.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+              // Handle factorial
+              prep = prep.replace(/(\d+(?:\.\d+)?)\!/g, (_, n) => {
+                let r = 1; for (let i = 2; i <= parseFloat(n); i++) r *= i; return r.toString();
+              });
+              const d2r = Math.PI / 180;
+              if (!isRadians) {
+                prep = prep.replace(/sin\(/g, `Math.sin(${d2r}*`)
+                           .replace(/cos\(/g, `Math.cos(${d2r}*`)
+                           .replace(/tan\(/g, `Math.tan(${d2r}*`)
+                           .replace(/asin\(/g, `(1/${d2r})*Math.asin(`)
+                           .replace(/acos\(/g, `(1/${d2r})*Math.acos(`)
+                           .replace(/atan\(/g, `(1/${d2r})*Math.atan(`);
+              } else {
+                prep = prep.replace(/sin\(/g, 'Math.sin(')
+                           .replace(/cos\(/g, 'Math.cos(')
+                           .replace(/tan\(/g, 'Math.tan(')
+                           .replace(/asin\(/g, 'Math.asin(')
+                           .replace(/acos\(/g, 'Math.acos(')
+                           .replace(/atan\(/g, 'Math.atan(');
+              }
+              prep = prep.replace(/ln\(/g, 'Math.log(')
+                         .replace(/log\(/g, 'Math.log10(')
+                         .replace(/sqrt\(/g, 'Math.sqrt(')
+                         .replace(/\^/g, '**');
+
+              const result = new Function(`return ${prep}`)();
+              if (resDisp) resDisp.textContent = typeof result === 'number' && !isNaN(result) ? Number(result.toFixed(10)).toString() : 'Error';
+              expr = typeof result === 'number' ? result.toString() : '';
+            } catch (e) {
+              if (resDisp) resDisp.textContent = 'Error';
+            }
+          }
+          else if (v === 'clear') {
+            expr = '';
+            if (resDisp) resDisp.textContent = '0';
+            if (exprDisp) exprDisp.textContent = '\u00A0';
+          }
+          else if (v === 'back') {
+            const funcMatch = ['asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt('].find(f => expr.endsWith(f));
+            expr = funcMatch ? expr.substring(0, expr.length - funcMatch.length) : expr.substring(0, expr.length - 1);
+            if (exprDisp) exprDisp.textContent = expr || '\u00A0';
+            if (!expr && resDisp) resDisp.textContent = '0';
+          }
+          else if (v === 'pct') {
+            expr += '%';
+            if (exprDisp) exprDisp.textContent = expr;
+          }
+          else {
+            let insert = v;
+            if (['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'log', 'ln', 'sqrt'].includes(v)) insert = v + '(';
+            else if (v === 'fact') insert = '!';
+            else if (v === 'pi') insert = 'π';
+            else if (v === 'pow') insert = '^';
+            else if (v === 'open') insert = '(';
+            else if (v === 'close') insert = ')';
+            else if (v === 'e') insert = 'e';
+
+            expr += insert;
+            if (exprDisp) exprDisp.textContent = expr;
+          }
+        };
+      });
+    }
+
+    // --- Fraction Calculator ---
+    if (slug === 'fraction-calculator') {
+      const calcBtn = document.getElementById('frac-calculate');
+      if (calcBtn) {
+        calcBtn.onclick = () => {
+          const n1 = parseInt((document.getElementById('frac-num1') as HTMLInputElement)?.value) || 0;
+          const d1 = parseInt((document.getElementById('frac-den1') as HTMLInputElement)?.value) || 1;
+          const n2 = parseInt((document.getElementById('frac-num2') as HTMLInputElement)?.value) || 0;
+          const d2 = parseInt((document.getElementById('frac-den2') as HTMLInputElement)?.value) || 1;
+          const op = (document.getElementById('frac-operator') as HTMLSelectElement)?.value || '+';
+
+          let rn = 0, rd = 1;
+          if (op === '+') { rn = n1 * d2 + n2 * d1; rd = d1 * d2; }
+          else if (op === '-') { rn = n1 * d2 - n2 * d1; rd = d1 * d2; }
+          else if (op === '*') { rn = n1 * n2; rd = d1 * d2; }
+          else if (op === '/') { rn = n1 * d2; rd = d1 * n2; }
+
+          // GCD for reduction
+          function gcd(a: number, b: number): number { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; }
+          const g = gcd(rn, rd);
+          const frn = rn / g;
+          const frd = rd / g;
+
+          // Handle negative denominator
+          const finalNum = frd < 0 ? -frn : frn;
+          const finalDen = Math.abs(frd);
+
+          const resultEl = document.getElementById('frac-result');
+          const decimalEl = document.getElementById('frac-decimal');
+          if (resultEl) resultEl.textContent = finalDen === 1 ? `${finalNum}` : `${finalNum}/${finalDen}`;
+          if (decimalEl) decimalEl.textContent = (finalNum / finalDen).toFixed(6);
+
+          // Show steps
+          const stepsContainer = document.getElementById('frac-steps-container');
+          const step1 = document.getElementById('frac-step1');
+          const step2 = document.getElementById('frac-step2');
+          const step3 = document.getElementById('frac-step3');
+          if (stepsContainer) stepsContainer.classList.remove('hidden');
+          if (step1) step1.textContent = `Step 1: ${n1}/${d1} ${op} ${n2}/${d2}`;
+          if (step2) step2.textContent = `Step 2: = ${rn}/${rd}`;
+          if (step3) step3.textContent = `Step 3: Reduced by GCD(${g}) = ${finalNum}/${finalDen}`;
+        };
+      }
+    }
+
+    // --- Triangle Calculator ---
+    if (slug === 'triangle-calculator') {
+      const triCalcBtn = document.getElementById('tri-calculate');
+      if (triCalcBtn) {
+        triCalcBtn.onclick = () => {
+          const a = parseFloat((document.getElementById('tri-side-a') as HTMLInputElement)?.value) || 0;
+          const b = parseFloat((document.getElementById('tri-side-b') as HTMLInputElement)?.value) || 0;
+          const c = parseFloat((document.getElementById('tri-side-c') as HTMLInputElement)?.value) || 0;
+
+          // Check triangle inequality
+          if (a + b <= c || a + c <= b || b + c <= a || a <= 0 || b <= 0 || c <= 0) {
+            const anglesEl = document.getElementById('tri-angles');
+            if (anglesEl) anglesEl.textContent = 'Invalid triangle';
+            return;
+          }
+
+          // Law of cosines for angles
+          const angleA = Math.acos((b * b + c * c - a * a) / (2 * b * c)) * (180 / Math.PI);
+          const angleB = Math.acos((a * a + c * c - b * b) / (2 * a * c)) * (180 / Math.PI);
+          const angleC = 180 - angleA - angleB;
+
+          // Heron's formula for area
+          const s = (a + b + c) / 2;
+          const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+          const perimeter = a + b + c;
+
+          // Determine triangle type
+          let triType = 'Scalene';
+          if (a === b && b === c) triType = 'Equilateral';
+          else if (a === b || b === c || a === c) triType = 'Isosceles';
+
+          const anglesEl = document.getElementById('tri-angles');
+          const areaEl = document.getElementById('tri-area');
+          const perimeterEl = document.getElementById('tri-perimeter');
+          const labelEl = document.getElementById('tri-label');
+
+          if (anglesEl) anglesEl.textContent = `${angleA.toFixed(1)}° / ${angleB.toFixed(1)}° / ${angleC.toFixed(1)}°`;
+          if (areaEl) areaEl.textContent = `${area.toFixed(4)} sq units`;
+          if (perimeterEl) perimeterEl.textContent = `${perimeter.toFixed(2)} units`;
+          if (labelEl) labelEl.textContent = triType;
+
+          // Update SVG triangle visualization
+          const polygon = document.getElementById('tri-polygon');
+          if (polygon) {
+            // Simple visualization based on angles
+            const cx = 50, baseY = 90;
+            const scale = 35;
+            const radA = angleA * Math.PI / 180;
+            const x1 = cx - scale, y1 = baseY;
+            const x2 = cx + scale, y2 = baseY;
+            const tipX = x1 + 2 * scale * Math.cos(radA);
+            const tipY = baseY - 2 * scale * Math.sin(radA);
+            polygon.setAttribute('points', `${x1},${y1} ${x2},${y2} ${tipX.toFixed(1)},${tipY.toFixed(1)}`);
+          }
+        };
+      }
+    }
+
+    // --- Subnet Calculator ---
+    if (slug === 'subnet-calculator') {
+      const subCalcBtn = document.getElementById('sub-calculate');
+      if (subCalcBtn) {
+        subCalcBtn.onclick = () => {
+          const ipStr = (document.getElementById('sub-ip') as HTMLInputElement)?.value || '192.168.1.1';
+          const cidr = parseInt((document.getElementById('sub-cidr') as HTMLSelectElement)?.value) || 24;
+
+          const octets = ipStr.split('.').map(Number);
+          if (octets.length !== 4 || octets.some(o => isNaN(o) || o < 0 || o > 255)) {
+            const maskEl = document.getElementById('sub-mask');
+            if (maskEl) maskEl.textContent = 'Invalid IP';
+            return;
+          }
+
+          // Compute subnet mask
+          const maskBits = cidr;
+          const mask = maskBits === 0 ? 0 : (~0 << (32 - maskBits)) >>> 0;
+          const maskOctets = [(mask >>> 24) & 255, (mask >>> 16) & 255, (mask >>> 8) & 255, mask & 255];
+
+          // IP as 32-bit integer
+          const ipInt = ((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0;
+
+          // Network and Broadcast
+          const netInt = (ipInt & mask) >>> 0;
+          const broadInt = (netInt | (~mask >>> 0)) >>> 0;
+          const toIP = (n: number) => `${(n >>> 24) & 255}.${(n >>> 16) & 255}.${(n >>> 8) & 255}.${n & 255}`;
+
+          const hosts = Math.max(0, Math.pow(2, 32 - cidr) - 2);
+
+          const maskEl = document.getElementById('sub-mask');
+          const netEl = document.getElementById('sub-net');
+          const broadEl = document.getElementById('sub-broadcast');
+          const hostsEl = document.getElementById('sub-hosts');
+
+          if (maskEl) maskEl.textContent = maskOctets.join('.');
+          if (netEl) netEl.textContent = toIP(netInt);
+          if (broadEl) broadEl.textContent = toIP(broadInt);
+          if (hostsEl) hostsEl.textContent = hosts.toLocaleString() + ' hosts';
+        };
+      }
+    }
+
+    // --- Screen Size Calculator ---
+    if (slug === 'screen-size-calculator') {
+      // Tab switching
+      const tabs = document.querySelectorAll('.calib-tab');
+      const methods = document.querySelectorAll('.calib-method');
+      tabs.forEach(tab => {
+        (tab as HTMLButtonElement).onclick = () => {
+          tabs.forEach(t => {
+            (t as HTMLElement).className = 'calib-tab px-4 py-2 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider';
+          });
+          (tab as HTMLElement).className = 'calib-tab px-4 py-2 rounded-md text-[11px] font-bold bg-canvas text-ink shadow-sm border border-hairline uppercase tracking-wider';
+          const target = tab.getAttribute('data-target');
+          methods.forEach(m => {
+            (m as HTMLElement).classList.add('hidden');
+          });
+          const targetEl = document.getElementById(`method-${target}`);
+          if (targetEl) targetEl.classList.remove('hidden');
+        };
+      });
+
+      // Auto-Detect
+      const autoBtn = document.getElementById('run-auto-detect');
+      if (autoBtn) {
+        autoBtn.onclick = () => {
+          const w = screen.width, h = screen.height;
+          const dpr = window.devicePixelRatio || 1;
+          const colorDepth = screen.colorDepth;
+          const physW = w * dpr, physH = h * dpr;
+
+          document.getElementById('auto-res')!.textContent = `${physW} × ${physH} px`;
+          document.getElementById('auto-dpr')!.textContent = `${dpr}x`;
+          document.getElementById('auto-color')!.textContent = `${colorDepth}-bit`;
+
+          // Estimate diagonal (assuming 96 DPI as baseline)
+          const diagPx = Math.sqrt(physW * physW + physH * physH);
+          const estDiag = diagPx / (96 * dpr);
+          document.getElementById('auto-est-size')!.textContent = `~${estDiag.toFixed(1)}" diagonal`;
+        };
+      }
+
+      // Diagonal method
+      const diagBtn = document.getElementById('run-diag-calc');
+      if (diagBtn) {
+        diagBtn.onclick = () => {
+          const diag = parseFloat((document.getElementById('diag-size') as HTMLInputElement).value) || 15.6;
+          const resX = parseFloat((document.getElementById('diag-res-x') as HTMLInputElement).value) || 1920;
+          const resY = parseFloat((document.getElementById('diag-res-y') as HTMLInputElement).value) || 1080;
+
+          const diagPx = Math.sqrt(resX * resX + resY * resY);
+          const ppi = diagPx / diag;
+          const widthIn = resX / ppi;
+          const heightIn = resY / ppi;
+
+          document.getElementById('diag-width')!.textContent = `${widthIn.toFixed(2)}" (${(widthIn * 2.54).toFixed(1)} cm)`;
+          document.getElementById('diag-height')!.textContent = `${heightIn.toFixed(2)}" (${(heightIn * 2.54).toFixed(1)} cm)`;
+          document.getElementById('diag-ppi')!.textContent = `${ppi.toFixed(1)} PPI`;
+        };
+      }
+
+      // Credit Card Calibration
+      const cardSlider = document.getElementById('card-slider') as HTMLInputElement;
+      const visualCard = document.getElementById('visual-card') as HTMLElement;
+      const sliderLabel = document.getElementById('slider-pixel-width');
+      const cardCalcBtn = document.getElementById('run-card-calc');
+
+      if (cardSlider && visualCard) {
+        cardSlider.oninput = () => {
+          const w = parseInt(cardSlider.value);
+          visualCard.style.width = `${w}px`;
+          visualCard.style.height = `${w * 0.6304}px`;
+          if (sliderLabel) sliderLabel.textContent = `${w} px`;
+        };
+      }
+
+      if (cardCalcBtn) {
+        cardCalcBtn.onclick = () => {
+          const cardWidthPx = parseInt(cardSlider?.value || '337');
+          const cardRealWidth = 3.375; // standard credit card width in inches
+          const ppi = cardWidthPx / cardRealWidth;
+          const screenDiagPx = Math.sqrt(screen.width * screen.width + screen.height * screen.height);
+          const dpr = window.devicePixelRatio || 1;
+          const diag = (screenDiagPx * dpr) / ppi;
+
+          document.getElementById('card-ppi')!.textContent = `${ppi.toFixed(1)} PPI`;
+          document.getElementById('card-est-diag')!.textContent = `~${diag.toFixed(1)}"`;
+        };
+      }
+    }
+
+    // ==================== HELPERS ====================
+
+    function setPrimary(v: string, l: string) {
+      if (primaryVal) { 
+        primaryVal.textContent = v; 
+        primaryVal.className = 'text-6xl font-black text-link tracking-tighter transition-all';
+        primaryVal.style.cursor = 'pointer';
+        primaryVal.setAttribute('title', 'Click to copy result');
+        primaryVal.onclick = () => {
+          if (v && v !== '-') {
+            navigator.clipboard.writeText(v).then(() => {
+              primaryVal.className = 'text-6xl font-black text-emerald-500 tracking-tighter transition-all';
+              setTimeout(() => {
+                primaryVal.className = 'text-6xl font-black text-link tracking-tighter transition-all';
+              }, 800);
+            });
+          }
+        };
+      }
+      if (primaryLabel) primaryLabel.textContent = l;
+
+      // History logger
+      if (v && v !== '-' && calcForm) {
+        try {
+          const raw = localStorage.getItem('zcalculate_history') || '[]';
+          const history = JSON.parse(raw);
+          const currentUrl = window.location.pathname.split('/').filter(Boolean).pop() || 'calculator';
+          const calcName = document.querySelector('h1')?.textContent || currentUrl;
+          
+          const inputsList = Array.from(calcForm.elements)
+            .filter((el: any) => el.name && el.value !== undefined && el.type !== 'submit')
+            .map((el: any) => `${el.name}: ${el.value}`)
+            .join(', ');
+          
+          const lastEntry = history[0];
+          if (!lastEntry || lastEntry.result !== v || lastEntry.query !== inputsList) {
+            history.unshift({
+              timestamp: Date.now(),
+              calculator: calcName,
+              query: inputsList || 'Calculated',
+              result: v
+            });
+            localStorage.setItem('zcalculate_history', JSON.stringify(history.slice(0, 100)));
+          }
+        } catch(e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function addSecondary(l: string, v: string) {
+      if (secondaryGrid) secondaryGrid.innerHTML += `<div class="bg-canvas-soft border border-hairline p-5 rounded-2xl"><span class="text-[10px] text-mute font-bold uppercase tracking-widest">${l}</span><div class="text-xl font-black text-ink mt-1">${v}</div></div>`;
+    }
+
+    function showBreakdownTable(headers: string[], rows: string[][]) {
+      if (breakdownContainer && breakdownTable) {
+        breakdownContainer.classList.remove('hidden');
+        let h = `<thead><tr class="text-mute border-b border-hairline pb-3">${headers.map(th => `<th class="pb-3 pr-4">${th}</th>`).join('')}</tr></thead><tbody>`;
+        rows.forEach(row => {
+          h += `<tr class="border-b border-hairline/10 hover:bg-canvas-soft">${row.map((cell, i) => `<td class="py-3 pr-4 ${i === row.length - 1 ? 'text-right font-black text-link' : i === 0 ? 'text-mute' : 'text-ink font-bold'}">${cell}</td>`).join('')}</tr>`;
+        });
+        breakdownTable.innerHTML = h + '</tbody>';
+      }
+    }
+  }
+
+  // Initialization
+  initCalculators();
+  document.addEventListener('astro:after-swap', initCalculators);
+  window.onload = initCalculators;
+</script>

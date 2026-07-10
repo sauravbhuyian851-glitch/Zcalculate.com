@@ -1,0 +1,347 @@
+---
+interface Props {
+  type: string;
+}
+
+const { type } = Astro.props;
+---
+
+<!-- ==================== SCIENTIFIC CALCULATOR STANDALONE ==================== -->
+{type === 'scientific-calculator' && (
+  <div class="space-y-6">
+    <p class="text-[11px] font-bold text-mute uppercase tracking-widest border-b border-hairline pb-3">Advanced Scientific Mode</p>
+    <!-- Output Display -->
+    <div class="bg-canvas-soft border border-hairline rounded-2xl p-6 flex flex-col items-end justify-between min-h-[100px] shadow-inner font-sans">
+      <div id="sci-display-expr" class="w-full text-right text-mute text-sm font-medium overflow-x-auto whitespace-nowrap min-h-[18px]">&nbsp;</div>
+      <div id="sci-display-result" class="w-full text-right text-ink text-3xl font-bold tracking-tighter overflow-x-auto whitespace-nowrap">0</div>
+    </div>
+    <!-- DEG/RAD indicator -->
+    <div class="flex items-center gap-3">
+      <span id="sci-deg-rad" class="font-mono text-[10px] font-bold text-mute uppercase tracking-widest bg-canvas border border-hairline px-2.5 py-1 rounded">DEG</span>
+      <button id="sci-toggle-rad" class="text-[10px] font-bold text-mute hover:text-ink px-3 py-1.5 rounded-lg border border-hairline bg-canvas hover:bg-canvas-soft transition-all uppercase tracking-wider shadow-sm">Toggle RAD</button>
+    </div>
+    <!-- Scientific Row 1 -->
+    <div class="grid grid-cols-5 gap-2">
+      {['sin', 'cos', 'tan', 'log', 'ln', 'asin', 'acos', 'atan', 'sqrt', 'fact', 'pi', 'e', 'pow', 'open', 'close'].map(btn => (
+        <button class="sci-btn text-xs font-black bg-canvas border border-hairline text-body hover:bg-brand-primary hover:text-canvas rounded-lg py-3.5 transition-all shadow-sm uppercase" data-sci={btn}>
+          {btn === 'fact' ? 'x!' : btn === 'pi' ? 'π' : btn === 'pow' ? 'xʸ' : btn === 'open' ? '(' : btn === 'close' ? ')' : btn}
+        </button>
+      ))}
+    </div>
+    <!-- Standard Numpad -->
+    <div class="grid grid-cols-4 gap-2">
+      <button class="sci-btn text-sm font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-lg py-4 transition-all" data-sci="clear">C</button>
+      <button class="sci-btn text-sm font-black bg-canvas-soft border border-hairline text-mute hover:bg-canvas-soft-2 rounded-lg py-4 transition-all" data-sci="back">⌫</button>
+      <button class="sci-btn text-sm font-black bg-canvas-soft border border-hairline text-mute hover:bg-canvas-soft-2 rounded-lg py-4 transition-all" data-sci="pct">%</button>
+      <button class="sci-btn text-sm font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-lg py-4 transition-all" data-sci="÷">÷</button>
+      
+      {['7', '8', '9', '×', '4', '5', '6', '-', '1', '2', '3', '+'].map(val => (
+        <button class={`sci-btn text-lg font-black ${['×', '-', '+'].includes(val) ? 'bg-canvas-soft border-hairline text-link' : 'bg-canvas border-hairline text-ink'} border rounded-lg py-4 transition-all shadow-sm hover:bg-canvas-soft-2`} data-sci={val}>{val}</button>
+      ))}
+      
+      <button class="sci-btn text-lg font-black bg-canvas border border-hairline text-ink rounded-lg py-4 transition-all shadow-sm hover:bg-canvas-soft-2" data-sci="0">0</button>
+      <button class="sci-btn text-lg font-black bg-canvas border border-hairline text-ink rounded-lg py-4 transition-all shadow-sm hover:bg-canvas-soft-2" data-sci=".">.</button>
+      <button class="sci-btn col-span-2 text-sm font-black bg-brand-primary hover:opacity-90 text-canvas rounded-lg py-4 shadow-lg transition-all" data-sci="=">=</button>
+    </div>
+  </div>
+)}
+
+<!-- ==================== SCREEN SIZE CALIBRATOR ==================== -->
+{type === 'screen-size-calculator' && (
+  <div class="space-y-8">
+    <div class="border-b border-hairline pb-6">
+      <div class="flex flex-wrap gap-2" id="calibration-tabs">
+        <button class="calib-tab px-4 py-2 rounded-md text-[11px] font-bold bg-canvas text-ink shadow-sm border border-hairline uppercase tracking-wider" data-target="auto-detect">Auto-Detect</button>
+        <button class="calib-tab px-4 py-2 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider" data-target="diagonal">Diagonal</button>
+        <button class="calib-tab px-4 py-2 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider" data-target="credit-card">Card Calib</button>
+      </div>
+    </div>
+
+    <!-- Method 1: Auto-Detect -->
+    <div id="method-auto-detect" class="calib-method space-y-6">
+      <h3 class="text-xl font-bold text-ink tracking-tight">Auto-Detect Device Specs.</h3>
+      <p class="text-sm text-body leading-relaxed">Reads system metadata to estimate physical dimensions. Precision depends on display drivers.</p>
+      
+      <div class="grid grid-cols-1 gap-3 bg-canvas-soft p-6 rounded-2xl border border-hairline font-sans shadow-inner">
+        <div class="flex justify-between items-center py-2 border-b border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Resolution</span>
+          <span id="auto-res" class="text-sm font-bold text-ink">-</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Pixel Ratio</span>
+          <span id="auto-dpr" class="text-sm font-bold text-ink">-</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Color Depth</span>
+          <span id="auto-color" class="text-sm font-bold text-ink">-</span>
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Estimated Size</span>
+          <span id="auto-est-size" class="text-sm font-bold text-link">-</span>
+        </div>
+      </div>
+      <button id="run-auto-detect" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Detect My Screen</button>
+    </div>
+
+    <!-- Method 2: Diagonal -->
+    <div id="method-diagonal" class="calib-method hidden space-y-6">
+      <h3 class="text-xl font-bold text-ink tracking-tight">Diagonal Geometry.</h3>
+      <p class="text-sm text-body leading-relaxed">Input your physical screen diagonal in inches to compute exact PPI and dimensions.</p>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Diagonal Size (inches)</label>
+          <input type="number" id="diag-size" class="w-full bg-canvas border border-hairline rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="15.6" step="0.1" />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Width (px)</label>
+            <input type="number" id="diag-res-x" class="w-full bg-canvas border border-hairline rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="1920" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Height (px)</label>
+            <input type="number" id="diag-res-y" class="w-full bg-canvas border border-hairline rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="1080" />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 bg-canvas-soft p-6 rounded-2xl border border-hairline shadow-inner">
+        <div class="flex justify-between items-center py-2 border-b border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Width</span>
+          <span id="diag-width" class="text-sm font-bold text-ink">-</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-hairline">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Height</span>
+          <span id="diag-height" class="text-sm font-bold text-ink">-</span>
+        </div>
+        <div class="flex justify-between items-center py-2">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Density (PPI)</span>
+          <span id="diag-ppi" class="text-sm font-bold text-link">-</span>
+        </div>
+      </div>
+      <button id="run-diag-calc" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Calculate Sizing</button>
+    </div>
+
+    <!-- Method 3: Credit Card Calibration -->
+    <div id="method-credit-card" class="calib-method hidden space-y-6">
+      <h3 class="text-xl font-bold text-ink tracking-tight">Physical Calibration.</h3>
+      <p class="text-sm text-body leading-relaxed">Adjust the slider until the virtual card matches a physical card held against the screen.</p>
+      
+      <div class="bg-canvas-soft border border-hairline rounded-2xl p-10 flex flex-col items-center justify-center min-h-[240px] shadow-inner">
+        <div id="visual-card" class="bg-ink rounded-xl border border-canvas shadow-2xl relative flex items-center justify-center select-none" style="width: 337px; height: 212.5px;">
+          <div class="absolute left-6 top-6 w-10 h-8 bg-canvas-soft-2 border border-hairline rounded-md"></div>
+          <div class="absolute right-6 top-6 font-mono text-[8px] text-mute tracking-[0.2em]">ZCALIBRATE.PRO</div>
+          <div class="font-sans text-[10px] font-bold text-mute uppercase tracking-widest mt-8 italic">MATCH SIZE</div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Visual width</span>
+          <span id="slider-pixel-width" class="text-xs font-bold text-ink">337 px</span>
+        </div>
+        <input type="range" id="card-slider" class="w-full accent-ink bg-canvas-soft-2 rounded-lg appearance-none h-1.5 cursor-ew-resize" min="150" max="600" value="337" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 bg-canvas-soft p-6 rounded-2xl border border-hairline shadow-inner">
+        <div class="flex flex-col">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest mb-1">PPI Density</span>
+          <span id="card-ppi" class="text-base font-bold text-link">-</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest mb-1">Diagonal</span>
+          <span id="card-est-diag" class="text-base font-bold text-ink">-</span>
+        </div>
+      </div>
+      <button id="run-card-calc" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Lock and Save</button>
+    </div>
+  </div>
+)}
+
+<!-- ==================== FRACTION CALCULATOR ==================== -->
+{type === 'fraction-calculator' && (
+  <div class="space-y-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
+      <!-- Fraction 1 -->
+      <div class="flex flex-col gap-3">
+        <label class="text-[10px] font-bold text-mute uppercase tracking-widest text-center">Fraction 1</label>
+        <input type="number" id="frac-num1" class="w-full bg-canvas border border-hairline rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="1" />
+        <div class="w-full h-1.5 bg-ink rounded-full"></div>
+        <input type="number" id="frac-den1" class="w-full bg-canvas border border-hairline rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="2" />
+      </div>
+      
+      <!-- Operator -->
+      <div class="flex flex-col gap-3 items-center justify-center">
+        <label class="text-[10px] font-bold text-mute uppercase tracking-widest mb-4">Action</label>
+        <select id="frac-operator" class="bg-canvas-soft border border-hairline rounded-xl h-14 px-3 text-ink font-bold w-16 text-center text-xl shadow-sm appearance-none cursor-pointer">
+          <option value="+">+</option>
+          <option value="-">-</option>
+          <option value="*">×</option>
+          <option value="/">÷</option>
+        </select>
+      </div>
+
+      <!-- Fraction 2 -->
+      <div class="flex flex-col gap-3">
+        <label class="text-[10px] font-bold text-mute uppercase tracking-widest text-center">Fraction 2</label>
+        <input type="number" id="frac-num2" class="w-full bg-canvas border border-hairline rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="1" />
+        <div class="w-full h-1.5 bg-ink rounded-full"></div>
+        <input type="number" id="frac-den2" class="w-full bg-canvas border border-hairline rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="3" />
+      </div>
+    </div>
+
+    <!-- Results Display -->
+    <div class="grid grid-cols-2 gap-4 bg-canvas-soft p-6 rounded-2xl border border-hairline shadow-inner">
+      <div class="flex flex-col">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest mb-1">Reduced</span>
+        <span id="frac-result" class="text-xl font-bold text-link">-</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest mb-1">Decimal</span>
+        <span id="frac-decimal" class="text-xl font-bold text-ink">-</span>
+      </div>
+    </div>
+    
+    <button id="frac-calculate" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Evaluate fractions</button>
+
+    <!-- Calculation Steps -->
+    <div id="frac-steps-container" class="hidden bg-canvas-soft p-6 rounded-2xl border border-hairline text-[11px] space-y-3 text-body font-mono shadow-inner">
+      <h4 class="text-ink font-bold uppercase tracking-widest text-[10px]">Logical Steps</h4>
+      <div id="frac-step1" class="flex gap-2"></div>
+      <div id="frac-step2" class="flex gap-2"></div>
+      <div id="frac-step3" class="flex gap-2"></div>
+    </div>
+  </div>
+)}
+
+<!-- ==================== SUBNET CALCULATOR ==================== -->
+{type === 'subnet-calculator' && (
+  <div class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="md:col-span-2">
+        <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Base IP Address</label>
+        <input type="text" id="sub-ip" class="w-full bg-canvas border border-hairline rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all shadow-sm" value="192.168.1.1" placeholder="e.g. 192.168.1.1" />
+      </div>
+      <div>
+        <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">CIDR Prefix</label>
+        <select id="sub-cidr" class="w-full bg-canvas border border-hairline rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong transition-all shadow-sm cursor-pointer">
+          {Array.from({ length: 31 }, (_, i) => 32 - i).map(c => (
+            <option value={c} selected={c === 24 ? true : undefined}>/{c}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <!-- Output Information -->
+    <div class="grid grid-cols-1 gap-3 bg-canvas-soft p-6 rounded-2xl border border-hairline shadow-inner">
+      <div class="flex justify-between items-center py-2 border-b border-hairline">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Subnet Mask</span>
+        <span id="sub-mask" class="text-sm font-bold text-ink font-mono">-</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-hairline">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Network ID</span>
+        <span id="sub-net" class="text-sm font-bold text-ink font-mono">-</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-hairline">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Broadcast</span>
+        <span id="sub-broadcast" class="text-sm font-bold text-ink font-mono">-</span>
+      </div>
+      <div class="flex justify-between items-center py-2">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Total Usable</span>
+        <span id="sub-hosts" class="text-sm font-bold text-link">-</span>
+      </div>
+    </div>
+    
+    <button id="sub-calculate" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Compute Mask</button>
+  </div>
+)}
+
+<!-- ==================== PASSWORD GENERATOR ==================== -->
+{type === 'password-generator' && (
+  <div class="space-y-8">
+    <div class="space-y-6">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Length of string</span>
+          <span id="pass-len-val" class="text-xs font-bold text-ink">16 chars</span>
+        </div>
+        <input type="range" id="pass-length" class="w-full accent-ink bg-canvas-soft-2 rounded-lg appearance-none h-1.5 cursor-ew-resize" min="6" max="64" value="16" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        {['Upper', 'Lower', 'Numbers', 'Symbols'].map(opt => (
+          <label class="flex items-center gap-3 cursor-pointer select-none group">
+            <div class="relative flex items-center justify-center">
+              <input type="checkbox" id={`pass-${opt.toLowerCase()}`} class="peer accent-indigo-600 h-5 w-5 rounded border-hairline transition-all" checked />
+            </div>
+            <span class="text-sm font-semibold text-body group-hover:text-ink transition-colors">{opt} cases</span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <!-- Password output display box -->
+    <div class="flex items-center gap-4 bg-canvas-soft p-6 rounded-2xl border border-hairline relative group shadow-inner">
+      <div id="pass-display" class="flex-1 select-all break-all pr-10 text-ink font-mono font-bold text-lg tracking-tight">Generate a password</div>
+      <button id="pass-copy" class="absolute right-4 p-2.5 rounded-xl text-mute hover:text-ink hover:bg-canvas hover:shadow-md transition-all" aria-label="Copy Password">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 bg-canvas-soft p-6 rounded-2xl border border-hairline shadow-inner">
+      <div class="flex flex-col">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest mb-1">Strength</span>
+        <span id="pass-strength" class="text-base font-bold text-link">-</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest mb-1">Entropy</span>
+        <span id="pass-entropy" class="text-base font-bold text-ink">-</span>
+      </div>
+    </div>
+
+    <button id="pass-generate" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Generate Key</button>
+  </div>
+)}
+
+<!-- ==================== TRIANGLE CALCULATOR ==================== -->
+{type === 'triangle-calculator' && (
+  <div class="space-y-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {['a', 'b', 'c'].map(side => (
+        <div>
+          <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Side {side}</label>
+          <input type="number" id={`tri-side-${side}`} class="w-full bg-canvas border border-hairline rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong shadow-sm" value="5" />
+        </div>
+      ))}
+    </div>
+
+    <!-- Interactive Triangle Render Frame -->
+    <div class="bg-canvas-soft border border-hairline rounded-2xl p-8 flex items-center justify-center min-h-[220px] shadow-inner relative">
+      <svg id="tri-svg" class="w-full max-w-[220px] h-[160px] text-link drop-shadow-sm" viewBox="0 0 100 100">
+        <polygon id="tri-polygon" points="10,90 90,90 50,20" fill="rgba(79, 70, 229, 0.05)" stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
+        <text x="50" y="80" id="tri-label" class="fill-mute font-bold text-[6px] tracking-widest uppercase" text-anchor="middle">Equilateral</text>
+      </svg>
+    </div>
+
+    <!-- Outputs math box -->
+    <div class="grid grid-cols-1 gap-3 bg-canvas-soft p-6 rounded-2xl border border-hairline shadow-inner">
+      <div class="flex justify-between items-center py-2 border-b border-hairline">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Angles</span>
+        <span id="tri-angles" class="text-sm font-bold text-ink font-mono">-</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-hairline">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Area</span>
+        <span id="tri-area" class="text-sm font-bold text-link">-</span>
+      </div>
+      <div class="flex justify-between items-center py-2">
+        <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Perimeter</span>
+        <span id="tri-perimeter" class="text-sm font-bold text-ink">-</span>
+      </div>
+    </div>
+
+    <button id="tri-calculate" class="w-full h-14 rounded-xl bg-brand-primary hover:opacity-90 text-canvas font-black text-lg transition-all shadow-lg uppercase tracking-tight">Solve Geometry</button>
+  </div>
+)}

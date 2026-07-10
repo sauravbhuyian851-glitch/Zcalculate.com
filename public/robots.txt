@@ -1,0 +1,6 @@
+# Zcalculate.com Robots
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zcalculate.com/sitemap-index.xml

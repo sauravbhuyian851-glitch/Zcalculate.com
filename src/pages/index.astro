@@ -1,11 +1,175 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import StandardCalculator from '../components/StandardCalculator.astro';
+import { calculatorsList, CATEGORIES } from '../data/calculators';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Homepage JSON-LD ItemList for all calculators
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Online Calculator Collection",
+  "numberOfItems": calculatorsList.length,
+  "itemListElement": calculatorsList.map((calc, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": calc.name,
+    "url": `https://zcalculate.com/calculator/${calc.slug}`
+  }))
+};
 ---
-
 <Layout>
-	<Welcome />
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} is:inline slot="head" />
+
+  <!-- Hero Section -->
+  <section class="relative mx-auto max-w-7xl px-6 pt-24 pb-24 flex flex-col items-center text-center overflow-visible">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-canvas-soft text-[11px] font-mono font-medium text-mute mb-8 backdrop-blur shadow-sm">
+      <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      40+ PRO CALCULATORS IN ONE WORKSPACE.
+    </div>
+
+    <h1 class="display-xl text-ink max-w-4xl leading-[1.1]">
+      Calculations, simplified<span class="text-link">.</span>
+    </h1>
+    <p class="mt-6 text-body max-w-2xl text-lg md:text-xl font-normal leading-relaxed">
+      A stark, high-precision workspace for students, developers, and finance professionals. No ads, no logins, just results.
+    </p>
+
+    <!-- Embedded Calculator Widget -->
+    <div class="mt-16 w-full flex justify-center perspective-1000">
+      <StandardCalculator />
+    </div>
+  </section>
+
+
+  <!-- Library Grid Section -->
+  <section id="all-calculators" class="border-t border-hairline bg-canvas-soft py-24 px-6 scroll-mt-16 transition-colors">
+    <div class="mx-auto max-w-7xl">
+      
+      <!-- Section header & Search -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+        <div class="text-left">
+          <h2 class="display-lg text-ink">Calculators library.</h2>
+          <p class="text-mute text-base mt-2">Search or browse our categories of fully-functional tools.</p>
+        </div>
+        
+        <!-- Search bar -->
+        <div class="relative w-full md:w-96">
+          <span class="absolute inset-y-0 left-3 flex items-center text-mute">
+            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </span>
+          <input type="text" id="lib-search" class="w-full bg-canvas border border-hairline rounded-lg h-12 pl-10 pr-4 text-sm text-ink placeholder:text-mute focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all shadow-sm" placeholder="Search mortgage, BMI, GPA..." aria-label="Search calculators" />
+        </div>
+      </div>
+
+      <!-- Categories Navigation -->
+      <div class="flex flex-wrap gap-2 mb-10 border-b border-hairline pb-6" id="category-filters">
+        <button class="filter-tab active px-5 py-2 rounded-full text-xs font-semibold bg-brand-primary text-canvas transition-all cursor-pointer shadow-md" data-category="all">All Tools</button>
+        {Object.entries(CATEGORIES).map(([key, cat]) => (
+          <button class="filter-tab px-5 py-2 rounded-full text-xs font-semibold text-mute hover:text-ink hover:bg-canvas transition-all cursor-pointer border border-transparent" data-category={key}>{cat.name}</button>
+        ))}
+      </div>
+
+      <!-- Calculators List Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="calculators-grid">
+        {calculatorsList.map(calc => (
+          <a href={`/calculator/${calc.slug}`} class="calc-card group relative p-6 bg-canvas border border-hairline hover:border-hairline-strong rounded-xl transition-all hover:shadow-lg" data-category={calc.category}>
+            <div class="flex items-center gap-4">
+              <!-- Dynamic Category Icons -->
+              <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-canvas-soft border border-hairline text-mute group-hover:text-ink transition-colors">
+                {calc.category === 'financial' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                )}
+                {calc.category === 'health' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                )}
+                {calc.category === 'math' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                )}
+                {calc.category === 'other' && (
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                )}
+              </div>
+              <div class="text-left">
+                <h3 class="text-base font-semibold text-ink group-hover:text-link transition-colors">{calc.name}</h3>
+                <span class="inline-block px-2 py-0.5 mt-1 bg-canvas-soft border border-hairline text-[9px] font-bold text-mute rounded uppercase tracking-wider">{calc.category}</span>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-body leading-relaxed text-left line-clamp-2">{calc.description}</p>
+          </a>
+        ))}
+      </div>
+      
+      <!-- Empty state for search -->
+      <div id="no-results" class="hidden text-center py-24">
+        <svg class="mx-auto h-16 w-16 text-hairline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="mt-6 text-lg font-semibold text-ink">No calculators found.</h3>
+        <p class="mt-2 text-mute">Try checking your spelling or search another category.</p>
+      </div>
+
+    </div>
+  </section>
 </Layout>
+
+<script>
+  // Filter tabs and Search logic
+  const searchInput = document.getElementById('lib-search') as HTMLInputElement;
+  const cards = document.querySelectorAll('.calc-card') as NodeListOf<HTMLAnchorElement>;
+  const noResults = document.getElementById('no-results');
+  const filterTabs = document.querySelectorAll('.filter-tab');
+
+  let currentCategory = 'all';
+  let searchQuery = '';
+
+  // Active/inactive tab class constants using design system tokens
+  const ACTIVE_TAB_CLASS = "filter-tab active px-5 py-2 rounded-full text-xs font-semibold bg-brand-primary text-canvas transition-all cursor-pointer shadow-md";
+  const INACTIVE_TAB_CLASS = "filter-tab px-5 py-2 rounded-full text-xs font-semibold text-mute hover:text-ink hover:bg-canvas transition-all cursor-pointer border border-transparent";
+
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = (e.target as HTMLInputElement).value.toLowerCase();
+      applyFilters();
+    });
+  }
+
+  filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabs.forEach(t => {
+        t.className = INACTIVE_TAB_CLASS;
+      });
+      tab.className = ACTIVE_TAB_CLASS;
+      currentCategory = tab.getAttribute('data-category') || 'all';
+      applyFilters();
+    });
+  });
+
+  function applyFilters() {
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const cat = card.getAttribute('data-category');
+      const text = card.textContent?.toLowerCase() || '';
+
+      const matchesCategory = currentCategory === 'all' || cat === currentCategory;
+      const matchesSearch = text.includes(searchQuery);
+
+      if (matchesCategory && matchesSearch) {
+        card.style.display = 'block';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (noResults) {
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+      }
+    }
+  }
+</script>

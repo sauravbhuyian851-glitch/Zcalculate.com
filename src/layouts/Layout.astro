@@ -1,23 +1,115 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	canonicalUrl?: string;
+	ogType?: string;
+	ogImage?: string;
+	keywords?: string;
+}
+
+const { 
+  title = "Zcalculate — Free Online Calculators for Math, Health, Finance & More", 
+  description = "40+ free professional calculators: mortgage, BMI, compound interest, GPA, salary, and more. No ads, no logins — instant precision results.",
+  canonicalUrl = "https://zcalculate.com",
+  ogType = "website",
+  ogImage = "/og-image.png",
+  keywords = "calculators, online calculators, free math tools, interest estimator, body index checker, finance formulas"
+} = Astro.props;
+
+// JSON-LD WebSite schema for the site
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Zcalculate",
+  "url": "https://zcalculate.com",
+  "description": "A professional collection of 40+ free online calculators covering financial, health, math, and utility categories.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://zcalculate.com/#all-calculators?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
+---
 <!doctype html>
-<html lang="en">
+<html lang="en" class="bg-canvas text-ink scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+
+		<!-- Primary Meta Tags -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
+		<link rel="canonical" href={canonicalUrl} />
+		<meta name="robots" content="index, follow" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:site_name" content="Zcalculate" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:url" content={canonicalUrl} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+
+		<!-- JSON-LD Structured Data -->
+		<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} is:inline />
+
+		<!-- Head slot for per-page structured data -->
+		<slot name="head" />
+
+		<!-- Theme Initialization (prevents FOUC) -->
+		<script is:inline>
+			const theme = (() => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					return 'dark';
+				}
+				return 'light';
+			})();
+
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		</script>
+
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:wght@300..900&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet" />
 	</head>
-	<body>
-		<slot />
+	<body class="flex min-h-screen flex-col font-sans antialiased selection:bg-ink selection:text-canvas">
+
+		<!-- Main mesh gradient backdrop for hero visibility -->
+		<div class="pointer-events-none absolute inset-x-0 top-0 z-0 h-[800px] w-full overflow-hidden">
+			<div class="mesh-gradient-backdrop absolute -top-[400px] left-1/2 h-[800px] w-[1600px] -translate-x-1/2 rounded-full opacity-60"></div>
+		</div>
+
+		<!-- Sticky Navbar -->
+		<Header />
+
+		<!-- Main Content Area -->
+		<main class="relative z-10 flex-1">
+			<slot />
+		</main>
+
+		<!-- Footer -->
+		<Footer />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
