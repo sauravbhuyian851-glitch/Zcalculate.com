@@ -80,7 +80,7 @@ const breadcrumbSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline slot="head" />
   {calc.slug === 'scientific-calculator' && <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.2/math.min.js" is:inline slot="head" />}
 
-  <div class="mx-auto max-w-5xl px-6 py-16">
+  <div class={calc.slug === 'scientific-calculator' ? "mx-auto max-w-6xl px-6 py-16" : "mx-auto max-w-5xl px-6 py-16"}>
     <!-- Breadcrumb Navigation -->
     <nav aria-label="Breadcrumb" class="mb-6">
       <ol class="flex items-center gap-2 text-[11px] font-mono text-mute uppercase tracking-widest">
@@ -113,7 +113,7 @@ const breadcrumbSchema = {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
       
       <!-- Inputs Column (Forms or Custom UIs) -->
-      <div class="lg:col-span-5 space-y-6">
+      <div class={calc.slug === 'scientific-calculator' ? "lg:col-span-12 space-y-6" : "lg:col-span-5 space-y-6"}>
         <div class="bg-canvas-card border border-canvas-card-border rounded-2xl p-6 sm:p-8 shadow-xl text-left">
           <h2 class="text-[11px] font-bold text-mute mb-8 font-mono uppercase tracking-[0.2em] border-b border-canvas-card-border pb-3">Input Parameters</h2>
           
