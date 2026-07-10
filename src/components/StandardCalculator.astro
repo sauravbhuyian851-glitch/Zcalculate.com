@@ -1,16 +1,16 @@
 ---
 ---
 <div id="calc-container" class="w-full max-w-lg mx-auto md:max-w-2xl transition-all duration-300">
-  <div id="calc-inner-wrap" class="relative bg-canvas border border-hairline rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg">
+  <div id="calc-inner-wrap" class="relative bg-canvas-card border border-canvas-card-border rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg">
     <!-- Calculator Header / Modes -->
-    <div class="flex items-center justify-between mb-3 border-b border-hairline pb-3">
-      <div class="flex items-center gap-1.5 p-1 bg-canvas-soft rounded-lg">
-        <button id="calc-mode-std" class="px-4 py-1 rounded-md text-[11px] font-bold bg-canvas text-ink shadow-sm transition-all uppercase tracking-wider">Standard</button>
+    <div class="flex items-center justify-between mb-3 border-b border-canvas-card-border pb-3">
+      <div class="flex items-center gap-1.5 p-1 bg-canvas-card-soft-2 rounded-lg">
+        <button id="calc-mode-std" class="px-4 py-1 rounded-md text-[11px] font-bold bg-calc-btn text-ink shadow-sm transition-all uppercase tracking-wider">Standard</button>
         <button id="calc-mode-sci" class="px-4 py-1 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider">Scientific</button>
       </div>
       <div class="flex items-center gap-4">
         <!-- Degree / Radian Toggle -->
-        <span id="deg-rad-indicator" class="hidden font-mono text-[10px] font-bold text-mute uppercase tracking-widest bg-canvas-soft border border-hairline px-2.5 py-1 rounded">DEG</span>
+        <span id="deg-rad-indicator" class="hidden font-mono text-[10px] font-bold text-mute uppercase tracking-widest bg-canvas-card-soft border border-canvas-card-border px-2.5 py-1 rounded">DEG</span>
         <button id="calc-fullscreen" class="text-[11px] font-bold text-mute hover:text-ink transition-all flex items-center gap-1.5 uppercase tracking-wider" aria-label="Toggle Fullscreen">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Full
@@ -23,10 +23,10 @@
     </div>
 
     <!-- Output Display Screen -->
-    <div class="bg-canvas-soft border border-hairline rounded-xl p-4 mb-4 flex flex-col justify-between min-h-[110px] shadow-inner font-sans relative">
+    <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-4 mb-4 flex flex-col justify-between min-h-[110px] shadow-inner font-sans relative">
       <!-- Input Part -->
       <div class="border border-dashed border-hairline-strong/45 rounded-lg p-2.5 mb-2 w-full flex items-center justify-between transition-all relative">
-        <span class="absolute -top-2.5 left-3.5 px-1 bg-canvas-soft text-[8px] font-black text-mute uppercase tracking-widest select-none">Input (Paste here)</span>
+        <span class="absolute -top-2.5 left-3.5 px-1 bg-canvas-card-soft text-[8px] font-black text-mute uppercase tracking-widest select-none">Input (Paste here)</span>
         <div id="calc-display-expr" class="w-full text-left text-mute text-2xl font-semibold overflow-x-auto whitespace-nowrap scrollbar-none min-h-[32px] animate-blink">&nbsp;</div>
       </div>
       <!-- Output Part -->
@@ -37,51 +37,51 @@
     <div class="flex flex-col gap-4">
       <!-- Scientific Pad (collapsible) -->
       <div id="calc-sci-pad" class="hidden grid-cols-5 gap-2 w-full select-none">
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="sin">sin</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="cos">cos</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="tan">tan</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="pi">π</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="e">e</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="sin">sin</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="cos">cos</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="tan">tan</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="pi">π</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="e">e</button>
 
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="asin">sin⁻¹</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="acos">cos⁻¹</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="atan">tan⁻¹</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="pow">xʸ</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="sqrt">√</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="asin">sin⁻¹</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="acos">cos⁻¹</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="atan">tan⁻¹</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="pow">xʸ</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="sqrt">√</button>
 
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="log">log</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="ln">ln</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="fact">x!</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="(">(</button>
-        <button class="calc-btn text-sm font-black bg-canvas border border-hairline text-body hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val=")">)</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="log">log</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="ln">ln</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="fact">x!</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="(">(</button>
+        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val=")">)</button>
 
-        <button id="calc-toggle-deg" class="col-span-5 calc-btn text-[10px] font-black bg-canvas-soft border border-hairline text-mute hover:bg-canvas-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase tracking-wider mt-1.5">Toggle Radian Mode</button>
+        <button id="calc-toggle-deg" class="col-span-5 calc-btn text-[10px] font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase tracking-wider mt-1.5">Toggle Radian Mode</button>
       </div>
 
       <!-- Standard Pad -->
       <div class="grid grid-cols-4 gap-2 w-full select-none" id="calc-std-pad">
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="clear">C</button>
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-mute hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="backspace">⌫</button>
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-mute hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="percent">%</button>
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="divide">÷</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="clear">C</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="backspace">⌫</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="percent">%</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="divide">÷</button>
 
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="7">7</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="8">8</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="9">9</button>
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="multiply">×</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="7">7</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="8">8</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="9">9</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="multiply">×</button>
 
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="4">4</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="5">5</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="6">6</button>
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="subtract">-</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="4">4</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="5">5</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="6">6</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="subtract">-</button>
 
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="1">1</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="2">2</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="3">3</button>
-        <button class="calc-btn text-3xl font-black bg-canvas-soft border border-hairline text-link hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all" data-val="add">+</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="1">1</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="2">2</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="3">3</button>
+        <button class="calc-btn text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all" data-val="add">+</button>
 
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="0">0</button>
-        <button class="calc-btn text-xl font-black bg-canvas border border-hairline text-ink hover:bg-canvas-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="decimal">.</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="0">0</button>
+        <button class="calc-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink hover:bg-canvas-card-soft-2 rounded-xl py-3.5 transition-all shadow-sm" data-val="decimal">.</button>
         <button class="calc-btn col-span-2 text-3xl font-black bg-brand-primary hover:opacity-90 text-canvas rounded-xl py-3.5 shadow-lg transition-all" data-val="equals">=</button>
       </div>
     </div>
@@ -126,7 +126,7 @@
     if (freshStdBtn && freshSciBtn && freshSciPad) {
       freshStdBtn.addEventListener('click', () => {
         mode = 'std';
-        freshStdBtn.className = "px-4 py-1 rounded-md text-[11px] font-bold bg-canvas text-ink shadow-sm transition-all uppercase tracking-wider";
+        freshStdBtn.className = "px-4 py-1 rounded-md text-[11px] font-bold bg-calc-btn text-ink shadow-sm transition-all uppercase tracking-wider";
         freshSciBtn.className = "px-4 py-1 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider";
         freshSciPad.style.display = 'none';
         freshSciPad.classList.remove('calc-sci-active');
@@ -134,14 +134,14 @@
         if (innerWrap) innerWrap.classList.remove('calc-sci-active-wrap');
         if (!isFullscreen) {
           if (container) container.className = "w-full max-w-lg mx-auto transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas border border-hairline rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg";
+          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg";
         }
         if (degRadIndicator) degRadIndicator.classList.add('hidden');
       });
 
       freshSciBtn.addEventListener('click', () => {
         mode = 'sci';
-        freshSciBtn.className = "px-4 py-1 rounded-md text-[11px] font-bold bg-canvas text-ink shadow-sm transition-all uppercase tracking-wider";
+        freshSciBtn.className = "px-4 py-1 rounded-md text-[11px] font-bold bg-calc-btn text-ink shadow-sm transition-all uppercase tracking-wider";
         freshStdBtn.className = "px-4 py-1 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider";
         freshSciPad.style.display = 'grid';
         freshSciPad.classList.add('calc-sci-active');
@@ -149,7 +149,7 @@
         if (innerWrap) innerWrap.classList.add('calc-sci-active-wrap');
         if (!isFullscreen) {
           if (container) container.className = "w-full max-w-lg mx-auto md:max-w-2xl transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas border border-hairline rounded-2xl p-4 shadow-xl transition-all duration-300 w-full md:max-w-2xl max-w-lg mx-auto";
+          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-4 shadow-xl transition-all duration-300 w-full md:max-w-2xl max-w-lg mx-auto";
         }
         if (degRadIndicator) degRadIndicator.classList.remove('hidden');
         updateDegRadIndicator();
@@ -390,7 +390,7 @@
     const applyFullscreenLayout = () => {
       if (isFullscreen) {
         if (container) container.className = "w-full max-w-none fixed inset-0 z-[100] bg-canvas/98 overflow-y-auto p-4 md:p-8 flex justify-center items-start";
-        if (innerWrap) innerWrap.className = "relative bg-canvas border border-hairline rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg md:max-w-2xl my-auto";
+        if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg md:max-w-2xl my-auto";
         if (fullscreenBtn) {
           fullscreenBtn.innerHTML = `
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -400,10 +400,10 @@
       } else {
         if (mode === 'std') {
           if (container) container.className = "w-full max-w-lg mx-auto transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas border border-hairline rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg";
+          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-4 shadow-xl transition-all duration-300 w-full max-w-lg";
         } else {
           if (container) container.className = "w-full max-w-lg mx-auto md:max-w-2xl transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas border border-hairline rounded-2xl p-4 shadow-xl transition-all duration-300 w-full md:max-w-2xl max-w-lg mx-auto";
+          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-4 shadow-xl transition-all duration-300 w-full md:max-w-2xl max-w-lg mx-auto";
         }
         if (fullscreenBtn) {
           fullscreenBtn.innerHTML = `
