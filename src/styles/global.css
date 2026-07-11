@@ -33,50 +33,50 @@
 
 :root {
   --canvas: #ffffff;
-  --canvas-soft: #fafafa;
-  --canvas-soft-2: #f5f5f5;
+  --canvas-soft: #f0f0f4;
+  --canvas-soft-2: #e8e8ed;
   --canvas-card: #ffffff;
-  --canvas-card-soft: #fafafa;
-  --canvas-card-soft-2: #f5f5f5;
-  --canvas-card-border: #ebebeb;
+  --canvas-card-soft: #f5f5f7;
+  --canvas-card-soft-2: #ececef;
+  --canvas-card-border: #d2d2dc;
   --calc-btn: #ffffff;
-  --calc-btn-soft: #fafafa;
+  --calc-btn-soft: #f5f5f7;
   --ink: #171717;
   --body: #4d4d4d;
   --mute: #888888;
-  --hairline: #ebebeb;
-  --hairline-strong: #a1a1a1;
+  --hairline: #d2d2dc;
+  --hairline-strong: #8a8a93;
   --brand-primary: #171717;
 
-  --shadow-1: 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --shadow-2: 0px 1px 1px rgba(0, 0, 0, 0.02), 0px 2px 2px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --shadow-3: 0px 2px 2px rgba(0, 0, 0, 0.04), 0px 8px 8px -8px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --shadow-4: 0px 2px 2px rgba(0, 0, 0, 0.04), 0px 8px 16px -4px rgba(0, 0, 0, 0.04), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --shadow-5: 0px 1px 1px rgba(0, 0, 0, 0.02), 0px 8px 16px -4px rgba(0, 0, 0, 0.04), 0px 24px 32px -8px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-1: 0 0 0 1px rgba(0, 0, 0, 0.12);
+  --shadow-2: 0px 1px 2px rgba(0, 0, 0, 0.04), 0px 4px 6px -1px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-3: 0px 4px 8px rgba(0, 0, 0, 0.06), 0px 12px 24px -4px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-4: 0px 10px 15px -3px rgba(0, 0, 0, 0.08), 0px 20px 25px -5px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-5: 0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 40px 40px -15px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
   --canvas: #000000;
-  --canvas-soft: #0a0a0a;
-  --canvas-soft-2: #111111;
-  --canvas-card: #18181b;
-  --canvas-card-soft: #121215;
-  --canvas-card-soft-2: #1c1c1f;
-  --canvas-card-border: #2d2d31;
-  --calc-btn: #1c1c1f;
-  --calc-btn-soft: #26262a;
+  --canvas-soft: #050507;
+  --canvas-soft-2: #0e0e12;
+  --canvas-card: #1c1c21;
+  --canvas-card-soft: #121216;
+  --canvas-card-soft-2: #24242b;
+  --canvas-card-border: #3c3c43;
+  --calc-btn: #24242b;
+  --calc-btn-soft: #1c1c21;
   --ink: #ededed;
   --body: #a1a1aa;
   --mute: #71717a;
-  --hairline: #27272a;
-  --hairline-strong: #3f3f46;
+  --hairline: #3c3c43;
+  --hairline-strong: #5a5a65;
   --brand-primary: #ffffff;
 
-  --shadow-1: 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-2: 0px 1px 1px rgba(0, 0, 0, 0.4), 0px 2px 2px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-3: 0px 2px 2px rgba(0, 0, 0, 0.4), 0px 8px 8px -8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-4: 0px 2px 2px rgba(0, 0, 0, 0.4), 0px 8px 16px -4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  --shadow-5: 0px 1px 1px rgba(0, 0, 0, 0.4), 0px 8px 16px -4px rgba(0, 0, 0, 0.4), 0px 24px 32px -8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --shadow-1: 0 0 0 1px rgba(255, 255, 255, 0.15);
+  --shadow-2: 0px 1px 2px rgba(0, 0, 0, 0.5), 0px 4px 6px -1px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  --shadow-3: 0px 4px 8px rgba(0, 0, 0, 0.5), 0px 12px 24px -4px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  --shadow-4: 0px 10px 15px -3px rgba(0, 0, 0, 0.5), 0px 20px 25px -5px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  --shadow-5: 0px 20px 25px -5px rgba(0, 0, 0, 0.5), 0px 40px 40px -15px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 
 @layer base {
