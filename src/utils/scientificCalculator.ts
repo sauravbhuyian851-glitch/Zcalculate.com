@@ -322,10 +322,10 @@ export class GraphingEngine {
 
   // Functions
   functions: { expr: string; color: string; visible: boolean }[] = [
-    { expr: '', color: '#0070f3', visible: true },
-    { expr: '', color: '#ff0080', visible: true },
-    { expr: '', color: '#50e3c2', visible: true },
-    { expr: '', color: '#7928ca', visible: true },
+    { expr: '', color: '#5c5c66', visible: true },
+    { expr: '', color: '#8a8a94', visible: true },
+    { expr: '', color: '#3d3d45', visible: true },
+    { expr: '', color: '#ababaf', visible: true },
   ];
 
   plotMode: 'cartesian' | 'parametric' | 'polar' = 'cartesian';
@@ -552,7 +552,7 @@ export class GraphingEngine {
 
     // Scatter data overlay
     if (this.scatterData.length > 0) {
-      ctx.fillStyle = isDark ? '#facc15' : '#d97706';
+      ctx.fillStyle = isDark ? '#a1a1a8' : '#6b6b73';
       this.scatterData.forEach(pt => {
         const sx = this.toScreenX(pt.x);
         const sy = this.toScreenY(pt.y);
@@ -576,7 +576,7 @@ export class GraphingEngine {
       ctx.setLineDash([]);
 
       // Point
-      ctx.fillStyle = '#0070f3';
+      ctx.fillStyle = '#6b6b73';
       ctx.beginPath();
       ctx.arc(sx, sy, 5, 0, Math.PI * 2);
       ctx.fill();

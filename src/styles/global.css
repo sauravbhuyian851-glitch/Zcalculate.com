@@ -16,10 +16,10 @@
   --color-hairline: var(--hairline);
   --color-hairline-strong: var(--hairline-strong);
   --color-brand-primary: var(--brand-primary);
-  --color-brand-cyan: #50e3c2;
-  --color-brand-violet: #7928ca;
-  --color-brand-pink: #ff0080;
-  --color-link: #0070f3;
+  --color-brand-cyan: #8c8c94;
+  --color-brand-violet: #6b6b73;
+  --color-brand-pink: #9a9aa0;
+  --color-link: #52525b;
   
   --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
@@ -120,13 +120,13 @@
 /* Custom Mesh Gradient Backdrop */
 .mesh-gradient-backdrop {
   background-image: 
-    radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.12) 0px, transparent 50%),
-    radial-gradient(at 97% 21%, hsla(256, 98%, 72%, 0.12) 0px, transparent 50%),
-    radial-gradient(at 52% 99%, hsla(339, 98%, 79%, 0.12) 0px, transparent 50%),
-    radial-gradient(at 10% 29%, hsla(172, 98%, 45%, 0.1) 0px, transparent 50%),
-    radial-gradient(at 97% 96%, hsla(343, 98%, 52%, 0.1) 0px, transparent 50%),
-    radial-gradient(at 33% 50%, hsla(272, 98%, 60%, 0.1) 0px, transparent 50%),
-    radial-gradient(at 79% 53%, hsla(192, 98%, 68%, 0.1) 0px, transparent 50%);
+    radial-gradient(at 27% 37%, hsla(240, 4%, 55%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 97% 21%, hsla(240, 4%, 60%, 0.08) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, hsla(240, 4%, 70%, 0.07) 0px, transparent 50%),
+    radial-gradient(at 10% 29%, hsla(240, 4%, 50%, 0.06) 0px, transparent 50%),
+    radial-gradient(at 97% 96%, hsla(240, 4%, 45%, 0.06) 0px, transparent 50%),
+    radial-gradient(at 33% 50%, hsla(240, 4%, 55%, 0.06) 0px, transparent 50%),
+    radial-gradient(at 79% 53%, hsla(240, 4%, 60%, 0.06) 0px, transparent 50%);
   filter: blur(80px);
   will-change: transform;
   transform: translate3d(0, 0, 0);
@@ -314,3 +314,137 @@
     padding: 32px !important;
   }
 }
+
+/* Calculator container overrides — neutral, theme-aware 50/50 gray */
+#calculator-container,
+#calc-container {
+  /* Light mode: medium-gray card (#c8c8cc) on the light gray page (#f0f0f4) */
+  --canvas-card: #c8c8cc;
+  --canvas-card-soft: #c8c8cc; /* Same color for screens to blend in */
+  --canvas-card-soft-2: #b8b8bc;
+  --canvas-card-border: #a8a8b0;
+  --hairline: #a8a8b0;
+
+  /* Text on the medium gray surface */
+  --ink: #171717;
+  --body: #333338;
+  --mute: #5a5a60;
+
+  /* Force evaluation of custom variables in subtree */
+  --color-canvas-card: var(--canvas-card);
+  --color-canvas-card-soft: var(--canvas-card-soft);
+  --color-canvas-card-soft-2: var(--canvas-card-soft-2);
+  --color-canvas-card-border: var(--canvas-card-border);
+  --color-hairline: var(--hairline);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-mute: var(--mute);
+}
+
+/* Light Mode: Buttons are dark (less bright) */
+#calculator-container .bg-calc-btn,
+#calc-container .bg-calc-btn,
+#calculator-container .bg-calc-btn-soft,
+#calc-container .bg-calc-btn-soft,
+#calculator-container .bg-brand-primary,
+#calc-container .bg-brand-primary {
+  background-color: #222226 !important;
+  color: #ffffff !important;
+  border-color: #1a1a1e !important;
+}
+
+#calculator-container .bg-calc-btn:hover,
+#calc-container .bg-calc-btn:hover,
+#calculator-container .bg-calc-btn-soft:hover,
+#calc-container .bg-calc-btn-soft:hover,
+#calculator-container .bg-brand-primary:hover,
+#calc-container .bg-brand-primary:hover {
+  background-color: #38383e !important;
+}
+
+/* Specific text color overlays inside operator/functional keys for legibility on dark buttons */
+#calculator-container .bg-calc-btn.text-link,
+#calc-container .bg-calc-btn.text-link,
+#calculator-container .bg-calc-btn-soft.text-link,
+#calc-container .bg-calc-btn-soft.text-link {
+  color: #3b82f6 !important;
+}
+#calculator-container .bg-calc-btn.text-mute,
+#calc-container .bg-calc-btn.text-mute,
+#calculator-container .bg-calc-btn-soft.text-mute,
+#calc-container .bg-calc-btn-soft.text-mute {
+  color: #a1a1aa !important;
+}
+#calculator-container .bg-calc-btn.text-body,
+#calc-container .bg-calc-btn.text-body,
+#calculator-container .bg-calc-btn-soft.text-body,
+#calc-container .bg-calc-btn-soft.text-body {
+  color: #e4e4e7 !important;
+}
+
+/* Dark mode: medium-dark gray card (#4b4b52) on the dark page (#050507) */
+.dark #calculator-container,
+.dark #calc-container {
+  --canvas-card: #4b4b52;
+  --canvas-card-soft: #4b4b52;
+  --canvas-card-soft-2: #3d3d45;
+  --canvas-card-border: #5c5c64;
+  --hairline: #5c5c64;
+
+  /* Text on the dark gray surface */
+  --ink: #ffffff;
+  --body: #e4e4e7;
+  --mute: #b8b8bc;
+
+  --color-canvas-card: var(--canvas-card);
+  --color-canvas-card-soft: var(--canvas-card-soft);
+  --color-canvas-card-soft-2: var(--canvas-card-soft-2);
+  --color-canvas-card-border: var(--canvas-card-border);
+  --color-hairline: var(--hairline);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-mute: var(--mute);
+}
+
+/* Dark Mode: Buttons are light (less bright) */
+.dark #calculator-container .bg-calc-btn,
+.dark #calc-container .bg-calc-btn,
+.dark #calculator-container .bg-calc-btn-soft,
+.dark #calc-container .bg-calc-btn-soft,
+.dark #calculator-container .bg-brand-primary,
+.dark #calc-container .bg-brand-primary {
+  background-color: #e2e2e8 !important;
+  color: #171717 !important;
+  border-color: #d2d2dc !important;
+}
+
+.dark #calculator-container .bg-calc-btn:hover,
+.dark #calc-container .bg-calc-btn:hover,
+.dark #calculator-container .bg-calc-btn-soft:hover,
+.dark #calc-container .bg-calc-btn-soft:hover,
+.dark #calculator-container .bg-brand-primary:hover,
+.dark #calc-container .bg-brand-primary:hover {
+  background-color: #d4d4dc !important;
+}
+
+/* Specific text color overlays on light buttons in dark mode */
+.dark #calculator-container .bg-calc-btn.text-link,
+.dark #calc-container .bg-calc-btn.text-link,
+.dark #calculator-container .bg-calc-btn-soft.text-link,
+.dark #calc-container .bg-calc-btn-soft.text-link {
+  color: #0070f3 !important;
+}
+.dark #calculator-container .bg-calc-btn.text-mute,
+.dark #calc-container .bg-calc-btn.text-mute,
+.dark #calculator-container .bg-calc-btn-soft.text-mute,
+.dark #calc-container .bg-calc-btn-soft.text-mute {
+  color: #71717a !important;
+}
+.dark #calculator-container .bg-calc-btn.text-body,
+.dark #calc-container .bg-calc-btn.text-body,
+.dark #calculator-container .bg-calc-btn-soft.text-body,
+.dark #calc-container .bg-calc-btn-soft.text-body {
+  color: #4d4d4d !important;
+}
+
+
