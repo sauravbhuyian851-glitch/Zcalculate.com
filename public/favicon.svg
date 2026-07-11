@@ -1,11 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#007cf0"/>
-      <stop offset="50%" stop-color="#7928ca"/>
-      <stop offset="100%" stop-color="#ff0080"/>
-    </linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="28" fill="#171717"/>
-  <text x="64" y="92" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="88" fill="url(#g)">Z</text>
+  <rect width="128" height="128" rx="28" fill="#000000"/>
+  <rect x="25" y="17" width="78" height="94" rx="18" fill="#ffffff"/>
+  <rect x="33" y="25" width="62" height="78" rx="12" fill="#000000"/>
+  <!-- Screen -->
+  <rect x="40" y="32" width="48" height="11" rx="5.5" fill="#ffffff"/>
+  <!-- Row 1 Buttons -->
+  <circle cx="46" cy="53" r="5" fill="#ffffff"/>
+  <circle cx="64" cy="53" r="5" fill="#ffffff"/>
+  <circle cx="82" cy="53" r="5" fill="#ffffff"/>
+  <!-- Row 2 Buttons -->
+  <circle cx="46" cy="69" r="5" fill="#ffffff"/>
+  <circle cx="64" cy="69" r="5" fill="#ffffff"/>
+  <circle cx="82" cy="69" r="5" fill="#ffffff"/>
+  <!-- Row 3 Buttons -->
+  <circle cx="46" cy="85" r="5" fill="#ffffff"/>
+  <circle cx="64" cy="85" r="5" fill="#ffffff"/>
+  <rect x="77" y="77" width="10" height="21" rx="5" fill="#ffffff"/>
 </svg>
