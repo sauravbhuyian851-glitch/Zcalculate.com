@@ -99,18 +99,28 @@ const breadcrumbSchema = {
     </a>
 
     <!-- Calculator Title Headers -->
-    <div class="border-b border-hairline pb-10 mb-12 text-left">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="inline-block px-2.5 py-1 bg-canvas-soft border border-hairline text-[10px] font-bold text-mute rounded-md uppercase tracking-wider">{calc.category}</span>
-        <span class="text-hairline-strong font-mono text-xs">/</span>
-        <span class="text-mute text-xs font-semibold uppercase tracking-tight">Free Online Tool</span>
+    <div class="border-b border-hairline pb-10 mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6 text-left">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="inline-block px-2.5 py-1 bg-canvas-soft border border-hairline text-[10px] font-bold text-mute rounded-md uppercase tracking-wider">{calc.category}</span>
+          <span class="text-hairline-strong font-mono text-xs">/</span>
+          <span class="text-mute text-xs font-semibold uppercase tracking-tight">Free Online Tool</span>
+        </div>
+        <h1 class="display-lg text-ink">{calc.name}.</h1>
+        <p class="text-body text-lg mt-3 leading-relaxed max-w-2xl">{calc.description}</p>
       </div>
-      <h1 class="display-lg text-ink">{calc.name}.</h1>
-      <p class="text-body text-lg mt-3 leading-relaxed max-w-2xl">{calc.description}</p>
+      <div class="shrink-0 pb-1">
+        <button id="fullscreen-btn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-hairline bg-canvas hover:bg-canvas-soft text-[11px] font-mono font-bold text-ink uppercase tracking-wider shadow-sm transition-all cursor-pointer select-none">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 20v-4m0 4h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5"></path>
+          </svg>
+          Fullscreen
+        </button>
+      </div>
     </div>
 
     <!-- Main Flex Grid split -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+    <div id="calculator-container" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start bg-transparent p-2 sm:p-4 rounded-2xl transition-all">
       
       <!-- Inputs Column (Forms or Custom UIs) -->
       <div class={calc.slug === 'scientific-calculator' ? "lg:col-span-12 space-y-6" : "lg:col-span-5 space-y-6"}>
@@ -1563,6 +1573,41 @@ const breadcrumbSchema = {
         });
         breakdownTable.innerHTML = h + '</tbody>';
       }
+    }
+
+    // Fullscreen Toggle
+    const fsBtn = document.getElementById('fullscreen-btn');
+    const container = document.getElementById('calculator-container');
+    if (fsBtn && container) {
+      fsBtn.onclick = () => {
+        if (!document.fullscreenElement) {
+          container.requestFullscreen().catch(err => {
+            console.error(`Fullscreen request failed: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      };
+
+      const updateButton = () => {
+        if (document.fullscreenElement === container) {
+          fsBtn.innerHTML = `
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 9L4 4m0 0h4M4 4v4m16-4l-5 5m5-5v4m0-4h-4M4 20l5-5m-5 5v-4m0 4h4m16 0l-5-5m5 5v-4m0 4h-4"></path>
+            </svg>
+            Exit Fullscreen
+          `;
+        } else {
+          fsBtn.innerHTML = `
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 20v-4m0 4h4m-4 0l5-5m11 5h-4m4 0v-4m0 4l-5-5"></path>
+            </svg>
+            Fullscreen
+          `;
+        }
+      };
+
+      document.onfullscreenchange = updateButton;
     }
   }
 
