@@ -84,7 +84,7 @@ const { type } = Astro.props;
           <!-- Statistics Drawer -->
           <div id="sci-stats-drawer" class="hidden bg-canvas-card border border-canvas-card-border rounded-xl p-4 space-y-3 shadow-inner">
             <p class="text-[9px] font-bold text-mute uppercase tracking-widest">Statistics Analyzer</p>
-            <input type="text" id="sci-stats-input" placeholder="Enter numbers (e.g. 12, 15, 23, 24)" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-10 px-3 text-xs font-bold focus:outline-none focus:border-hairline-strong transition-all" />
+            <input type="text" id="sci-stats-input" placeholder="Enter numbers (e.g. 12, 15, 23, 24)" class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-10 px-3 text-xs font-bold focus:outline-none focus:border-hairline-strong transition-all" />
             <div class="grid grid-cols-2 gap-1.5">
               {['Mean', 'StdDev', 'Variance', 'Count', 'Sum'].map(op => (
                 <button class="sci-stats-btn text-[9px] font-bold text-mute hover:text-ink py-2 rounded-lg border border-canvas-card-border bg-calc-btn hover:bg-canvas-card-soft-2 transition-all" data-stat={op.toLowerCase()}>{op}</button>
@@ -343,16 +343,16 @@ const { type } = Astro.props;
       <div class="space-y-4">
         <div>
           <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Diagonal Size (inches)</label>
-          <input type="number" id="diag-size" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="15.6" step="0.1" />
+          <input type="number" id="diag-size" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="15.6" step="0.1" />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Width (px)</label>
-            <input type="number" id="diag-res-x" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="1920" />
+            <input type="number" id="diag-res-x" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="1920" />
           </div>
           <div>
             <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Height (px)</label>
-            <input type="number" id="diag-res-y" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="1080" />
+            <input type="number" id="diag-res-y" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all" value="1080" />
           </div>
         </div>
       </div>
@@ -381,7 +381,7 @@ const { type } = Astro.props;
       
       <div class="bg-canvas-card-soft border border-canvas-card-border rounded-2xl p-4 sm:p-10 flex flex-col items-center justify-center min-h-[240px] shadow-inner overflow-x-auto">
         <div id="visual-card" class="bg-ink rounded-xl border border-canvas shadow-2xl relative flex items-center justify-center select-none shrink-0" style="width: 337px; height: 212.5px;">
-          <div class="absolute left-6 top-6 w-10 h-8 bg-canvas-soft-2 border border-hairline rounded-md"></div>
+          <div class="absolute left-6 top-6 w-10 h-8 bg-canvas border border-hairline rounded-md"></div>
           <div class="absolute right-6 top-6 font-mono text-[8px] text-mute tracking-[0.2em]">ZCALIBRATE.PRO</div>
           <div class="font-sans text-[10px] font-bold text-mute uppercase tracking-widest mt-8 italic">MATCH SIZE</div>
         </div>
@@ -392,7 +392,7 @@ const { type } = Astro.props;
           <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Visual width</span>
           <span id="slider-pixel-width" class="text-xs font-bold text-ink">337 px</span>
         </div>
-        <input type="range" id="card-slider" class="w-full accent-ink bg-canvas-card-soft-2 rounded-lg appearance-none h-1.5 cursor-ew-resize" min="150" max="600" value="337" />
+        <input type="range" id="card-slider" class="w-full accent-ink bg-canvas border border-canvas-card-border rounded-lg appearance-none h-1.5 cursor-ew-resize" min="150" max="600" value="337" />
       </div>
 
       <div class="grid grid-cols-2 gap-4 bg-canvas-card-soft p-6 rounded-2xl border border-canvas-card-border shadow-inner">
@@ -417,15 +417,15 @@ const { type } = Astro.props;
       <!-- Fraction 1 -->
       <div class="flex flex-col gap-3">
         <label class="text-[10px] font-bold text-mute uppercase tracking-widest text-center">Fraction 1</label>
-        <input type="number" id="frac-num1" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="1" />
+        <input type="number" id="frac-num1" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="1" />
         <div class="w-full h-1.5 bg-ink rounded-full"></div>
-        <input type="number" id="frac-den1" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="2" />
+        <input type="number" id="frac-den1" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="2" />
       </div>
       
       <!-- Operator -->
       <div class="flex flex-col gap-3 items-center justify-center">
         <label class="text-[10px] font-bold text-mute uppercase tracking-widest mb-4">Action</label>
-        <select id="frac-operator" class="bg-canvas-card-soft-2 border border-canvas-card-border rounded-xl h-14 px-3 text-ink font-bold w-16 text-center text-xl shadow-sm appearance-none cursor-pointer">
+        <select id="frac-operator" class="bg-canvas-card border border-canvas-card-border rounded-xl h-14 px-3 text-ink font-bold w-16 text-center text-xl shadow-sm appearance-none cursor-pointer">
           <option value="+">+</option>
           <option value="-">-</option>
           <option value="*">×</option>
@@ -436,9 +436,9 @@ const { type } = Astro.props;
       <!-- Fraction 2 -->
       <div class="flex flex-col gap-3">
         <label class="text-[10px] font-bold text-mute uppercase tracking-widest text-center">Fraction 2</label>
-        <input type="number" id="frac-num2" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="1" />
+        <input type="number" id="frac-num2" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="1" />
         <div class="w-full h-1.5 bg-ink rounded-full"></div>
-        <input type="number" id="frac-den2" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="3" />
+        <input type="number" id="frac-den2" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-12 px-3 text-center text-ink font-bold shadow-sm" value="3" />
       </div>
     </div>
 
@@ -464,7 +464,7 @@ const { type } = Astro.props;
       <div id="frac-step3" class="flex gap-2"></div>
     </div>
   </div>
-)}
+) }
 
 <!-- ==================== SUBNET CALCULATOR ==================== -->
 {type === 'subnet-calculator' && (
@@ -472,11 +472,11 @@ const { type } = Astro.props;
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="md:col-span-2">
         <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Base IP Address</label>
-        <input type="text" id="sub-ip" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all shadow-sm" value="192.168.1.1" placeholder="e.g. 192.168.1.1" />
+        <input type="text" id="sub-ip" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all shadow-sm" value="192.168.1.1" placeholder="e.g. 192.168.1.1" />
       </div>
       <div>
         <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">CIDR Prefix</label>
-        <select id="sub-cidr" class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong transition-all shadow-sm cursor-pointer">
+        <select id="sub-cidr" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong transition-all shadow-sm cursor-pointer">
           {Array.from({ length: 31 }, (_, i) => 32 - i).map(c => (
             <option value={c} selected={c === 24 ? true : undefined}>/{c}</option>
           ))}
@@ -517,7 +517,7 @@ const { type } = Astro.props;
           <span class="text-[10px] font-bold text-mute uppercase tracking-widest">Length of string</span>
           <span id="pass-len-val" class="text-xs font-bold text-ink">16 chars</span>
         </div>
-        <input type="range" id="pass-length" class="w-full accent-ink bg-canvas-card-soft-2 rounded-lg appearance-none h-1.5 cursor-ew-resize" min="6" max="64" value="16" />
+        <input type="range" id="pass-length" class="w-full accent-ink bg-canvas border border-canvas-card-border rounded-lg appearance-none h-1.5 cursor-ew-resize" min="6" max="64" value="16" />
       </div>
 
       <div class="grid grid-cols-2 gap-4">
@@ -565,7 +565,7 @@ const { type } = Astro.props;
       {['a', 'b', 'c'].map(side => (
         <div>
           <label class="block text-[10px] font-bold text-mute uppercase tracking-widest mb-2">Side {side}</label>
-          <input type="number" id={`tri-side-${side}`} class="w-full bg-canvas-card-soft-2 border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong shadow-sm" value="5" />
+          <input type="number" id={`tri-side-${side}`} class="w-full bg-canvas-card border border-canvas-card-border rounded-lg h-11 px-4 text-ink font-bold focus:outline-none focus:border-hairline-strong shadow-sm" value="5" />
         </div>
       ))}
     </div>

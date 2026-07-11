@@ -139,7 +139,7 @@ const breadcrumbSchema = {
                   
                   <div class="relative rounded-lg">
                     {input.type === 'select' ? (
-                      <select id={input.id} name={input.id} class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all appearance-none cursor-pointer">
+                      <select id={input.id} name={input.id} class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all appearance-none cursor-pointer">
                         {input.options?.map(opt => (
                           <option value={opt.value} selected={opt.value == input.default ? true : undefined}>{opt.label}</option>
                         ))}
@@ -158,14 +158,14 @@ const breadcrumbSchema = {
                             id={input.id} 
                             name={input.id} 
                             value={input.default} 
-                            class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all calc-date-input"
+                            class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all calc-date-input"
                             required
                           />
                         </div>
                         <div>
                           <span class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1">Dropdown Selectors</span>
                           <div class="grid grid-cols-3 gap-2">
-                            <select id={`${input.id}-month`} class="bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-month">
+                            <select id={`${input.id}-month`} class="bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-month">
                               {Array.from({ length: 12 }, (_, i) => {
                                 const m = i + 1;
                                 const name = new Date(2000, i, 1).toLocaleString('en-US', { month: 'short' });
@@ -173,14 +173,14 @@ const breadcrumbSchema = {
                               })}
                             </select>
                             
-                            <select id={`${input.id}-day`} class="bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-day">
+                            <select id={`${input.id}-day`} class="bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-day">
                               {Array.from({ length: 31 }, (_, i) => {
                                 const d = i + 1;
                                 return <option value={d}>{d}</option>;
                               })}
                             </select>
                             
-                            <select id={`${input.id}-year`} class="bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-year">
+                            <select id={`${input.id}-year`} class="bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-12 px-2 text-sm font-bold focus:outline-none focus:border-hairline-strong cursor-pointer calc-date-select-year">
                               {Array.from({ length: 151 }, (_, i) => {
                                 const y = 1900 + i;
                                 return <option value={y}>{y}</option>;
@@ -196,7 +196,7 @@ const breadcrumbSchema = {
                         name={input.id} 
                         value={input.default} 
                         placeholder={input.placeholder}
-                        class="w-full bg-canvas-card-soft-2 border border-canvas-card-border text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all"
+                        class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-12 px-4 text-base font-bold focus:outline-none focus:border-hairline-strong focus:ring-4 focus:ring-canvas-soft transition-all"
                         required
                       />
                     )}
