@@ -59,8 +59,8 @@
   --canvas: #000000;
   --canvas-soft: #0a0a0a;
   --canvas-soft-2: #111111;
-  --canvas-card: #121214;
-  --canvas-card-soft: #0a0a0c;
+  --canvas-card: #18181b;
+  --canvas-card-soft: #121215;
   --canvas-card-soft-2: #1c1c1f;
   --canvas-card-border: #2d2d31;
   --calc-btn: #1c1c1f;
@@ -81,7 +81,7 @@
 
 @layer base {
   html, body {
-    background-color: var(--canvas) !important;
+    background-color: var(--canvas-soft) !important;
     color: var(--ink) !important;
     font-family: var(--font-sans);
     margin: 0;

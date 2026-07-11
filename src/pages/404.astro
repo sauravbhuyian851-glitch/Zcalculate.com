@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="404: Page not found."
+  description="The page you are looking for does not exist or has been moved."
+>
+  <div class="relative min-h-[70vh] flex flex-col items-center justify-center text-center px-6 overflow-visible">
+    <!-- Atmospheric gradient glow -->
+    <div class="pointer-events-none absolute inset-x-0 top-0 z-0 h-[600px] w-full overflow-hidden">
+      <div class="mesh-gradient-backdrop absolute -top-[300px] left-1/2 h-[600px] w-[1200px] -translate-x-1/2 rounded-full opacity-40"></div>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center max-w-xl">
+      <!-- Mono label badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-canvas-soft text-[11px] font-mono font-medium text-mute mb-8 shadow-sm">
+        <span class="font-mono text-error font-semibold">404 ERROR</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="display-xl text-ink max-w-2xl leading-[1.1] tracking-[-2.4px]">
+        Lost in calculation<span class="text-link">.</span>
+      </h1>
+
+      <!-- Supporting copy -->
+      <p class="mt-6 text-body max-w-md text-base md:text-lg font-normal leading-relaxed text-mute">
+        The page you are looking for doesn't exist, or has been moved to a new workspace.
+      </p>
+
+      <!-- Action CTAs -->
+      <div class="mt-10 flex flex-col sm:flex-row items-center gap-4">
+        <a 
+          href="/" 
+          class="inline-flex items-center justify-center px-6 py-3 rounded-full text-sm font-semibold bg-brand-primary text-canvas hover:opacity-90 transition-all cursor-pointer shadow-md bg-[#171717]"
+        >
+          Back to Workspace
+        </a>
+        <a 
+          href="/#all-calculators" 
+          class="inline-flex items-center justify-center px-6 py-3 rounded-full text-sm font-semibold text-ink bg-canvas border border-hairline hover:bg-canvas-soft transition-all cursor-pointer shadow-sm"
+        >
+          Browse All Calculators
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
