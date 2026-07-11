@@ -2,15 +2,12 @@
 ---
 <div id="calc-container" class="w-full max-w-lg mx-auto md:max-w-2xl transition-all duration-300">
   <div id="calc-inner-wrap" class="relative bg-canvas-card border border-canvas-card-border rounded-2xl p-3 sm:p-4 shadow-xl transition-all duration-300 w-full max-w-lg">
-    <!-- Calculator Header / Modes -->
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center justify-between mb-3 border-b border-canvas-card-border pb-3">
-      <div class="flex items-center justify-center sm:justify-start gap-1.5 p-1 bg-canvas-card-soft-2 rounded-lg w-full sm:w-auto">
-        <button id="calc-mode-std" class="flex-1 sm:flex-initial px-4 py-1 rounded-md text-[11px] font-bold bg-calc-btn text-ink shadow-sm transition-all uppercase tracking-wider">Standard</button>
-        <button id="calc-mode-sci" class="flex-1 sm:flex-initial px-4 py-1 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider">Scientific</button>
+    <!-- Calculator Header -->
+    <div class="flex items-center justify-between mb-3 border-b border-canvas-card-border pb-3">
+      <div class="text-[11px] font-bold text-mute font-mono uppercase tracking-[0.2em] py-1">
+        Standard Calculator
       </div>
-      <div class="flex items-center justify-center sm:justify-end gap-4 w-full sm:w-auto px-1">
-        <!-- Degree / Radian Toggle -->
-        <span id="deg-rad-indicator" class="hidden font-mono text-[10px] font-bold text-mute uppercase tracking-widest bg-canvas-card-soft border border-canvas-card-border px-2.5 py-1 rounded">DEG</span>
+      <div class="flex items-center gap-4 px-1">
         <button id="calc-fullscreen" class="text-[11px] font-bold text-mute hover:text-ink transition-all flex items-center gap-1.5 uppercase tracking-wider" aria-label="Toggle Fullscreen">
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Full
@@ -35,29 +32,6 @@
 
     <!-- Main Pads Grid -->
     <div class="flex flex-col gap-4">
-      <!-- Scientific Pad (collapsible) -->
-      <div id="calc-sci-pad" class="hidden grid-cols-5 gap-2 w-full select-none">
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="sin">sin</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="cos">cos</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="tan">tan</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="pi">π</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="e">e</button>
-
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="asin">sin⁻¹</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="acos">cos⁻¹</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="atan">tan⁻¹</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="pow">xʸ</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="sqrt">√</button>
-
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="log">log</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="ln">ln</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="fact">x!</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val="(">(</button>
-        <button class="calc-btn text-sm font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase" data-val=")">)</button>
-
-        <button id="calc-toggle-deg" class="col-span-5 calc-btn text-[10px] font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 hover:text-ink rounded-lg py-2 flex items-center justify-center transition-all uppercase tracking-wider mt-1.5">Toggle Radian Mode</button>
-      </div>
-
       <!-- Standard Pad -->
       <div class="grid grid-cols-4 gap-2 w-full select-none" id="calc-std-pad">
         <button class="calc-btn text-2xl sm:text-3xl font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-xl py-3 sm:py-3.5 transition-all" data-val="clear">C</button>
@@ -90,24 +64,13 @@
 
 <script>
   function initStandardCalculator() {
-    let mode = 'std'; // std or sci
-    let isRadians = false; // degree default, false
     let currentExpr = '';
     let resultShown = false;
 
-    const stdBtn = document.getElementById('calc-mode-std');
-    const sciBtn = document.getElementById('calc-mode-sci');
-    const sciPad = document.getElementById('calc-sci-pad');
-    const stdPad = document.getElementById('calc-std-pad');
-    const toggleDegBtn = document.getElementById('calc-toggle-deg');
-    const degRadIndicator = document.getElementById('deg-rad-indicator');
     const displayExpr = document.getElementById('calc-display-expr');
     const displayResult = document.getElementById('calc-display-result');
-    const clearHistoryBtn = document.getElementById('calc-clear-history');
     const container = document.getElementById('calc-container');
-    const innerWrap = document.getElementById('calc-inner-wrap');
     const fullscreenBtn = document.getElementById('calc-fullscreen');
-    let isFullscreen = sessionStorage.getItem('calc_fullscreen') === 'true';
 
     // Clean up old listeners
     const buttons = document.querySelectorAll('.calc-btn');
@@ -116,70 +79,13 @@
       btn.parentNode.replaceChild(newBtn, btn);
     });
 
-    // Re-select fresh nodes
-    const freshStdBtn = document.getElementById('calc-mode-std');
-    const freshSciBtn = document.getElementById('calc-mode-sci');
-    const freshSciPad = document.getElementById('calc-sci-pad');
-    const freshToggleDegBtn = document.getElementById('calc-toggle-deg');
     const freshClearHistoryBtn = document.getElementById('calc-clear-history');
-
-    if (freshStdBtn && freshSciBtn && freshSciPad) {
-      freshStdBtn.addEventListener('click', () => {
-        mode = 'std';
-        freshStdBtn.className = "flex-1 sm:flex-initial px-4 py-1 rounded-md text-[11px] font-bold bg-calc-btn text-ink shadow-sm transition-all uppercase tracking-wider";
-        freshSciBtn.className = "flex-1 sm:flex-initial px-4 py-1 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider";
-        freshSciPad.style.display = 'none';
-        freshSciPad.classList.remove('calc-sci-active');
-        if (stdPad) stdPad.className = "grid grid-cols-4 gap-2 w-full select-none";
-        if (innerWrap) innerWrap.classList.remove('calc-sci-active-wrap');
-        if (!isFullscreen) {
-          if (container) container.className = "w-full max-w-lg mx-auto transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-3 sm:p-4 shadow-xl transition-all duration-300 w-full max-w-lg";
-        }
-        if (degRadIndicator) degRadIndicator.classList.add('hidden');
-      });
-
-      freshSciBtn.addEventListener('click', () => {
-        mode = 'sci';
-        freshSciBtn.className = "flex-1 sm:flex-initial px-4 py-1 rounded-md text-[11px] font-bold bg-calc-btn text-ink shadow-sm transition-all uppercase tracking-wider";
-        freshStdBtn.className = "flex-1 sm:flex-initial px-4 py-1 rounded-md text-[11px] font-bold text-mute hover:text-ink transition-all uppercase tracking-wider";
-        freshSciPad.style.display = 'grid';
-        freshSciPad.classList.add('calc-sci-active');
-        if (stdPad) stdPad.className = "grid grid-cols-4 gap-2 w-full select-none calc-sci-active";
-        if (innerWrap) innerWrap.classList.add('calc-sci-active-wrap');
-        if (!isFullscreen) {
-          if (container) container.className = "w-full max-w-lg mx-auto md:max-w-2xl transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-3 sm:p-4 shadow-xl transition-all duration-300 w-full md:max-w-2xl max-w-lg mx-auto";
-        }
-        if (degRadIndicator) degRadIndicator.classList.remove('hidden');
-        updateDegRadIndicator();
-      });
-    }
-
-    function updateDegRadIndicator() {
-      if (degRadIndicator && freshToggleDegBtn) {
-        if (isRadians) {
-          degRadIndicator.textContent = 'RAD';
-          freshToggleDegBtn.textContent = 'Toggle Degree Mode';
-        } else {
-          degRadIndicator.textContent = 'DEG';
-          freshToggleDegBtn.textContent = 'Toggle Radian Mode';
-        }
-      }
-    }
-
-    if (freshToggleDegBtn) {
-      freshToggleDegBtn.addEventListener('click', () => {
-        isRadians = !isRadians;
-        updateDegRadIndicator();
-      });
-    }
 
     if (freshClearHistoryBtn) {
       freshClearHistoryBtn.addEventListener('click', () => {
         currentExpr = '';
         if (displayExpr) displayExpr.textContent = ' ';
-        if (displayResult) displayResult.textContent = '\u00A0';
+        if (displayResult) displayResult.textContent = '0';
         resultShown = false;
       });
     }
@@ -187,12 +93,12 @@
     document.querySelectorAll('.calc-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const val = btn.getAttribute('data-val');
-        if (!val || val === 'std' || val === 'sci') return;
+        if (!val) return;
 
         if (val === 'clear') {
           currentExpr = '';
           if (displayExpr) displayExpr.textContent = ' ';
-          if (displayResult) displayResult.textContent = '\u00A0';
+          if (displayResult) displayResult.textContent = '0';
           resultShown = false;
         } else if (val === 'backspace') {
           backspace();
@@ -206,11 +112,6 @@
           if (val === 'subtract') insert = '-';
           if (val === 'multiply') insert = '×';
           if (val === 'divide') insert = '÷';
-          if (['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'log', 'ln', 'sqrt'].includes(val)) insert = val + '(';
-          if (val === 'pi') insert = 'π';
-          if (val === 'e') insert = 'e';
-          if (val === 'pow') insert = '^';
-          if (val === 'fact') insert = '!';
           appendVal(insert);
         }
       });
@@ -218,14 +119,14 @@
 
     function appendVal(val: string) {
       if (resultShown) {
-        if (['+', '-', '×', '÷', '^', '%', '!'].includes(val)) {
+        if (['+', '-', '×', '÷', '%'].includes(val)) {
           currentExpr = (displayResult?.textContent || '0') + val;
         } else {
           currentExpr = val;
         }
         resultShown = false;
       } else {
-        if (currentExpr === '0' && !['+', '-', '×', '÷', '^', '%', '!', '.'].includes(val)) {
+        if (currentExpr === '0' && !['+', '-', '×', '÷', '%', '.'].includes(val)) {
           currentExpr = val;
         } else {
           currentExpr += val;
@@ -236,8 +137,7 @@
 
     function backspace() {
       if (currentExpr.length > 0) {
-        const matchedFunc = ['asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt('].find(f => currentExpr.endsWith(f));
-        currentExpr = matchedFunc ? currentExpr.substring(0, currentExpr.length - matchedFunc.length) : currentExpr.substring(0, currentExpr.length - 1);
+        currentExpr = currentExpr.substring(0, currentExpr.length - 1);
         updateDisplay();
       }
     }
@@ -245,53 +145,23 @@
     function updateDisplay() {
       if (displayExpr) displayExpr.textContent = currentExpr || ' ';
       if (!resultShown && displayResult) {
-        displayResult.textContent = '\u00A0';
+        displayResult.textContent = '0';
       }
     }
 
     function calculate() {
       if (!currentExpr) return;
       try {
-        let prep = currentExpr.replace(/×/g, '*').replace(/÷/g, '/').replace(/π/g, 'Math.PI').replace(/e/g, 'Math.E');
-        prep = prep.replace(/(\d+(?:\.\d+)?)\!/g, (_, n) => {
-          let r = 1; for (let i = 2; i <= n; i++) r *= i; return r.toString();
-        });
-        const d2r = (Math.PI / 180);
-        if (!isRadians) {
-          prep = prep.replace(/sin\(/g, `Math.sin(${d2r}*`).replace(/cos\(/g, `Math.cos(${d2r}*`).replace(/tan\(/g, `Math.tan(${d2r}*`)
-                     .replace(/asin\(/g, `(1/${d2r})*Math.asin(`).replace(/acos\(/g, `(1/${d2r})*Math.acos(`).replace(/atan\(/g, `(1/${d2r})*Math.atan(`);
-        } else {
-          prep = prep.replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(').replace(/tan\(/g, 'Math.tan(');
-        }
-        prep = prep.replace(/ln\(/g, 'Math.log(').replace(/log\(/g, 'Math.log10(').replace(/sqrt\(/g, 'Math.sqrt(').replace(/\^/g, '**');
-
+        let prep = currentExpr.replace(/×/g, '*').replace(/÷/g, '/');
         const result = new Function(`return ${prep}`)();
         const finalAns = typeof result === 'number' && !isNaN(result) ? Number(result.toFixed(10)).toString() : 'Error';
         if (displayResult) {
           displayResult.textContent = finalAns;
         }
         resultShown = true;
-        
-        saveToHistory('Standard Calculator', currentExpr, finalAns);
       } catch (err) {
         if (displayResult) displayResult.textContent = 'Error';
         resultShown = true;
-      }
-    }
-
-    function saveToHistory(calcName: string, query: string, resVal: string) {
-      try {
-        const raw = localStorage.getItem('zcalculate_history') || '[]';
-        const history = JSON.parse(raw);
-        history.unshift({
-          timestamp: Date.now(),
-          calculator: calcName,
-          query,
-          result: resVal
-        });
-        localStorage.setItem('zcalculate_history', JSON.stringify(history.slice(0, 100)));
-      } catch (e) {
-        console.error('History write failure', e);
       }
     }
 
@@ -307,7 +177,7 @@
       // Ctrl+C handling
       if ((e.ctrlKey || e.metaKey) && (key === 'c' || key === 'C')) {
         const text = displayResult?.textContent || '';
-        if (text && text !== '\u00A0' && text !== '0' && text !== 'Error') {
+        if (text && text !== '0' && text !== 'Error') {
           navigator.clipboard.writeText(text);
           e.preventDefault();
         }
@@ -335,7 +205,7 @@
       } else if (key === 'Escape' || key === 'c' || key === 'C') {
         currentExpr = '';
         if (displayExpr) displayExpr.textContent = ' ';
-        if (displayResult) displayResult.textContent = '\u00A0';
+        if (displayResult) displayResult.textContent = '0';
         resultShown = false;
       }
     };
@@ -346,35 +216,13 @@
     (window as any)._calcKeyDownHandler = handleKeyDown;
     document.addEventListener('keydown', handleKeyDown);
 
-    // Paste handling
-    const handlePaste = (e: ClipboardEvent) => {
-      const activeEl = document.activeElement;
-      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT')) {
-        return;
-      }
-      const text = e.clipboardData?.getData('text') || '';
-      const filtered = text.replace(/[^0-9\.\+\-\*\/\%\(\)xX÷×]/g, '')
-                          .replace(/x|X/g, '×')
-                          .replace(/\*/g, '×')
-                          .replace(/\//g, '÷');
-      if (filtered) {
-        appendVal(filtered);
-      }
-    };
-
-    if ((window as any)._calcPasteHandler) {
-      document.removeEventListener('paste', (window as any)._calcPasteHandler);
-    }
-    (window as any)._calcPasteHandler = handlePaste;
-    document.addEventListener('paste', handlePaste);
-
     // Click-to-copy result
     if (displayResult) {
       displayResult.style.cursor = 'pointer';
       displayResult.setAttribute('title', 'Click to copy result');
       displayResult.onclick = () => {
         const text = displayResult.textContent || '';
-        if (text && text !== '\u00A0' && text !== '0' && text !== 'Error') {
+        if (text && text !== '0' && text !== 'Error') {
           navigator.clipboard.writeText(text).then(() => {
             const originalColor = displayResult.className;
             displayResult.className = 'w-full text-right text-emerald-500 text-3xl font-semibold tracking-tighter overflow-x-auto whitespace-nowrap scrollbar-none';
@@ -386,11 +234,10 @@
       };
     }
 
-    // Fullscreen toggling
+    // Fullscreen toggling using HTML5 Fullscreen API
     const applyFullscreenLayout = () => {
-      if (isFullscreen) {
-        if (container) container.className = "w-full max-w-none fixed inset-0 z-[100] bg-canvas/98 overflow-y-auto p-4 md:p-8 flex justify-center items-start";
-        if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-3 sm:p-4 shadow-xl transition-all duration-300 w-full max-w-lg md:max-w-2xl my-auto";
+      const isCurrentlyFullscreen = document.fullscreenElement === container;
+      if (isCurrentlyFullscreen) {
         if (fullscreenBtn) {
           fullscreenBtn.innerHTML = `
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -398,13 +245,6 @@
           `;
         }
       } else {
-        if (mode === 'std') {
-          if (container) container.className = "w-full max-w-lg mx-auto transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-3 sm:p-4 shadow-xl transition-all duration-300 w-full max-w-lg";
-        } else {
-          if (container) container.className = "w-full max-w-lg mx-auto md:max-w-2xl transition-all duration-300";
-          if (innerWrap) innerWrap.className = "relative bg-canvas-card border border-canvas-card-border rounded-2xl p-3 sm:p-4 shadow-xl transition-all duration-300 w-full md:max-w-2xl max-w-lg mx-auto";
-        }
         if (fullscreenBtn) {
           fullscreenBtn.innerHTML = `
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -418,12 +258,16 @@
       fullscreenBtn.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        isFullscreen = !isFullscreen;
-        sessionStorage.setItem('calc_fullscreen', String(isFullscreen));
-        applyFullscreenLayout();
+        if (!document.fullscreenElement) {
+          container.requestFullscreen().catch(err => {
+            console.error(`Fullscreen request failed: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
       };
-      
-      // Initialize layout based on saved state
+
+      document.onfullscreenchange = applyFullscreenLayout;
       applyFullscreenLayout();
     }
   }
@@ -447,45 +291,6 @@
     animation: calc-caret-blink 1s step-end infinite !important;
     margin-left: 2px !important;
     vertical-align: middle !important;
-  }
-
-  #calc-std-pad.calc-sci-active .calc-btn {
-    padding-top: 0.5rem !important; /* py-2 */
-    padding-bottom: 0.5rem !important; /* py-2 */
-    font-size: 1.25rem !important; /* text-xl */
-  }
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="clear"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="backspace"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="percent"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="divide"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="multiply"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="subtract"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="add"],
-  #calc-std-pad.calc-sci-active .calc-btn[data-val="equals"] {
-    font-size: 1.5rem !important; /* text-2xl */
-  }
-  
-  #calc-sci-pad.calc-sci-active .calc-btn {
-    padding-top: 0.375rem !important; /* py-1.5 */
-    padding-bottom: 0.375rem !important; /* py-1.5 */
-    font-size: 0.75rem !important; /* text-xs */
-  }
-  #calc-sci-pad.calc-sci-active #calc-toggle-deg {
-    padding-top: 0.375rem !important;
-    padding-bottom: 0.375rem !important;
-    margin-top: 0.25rem !important;
-  }
-  
-  #calc-inner-wrap.calc-sci-active-wrap #calc-display-expr {
-    min-height: 28px !important;
-    font-size: 1.25rem !important; /* text-2xl */
-  }
-  #calc-inner-wrap.calc-sci-active-wrap #calc-display-result {
-    font-size: 1.5rem !important; /* text-2xl */
-  }
-  #calc-inner-wrap.calc-sci-active-wrap .bg-canvas-soft.border.border-hairline.rounded-xl.p-4.mb-4 {
-    min-height: 80px !important;
-    padding: 0.625rem 0.875rem !important; /* py-2.5 px-3.5 */
-    margin-bottom: 0.75rem !important; /* mb-3 */
+    margin-bottom: 2px !important;
   }
 </style>

@@ -22,40 +22,40 @@ const { type } = Astro.props;
     </div>
 
     <!-- ===== MODE 1: STANDARD SCIENTIFIC ===== -->
-    <div id="sci-standard-panel" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div id="sci-standard-panel" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <!-- Left Column: Main Calculator Layout (Display + Buttons) -->
-      <div class="lg:col-span-7 space-y-4">
+      <div class="lg:col-span-7 space-y-3">
         <!-- Display Screen -->
-        <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-4 flex flex-col items-end justify-between min-h-[110px] shadow-inner font-sans">
-          <div id="sci-display-expr" class="w-full text-right text-mute text-base font-medium overflow-x-auto whitespace-nowrap min-h-[24px]">&nbsp;</div>
-          <div id="sci-display-result" class="w-full text-right text-ink text-4xl font-bold tracking-tighter overflow-x-auto whitespace-nowrap">0</div>
+        <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-3 flex flex-col items-end justify-between min-h-[80px] shadow-inner font-sans">
+          <div id="sci-display-expr" class="w-full text-right text-mute text-sm font-medium overflow-x-auto whitespace-nowrap min-h-[20px]">&nbsp;</div>
+          <div id="sci-display-result" class="w-full text-right text-ink text-3xl font-bold tracking-tighter overflow-x-auto whitespace-nowrap">0</div>
         </div>
         <!-- Function Buttons Grid (5 cols) -->
-        <div class="grid grid-cols-5 gap-2">
+        <div class="grid grid-cols-5 gap-1.5">
           {[
             {k:'sin',l:'sin'},{k:'cos',l:'cos'},{k:'tan',l:'tan'},{k:'log',l:'log'},{k:'ln',l:'ln'},
             {k:'asin',l:'sin⁻¹'},{k:'acos',l:'cos⁻¹'},{k:'atan',l:'tan⁻¹'},{k:'sqrt',l:'√'},{k:'fact',l:'x!'},
             {k:'pi',l:'π'},{k:'e',l:'e'},{k:'pow',l:'xʸ'},{k:'open',l:'('},{k:'close',l:')'},
-            {k:'tenPow',l:'10ˣ'},{k:'ePow',l:'eˣ'},{k:'inv',l:'x⁻¹'},{k:'ncr',l:'nCr'},{k:'npr',l:'nPr'},
-            {k:'rectpol',l:'R↔P'},{k:'dms',l:'DMS'},{k:'abs',l:'|x|'},{k:'ans',l:'Ans'},{k:'pct',l:'%'},
+            {k:'tenPow',l:'10\u02e3'},{k:'ePow',l:'e\u02e3'},{k:'inv',l:'x\u207b\u00b9'},{k:'ncr',l:'nCr'},{k:'npr',l:'nPr'},
+            {k:'rectpol',l:'R\u2194P'},{k:'dms',l:'DMS'},{k:'abs',l:'|x|'},{k:'ans',l:'Ans'},{k:'pct',l:'%'},
           ].map(btn => (
-            <button class="sci-btn text-[11px] sm:text-xs font-black bg-calc-btn border border-canvas-card-border text-body hover:bg-brand-primary hover:text-canvas rounded-lg py-3 sm:py-3.5 transition-all shadow-sm uppercase" data-sci={btn.k}>
+            <button class="sci-btn text-[10px] sm:text-xs font-bold bg-calc-btn border border-canvas-card-border text-body hover:bg-brand-primary hover:text-canvas rounded-lg py-1.5 sm:py-2.5 transition-all shadow-sm uppercase" data-sci={btn.k}>
               {btn.l}
             </button>
           ))}
         </div>
         <!-- Standard Numpad -->
-        <div class="grid grid-cols-4 gap-2">
-          <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-3.5 sm:py-4 transition-all" data-sci="clear">C</button>
-          <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-3.5 sm:py-4 transition-all" data-sci="back">⌫</button>
-          <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-3.5 sm:py-4 transition-all" data-sci="mem">MR</button>
-          <button class="sci-btn text-sm font-black bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-3.5 sm:py-4 transition-all" data-sci="÷">÷</button>
-          {['7','8','9','×','4','5','6','-','1','2','3','+'].map(val => (
-            <button class={`sci-btn text-xl font-black ${['×','-','+'].includes(val) ? 'bg-calc-btn-soft border-canvas-card-border text-link' : 'bg-calc-btn border-canvas-card-border text-ink'} border rounded-lg py-3.5 sm:py-4 transition-all shadow-sm hover:bg-canvas-card-soft-2`} data-sci={val}>{val}</button>
+        <div class="grid grid-cols-4 gap-1.5">
+          <button class="sci-btn text-xs font-bold bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-2 sm:py-3 transition-all" data-sci="clear">C</button>
+          <button class="sci-btn text-xs font-bold bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-2 sm:py-3 transition-all" data-sci="back">⌫</button>
+          <button class="sci-btn text-xs font-bold bg-calc-btn-soft border border-canvas-card-border text-mute hover:bg-canvas-card-soft-2 rounded-lg py-2 sm:py-3 transition-all" data-sci="mem">MR</button>
+          <button class="sci-btn text-xs font-bold bg-calc-btn-soft border border-canvas-card-border text-link hover:bg-canvas-card-soft-2 rounded-lg py-2 sm:py-3 transition-all" data-sci="&#247;">&#247;</button>
+          {['7','8','9','&#215;','4','5','6','-','1','2','3','+'].map(val => (
+            <button class={`sci-btn text-lg font-bold ${['&#215;','-','+'].includes(val) ? 'bg-calc-btn-soft border-canvas-card-border text-link' : 'bg-calc-btn border-canvas-card-border text-ink'} border rounded-lg py-2.5 sm:py-3 transition-all shadow-sm hover:bg-canvas-card-soft-2`} data-sci={val === '&#215;' ? '×' : val}>{val === '&#215;' ? '×' : val}</button>
           ))}
-          <button class="sci-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-3.5 sm:py-4 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci="0">0</button>
-          <button class="sci-btn text-xl font-black bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-3.5 sm:py-4 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci=".">.</button>
-          <button class="sci-btn col-span-2 text-base font-black bg-brand-primary hover:opacity-90 text-canvas rounded-lg py-3.5 sm:py-4 shadow-lg transition-all" data-sci="=">=</button>
+          <button class="sci-btn text-lg font-bold bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-2.5 sm:py-3 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci="0">0</button>
+          <button class="sci-btn text-lg font-bold bg-calc-btn border border-canvas-card-border text-ink rounded-lg py-2.5 sm:py-3 transition-all shadow-sm hover:bg-canvas-card-soft-2" data-sci=".">.</button>
+          <button class="sci-btn col-span-2 text-sm font-bold bg-brand-primary hover:opacity-90 text-canvas rounded-lg py-2.5 sm:py-3 shadow-lg transition-all" data-sci="=">=</button>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ const { type } = Astro.props;
         <!-- Code Editor -->
         <div class="relative">
           <div class="absolute top-2 left-3 text-[8px] font-bold text-mute uppercase tracking-widest z-10 pointer-events-none select-none">Script Editor (Javascript Context)</div>
-          <textarea id="prog-editor" class="w-full bg-canvas-card-soft border border-canvas-card-border text-ink rounded-xl p-4 pt-8 text-xs font-mono leading-6 focus:outline-none focus:border-hairline-strong transition-all resize-none shadow-inner" rows="12" placeholder="// Write your program here&#10;// Use print() to output results&#10;let sum = 0;&#10;for (let i = 1; i <= 10; i++) {&#10;  sum += i;&#10;}&#10;print('Sum 1-10:', sum);"></textarea>
+          <textarea id="prog-editor" class="w-full bg-canvas-card-soft border border-canvas-card-border text-ink rounded-xl p-4 pt-8 text-xs font-mono leading-6 focus:outline-none focus:border-hairline-strong transition-all resize-none shadow-inner" rows="7" placeholder="// Write your program here&#10;// Use print() to output results&#10;let sum = 0;&#10;for (let i = 1; i <= 10; i++) {&#10;  sum += i;&#10;}&amp;#10;print('Sum 1-10:', sum);"></textarea>
         </div>
         <!-- Run Controls Bar -->
         <div class="flex items-center gap-2 flex-wrap bg-canvas-card border border-canvas-card-border p-2 rounded-xl shadow-sm">
@@ -117,7 +117,7 @@ const { type } = Astro.props;
         <!-- Output Console -->
         <div class="relative">
           <div class="absolute top-2 left-3 text-[8px] font-bold text-mute uppercase tracking-widest z-10 pointer-events-none select-none">Console Output</div>
-          <div id="prog-output" class="w-full bg-canvas-card-soft border border-canvas-card-border text-ink rounded-xl p-4 pt-8 text-xs font-mono leading-6 min-h-[120px] max-h-[180px] overflow-y-auto whitespace-pre-wrap shadow-inner">Ready.</div>
+          <div id="prog-output" class="w-full bg-canvas-card-soft border border-canvas-card-border text-ink rounded-xl p-4 pt-8 text-xs font-mono leading-6 min-h-[80px] max-h-[120px] overflow-y-auto whitespace-pre-wrap shadow-inner">Ready.</div>
         </div>
       </div>
 
@@ -136,7 +136,7 @@ const { type } = Astro.props;
           <!-- Variable Watcher Box -->
           <div>
             <h4 class="text-[9px] font-bold text-mute uppercase tracking-widest mb-2 border-b border-canvas-card-border pb-1">Live Variables Monitor</h4>
-            <div id="prog-variables" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg p-3 text-xs font-mono text-body min-h-[160px] max-h-[220px] overflow-y-auto shadow-inner leading-5">No variables.</div>
+            <div id="prog-variables" class="w-full bg-canvas-card border border-canvas-card-border rounded-lg p-3 text-xs font-mono text-body min-h-[100px] max-h-[150px] overflow-y-auto shadow-inner leading-5">No variables.</div>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ const { type } = Astro.props;
       <div class="lg:col-span-7 space-y-4">
         <!-- Interactive Canvas Frame -->
         <div class="relative bg-canvas-card border border-canvas-card-border rounded-xl overflow-hidden shadow-xl">
-          <canvas id="graph-canvas" width="600" height="400" class="w-full cursor-crosshair" style="aspect-ratio:3/2;"></canvas>
+          <canvas id="graph-canvas" width="600" height="300" class="w-full cursor-crosshair" style="aspect-ratio:2/1;"></canvas>
           <div id="graph-trace-info" class="hidden absolute top-2 right-2 bg-canvas-card/90 border border-canvas-card-border rounded px-2 py-1 text-[10px] font-mono font-bold text-ink shadow-sm"></div>
         </div>
         <!-- Canvas Action Toolbar -->

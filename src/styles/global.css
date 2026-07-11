@@ -285,18 +285,32 @@
 }
 
 /* Fullscreen Styles */
-#calculator-container:fullscreen {
+#calculator-container:fullscreen,
+#calc-container:fullscreen {
   background-color: var(--canvas-soft) !important;
-  padding: 48px 24px !important;
+  padding: 16px !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+#calculator-container:fullscreen > *,
+#calc-container:fullscreen > * {
+  max-height: 94vh !important;
   overflow-y: auto !important;
   width: 100% !important;
-  height: 100% !important;
-  display: grid !important;
-  align-content: start !important;
+  max-width: 1200px !important;
+  padding: 8px !important;
 }
 
 @media (min-width: 1024px) {
-  #calculator-container:fullscreen {
-    padding: 64px 80px !important;
+  #calculator-container:fullscreen,
+  #calc-container:fullscreen {
+    padding: 32px !important;
   }
 }

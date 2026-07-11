@@ -172,4 +172,22 @@ const itemListSchema = {
       }
     }
   }
+
+  // Handle categories coming from local storage on load
+  function initCategoryFilterFromStorage() {
+    const savedCategory = localStorage.getItem('zcalculate_active_category');
+    if (savedCategory) {
+      const tabToClick = document.querySelector(`.filter-tab[data-category="${savedCategory}"]`) as HTMLButtonElement;
+      if (tabToClick) {
+        tabToClick.click();
+        const section = document.getElementById('all-calculators');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+      localStorage.removeItem('zcalculate_active_category');
+    }
+  }
+
+  initCategoryFilterFromStorage();
 </script>
