@@ -4,31 +4,53 @@ interface Props {
 }
 
 const { type } = Astro.props;
+
+const isScientificPage = ['scientific-calculator', 'programmable-calculator', 'graphing-calculator', 'cas-calculator'].includes(type);
+
+const activeMode = type === 'programmable-calculator' ? 'programmable' :
+                   type === 'graphing-calculator' ? 'graphing' :
+                   type === 'cas-calculator' ? 'cas' : 'standard';
+
+const modeTitleMap: Record<string, string> = {
+  standard: 'Scientific Calculator',
+  programmable: 'Programmable Calculator',
+  graphing: 'Graphing Calculator',
+  cas: 'CAS Calculator'
+};
 ---
 
 <!-- ==================== SCIENTIFIC CALCULATOR STANDALONE (4-MODE) ==================== -->
-{type === 'scientific-calculator' && (
+{isScientificPage && (
   <div class="space-y-6" id="sci-calc-root">
-    <!-- ===== MODE TAB BAR ===== -->
-    <div class="flex items-center p-1 bg-canvas-card-soft-2 border border-canvas-card-border rounded-xl gap-1 overflow-x-auto shadow-sm">
-      {['standard', 'programmable', 'graphing', 'cas'].map(mode => (
-        <button
-          class={`sci-mode-tab flex-1 min-w-[80px] px-3 py-2 rounded-lg text-[10px] sm:text-xs font-bold transition-all uppercase tracking-wider whitespace-nowrap ${mode === 'standard' ? 'bg-calc-btn text-ink shadow-sm border border-canvas-card-border' : 'text-mute hover:text-ink'}`}
-          data-mode={mode}
-        >
-          {mode === 'cas' ? 'CAS' : mode.charAt(0).toUpperCase() + mode.slice(1)}
+    <!-- Calculator Header -->
+    <div class="flex items-center justify-between mb-3 border-b border-canvas-card-border pb-3">
+      <div class="text-[11px] font-bold text-mute font-mono uppercase tracking-[0.2em] py-1">
+        {modeTitleMap[activeMode]}
+      </div>
+      <div class="flex items-center gap-4 px-1">
+        <button id="sci-fullscreen" class="text-[11px] font-bold text-mute hover:text-ink transition-all flex items-center gap-1.5 uppercase tracking-wider" aria-label="Toggle Fullscreen">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Full
         </button>
-      ))}
+      </div>
     </div>
 
+    <!-- ===== MODE TAB BAR ===== -->
+
+
     <!-- ===== MODE 1: STANDARD SCIENTIFIC ===== -->
-    <div id="sci-standard-panel" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <div id="sci-standard-panel" class={`grid grid-cols-1 lg:grid-cols-12 gap-4 ${activeMode !== 'standard' ? 'hidden' : ''}`}>
       <!-- Left Column: Main Calculator Layout (Display + Buttons) -->
       <div class="lg:col-span-7 space-y-3">
         <!-- Display Screen -->
-        <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-3 flex flex-col items-end justify-between min-h-[80px] shadow-inner font-sans">
-          <div id="sci-display-expr" class="w-full text-right text-ink text-sm font-medium overflow-x-auto whitespace-nowrap min-h-[20px]">&nbsp;</div>
-          <div id="sci-display-result" class="w-full text-right text-ink text-3xl font-bold tracking-tighter overflow-x-auto whitespace-nowrap">0</div>
+        <div class="calc-screen bg-canvas-card-soft border border-canvas-card-border rounded-xl p-4 mb-4 flex flex-col justify-between min-h-[110px] shadow-inner font-sans relative">
+          <!-- Input Part -->
+          <div class="border border-solid border-canvas-card-border bg-canvas-card rounded-lg p-2.5 mb-2 w-full flex items-center justify-between transition-all relative">
+            <span class="absolute -top-2.5 left-3.5 px-1 bg-canvas-card text-[8px] font-black text-mute uppercase tracking-widest select-none">Input (Paste here)</span>
+            <div id="sci-display-expr" class="w-full text-left text-ink text-2xl font-semibold overflow-x-auto whitespace-nowrap scrollbar-none min-h-[32px] animate-blink">&nbsp;</div>
+          </div>
+          <!-- Output Part -->
+          <div id="sci-display-result" class="w-full text-right text-ink text-3xl font-semibold tracking-tighter overflow-x-auto whitespace-nowrap scrollbar-none">0</div>
         </div>
         <!-- Function Buttons Grid (5 cols) -->
         <div class="grid grid-cols-5 gap-1.5">
@@ -97,7 +119,7 @@ const { type } = Astro.props;
     </div>
 
     <!-- ===== MODE 2: PROGRAMMABLE ===== -->
-    <div id="sci-prog-panel" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div id="sci-prog-panel" class={`grid grid-cols-1 lg:grid-cols-12 gap-6 ${activeMode !== 'programmable' ? 'hidden' : ''}`}>
       <!-- Left Column: Code Editor & Execution Console -->
       <div class="lg:col-span-8 space-y-4">
         <!-- Code Editor -->
@@ -143,7 +165,7 @@ const { type } = Astro.props;
     </div>
 
     <!-- ===== MODE 3: GRAPHING ===== -->
-    <div id="sci-graph-panel" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div id="sci-graph-panel" class={`grid grid-cols-1 lg:grid-cols-12 gap-6 ${activeMode !== 'graphing' ? 'hidden' : ''}`}>
       <!-- Left Column: Graph Viewport Canvas & Zoom Controls -->
       <div class="lg:col-span-7 space-y-4">
         <!-- Interactive Canvas Frame -->
@@ -224,7 +246,7 @@ const { type } = Astro.props;
     </div>
 
     <!-- ===== MODE 4: CAS (Computer Algebra System) ===== -->
-    <div id="sci-cas-panel" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div id="sci-cas-panel" class={`grid grid-cols-1 lg:grid-cols-12 gap-6 ${activeMode !== 'cas' ? 'hidden' : ''}`}>
       <!-- Left Column: CAS Input, Output & History -->
       <div class="lg:col-span-7 space-y-4">
         <!-- CAS Result Screen -->

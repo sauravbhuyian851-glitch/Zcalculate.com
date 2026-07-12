@@ -123,7 +123,7 @@ const breadcrumbSchema = {
     <div id="calculator-container" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start bg-transparent p-2 sm:p-4 rounded-2xl transition-all">
       
       <!-- Inputs Column (Forms or Custom UIs) -->
-      <div class={calc.slug === 'scientific-calculator' ? "lg:col-span-12 space-y-6" : "lg:col-span-5 space-y-6"}>
+      <div class={['scientific-calculator', 'programmable-calculator', 'graphing-calculator', 'cas-calculator'].includes(calc.slug) ? "lg:col-span-12 space-y-6" : "lg:col-span-5 space-y-6"}>
         <div class="bg-canvas-card border border-canvas-card-border rounded-2xl p-6 sm:p-8 shadow-xl text-left">
           <h2 class="text-[11px] font-bold text-mute mb-8 font-mono uppercase tracking-[0.2em] border-b border-canvas-card-border pb-3">Input Parameters</h2>
           
@@ -256,6 +256,41 @@ const breadcrumbSchema = {
 
     </div>
 
+    <!-- Community Comment Section -->
+    <div class="mt-16 bg-canvas border border-canvas-card-border rounded-2xl p-6 sm:p-8 shadow-sm text-left">
+      <h3 class="text-lg font-bold text-ink mb-6 font-sans">Comments & Feedback.</h3>
+      
+      <!-- Comment Form -->
+      <form id="comment-form" class="space-y-4 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="comment-name" class="block text-[10px] font-bold text-mute uppercase tracking-wider mb-2">Your Name</label>
+            <input type="text" id="comment-name" required class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-11 px-4 text-sm focus:outline-none focus:border-hairline-strong transition-all" placeholder="e.g. Alex Carter" />
+          </div>
+          <div>
+            <label for="comment-rating" class="block text-[10px] font-bold text-mute uppercase tracking-wider mb-2">Rating</label>
+            <select id="comment-rating" class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-11 px-4 text-sm focus:outline-none focus:border-hairline-strong cursor-pointer transition-all">
+              <option value="5">★★★★★ (5 Stars)</option>
+              <option value="4">★★★★☆ (4 Stars)</option>
+              <option value="3">★★★☆☆ (3 Stars)</option>
+              <option value="2">★★☆☆☆ (2 Stars)</option>
+              <option value="1">★☆☆☆☆ (1 Star)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="comment-text" class="block text-[10px] font-bold text-mute uppercase tracking-wider mb-2">Comment</label>
+          <textarea id="comment-text" required rows="4" class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg p-4 text-sm focus:outline-none focus:border-hairline-strong transition-all resize-none" placeholder="Share your experience or ask a question..."></textarea>
+        </div>
+        <button type="submit" class="px-6 py-2.5 bg-brand-primary text-canvas rounded-lg text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md bg-[#171717]">Post Comment</button>
+      </form>
+
+      <!-- Comments List -->
+      <div id="comments-list" class="space-y-4 border-t border-canvas-card-border pt-6">
+        <!-- Dynamic comment cards injected by client JS -->
+      </div>
+    </div>
+
     <!-- FAQ Section (SEO + UX) -->
     {calc.faqs.length > 0 && (
       <section class="mt-24 border-t border-hairline pt-16">
@@ -298,6 +333,7 @@ const breadcrumbSchema = {
 
 <script>
   import * as calcMath from '../../utils/calculatorMath';
+  import { zdb } from '../../utils/db';
 
   function initCalculators() {
     const slug = window.location.pathname.split('/').filter(Boolean).pop() || '';
@@ -352,6 +388,19 @@ const breadcrumbSchema = {
           data[checkbox.name] = checkbox.checked;
         });
         evaluateForm(data);
+
+        // Save to history using debouncing to avoid typing spam
+        const calcTitle = document.querySelector('h1')?.textContent?.replace(/\.$/, '') || 'Calculator';
+        const inputSummary = Object.entries(data)
+          .map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`)
+          .join(', ');
+        const primaryResult = primaryVal?.textContent || '';
+        const primaryLbl = primaryLabel?.textContent || '';
+        const outputSummary = primaryLbl ? `${primaryLbl}: ${primaryResult}` : primaryResult;
+
+        if ((window as any).zcalculate_saveToHistoryDebounced) {
+          (window as any).zcalculate_saveToHistoryDebounced(calcTitle, inputSummary, outputSummary);
+        }
       };
       // Synchronization for date inputs and dropdown selects
       const dateInputs = calcForm.querySelectorAll('.calc-date-input');
@@ -793,10 +842,25 @@ const breadcrumbSchema = {
     }
 
     // --- Scientific Calculator Standalone (4-Mode) ---
-    if (slug === 'scientific-calculator') {
+    if (['scientific-calculator', 'programmable-calculator', 'graphing-calculator', 'cas-calculator'].includes(slug)) {
       import('../../utils/scientificCalculator').then(mod => {
         const ctrl = new mod.ScientificCalculatorController();
         const { StandardEngine, ProgrammableEngine, GraphingEngine, CASEngine, PHYSICAL_CONSTANTS, mean, stddev, variance } = mod;
+
+        const activeMode = slug === 'programmable-calculator' ? 'programmable' :
+                           slug === 'graphing-calculator' ? 'graphing' :
+                           slug === 'cas-calculator' ? 'cas' : 'standard';
+
+        ctrl.switchMode(activeMode);
+
+        if (activeMode === 'graphing') {
+          const canvas = document.getElementById('graph-canvas') as HTMLCanvasElement;
+          if (canvas) {
+            setTimeout(() => {
+              if (!ctrl.graphing.canvas) ctrl.graphing.init(canvas);
+            }, 50);
+          }
+        }
 
         let expr = '';
         const resDisp = document.getElementById('sci-display-result');
@@ -809,30 +873,112 @@ const breadcrumbSchema = {
           cas: document.getElementById('sci-cas-panel'),
         };
 
-        // ===== MODE TAB SWITCHING =====
-        document.querySelectorAll('.sci-mode-tab').forEach(tab => {
-          (tab as HTMLButtonElement).onclick = () => {
-            const mode = tab.getAttribute('data-mode') as any;
-            if (!mode) return;
-            ctrl.switchMode(mode);
-            document.querySelectorAll('.sci-mode-tab').forEach(t => {
-              (t as HTMLElement).className = (t as HTMLElement).className.replace(/bg-calc-btn text-ink shadow-sm/g, 'text-mute hover:text-ink');
-            });
-            (tab as HTMLElement).className = (tab as HTMLElement).className.replace(/text-mute hover:text-ink/g, 'bg-calc-btn text-ink shadow-sm');
-            Object.entries(panels).forEach(([k, panel]) => {
-              if (panel) panel.classList.toggle('hidden', k !== mode);
-            });
-            // Init graphing canvas when switching to graphing mode
-            if (mode === 'graphing') {
-              const canvas = document.getElementById('graph-canvas') as HTMLCanvasElement;
-              if (canvas && !ctrl.graphing.canvas) {
-                ctrl.graphing.init(canvas);
-              } else {
-                ctrl.graphing.render();
-              }
+        const appendSciVal = (val: string) => {
+          expr += val;
+          if (exprDisp) exprDisp.textContent = expr;
+        };
+
+        const backspaceSci = () => {
+          const funcMatch = ['asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 'tenPow(', 'ePow(', 'inv(', 'nCr(', 'nPr('].find(f => expr.endsWith(f));
+          expr = funcMatch ? expr.substring(0, expr.length - funcMatch.length) : expr.substring(0, expr.length - 1);
+          if (exprDisp) exprDisp.textContent = expr || '\u00A0';
+          if (!expr && resDisp) resDisp.textContent = '0';
+        };
+
+        const calculateSci = () => {
+          const result = ctrl.standard.evaluate(expr);
+          const formatted = ctrl.standard.formatResult(result);
+          if (resDisp) resDisp.textContent = formatted;
+          
+          if ((window as any).zcalculate_saveToHistory) {
+            const activeTitle = document.querySelector('h1')?.textContent?.replace(/\.$/, '') || 'Scientific Calculator';
+            (window as any).zcalculate_saveToHistory(activeTitle, expr, formatted);
+          }
+          
+          expr = !isNaN(result) ? result.toString() : '';
+        };
+
+        const handleSciKeyDown = (e: KeyboardEvent) => {
+          const activeEl = document.activeElement;
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT')) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              calculateSci();
+            }
+            return;
+          }
+
+          const key = e.key;
+          if (/[0-9\.\(\)]/.test(key)) {
+            appendSciVal(key);
+          } else if (key === '+') {
+            appendSciVal('+');
+          } else if (key === '-') {
+            appendSciVal('-');
+          } else if (key === '*' || key === 'x' || key === 'X') {
+            appendSciVal('×');
+          } else if (key === '/') {
+            appendSciVal('÷');
+          } else if (key === '^') {
+            appendSciVal('^');
+          } else if (key === 'Enter' || key === '=') {
+            e.preventDefault();
+            calculateSci();
+          } else if (key === 'Backspace') {
+            e.preventDefault();
+            backspaceSci();
+          } else if (key === 'Escape' || key === 'c' || key === 'C') {
+            expr = '';
+            if (resDisp) resDisp.textContent = '0';
+            if (exprDisp) exprDisp.textContent = '\u00A0';
+          }
+        };
+
+        if ((window as any)._sciKeyDownHandler) {
+          document.removeEventListener('keydown', (window as any)._sciKeyDownHandler);
+        }
+        (window as any)._sciKeyDownHandler = handleSciKeyDown;
+        document.addEventListener('keydown', handleSciKeyDown);
+
+        // Fullscreen API implementation for scientific calculator container
+        const sciContainer = document.getElementById('sci-calc-root');
+        const sciFullscreenBtn = document.getElementById('sci-fullscreen');
+        const applySciFullscreenLayout = () => {
+          const isCurrentlyFullscreen = document.fullscreenElement === sciContainer;
+          if (isCurrentlyFullscreen) {
+            if (sciFullscreenBtn) {
+              sciFullscreenBtn.innerHTML = `
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 14h6v6m10-6h-6v6M4 10h6V4m10 6h-6V4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Exit
+              `;
+            }
+          } else {
+            if (sciFullscreenBtn) {
+              sciFullscreenBtn.innerHTML = `
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Full
+              `;
+            }
+          }
+        };
+
+        if (sciFullscreenBtn && sciContainer) {
+          sciFullscreenBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!document.fullscreenElement) {
+              sciContainer.requestFullscreen().catch(err => {
+                console.error(`Fullscreen request failed: ${err.message}`);
+              });
+            } else {
+              document.exitFullscreen();
             }
           };
-        });
+          document.addEventListener('fullscreenchange', applySciFullscreenLayout);
+          applySciFullscreenLayout();
+        }
+
+
 
         // ===== STANDARD MODE =====
         // Angle mode cycling (DEG -> RAD -> GRAD -> DEG)
@@ -899,9 +1045,7 @@ const breadcrumbSchema = {
             ctrl.programmable.recordKeystroke(v);
 
             if (v === '=') {
-              const result = ctrl.standard.evaluate(expr);
-              if (resDisp) resDisp.textContent = ctrl.standard.formatResult(result);
-              expr = !isNaN(result) ? result.toString() : '';
+              calculateSci();
             }
             else if (v === 'clear') {
               expr = '';
@@ -909,10 +1053,7 @@ const breadcrumbSchema = {
               if (exprDisp) exprDisp.textContent = '\u00A0';
             }
             else if (v === 'back') {
-              const funcMatch = ['asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'abs(', 'tenPow(', 'ePow(', 'inv(', 'nCr(', 'nPr('].find(f => expr.endsWith(f));
-              expr = funcMatch ? expr.substring(0, expr.length - funcMatch.length) : expr.substring(0, expr.length - 1);
-              if (exprDisp) exprDisp.textContent = expr || '\u00A0';
-              if (!expr && resDisp) resDisp.textContent = '0';
+              backspaceSci();
             }
             else if (v === 'mem') {
               expr += ctrl.standard.memory.toString();
@@ -974,8 +1115,13 @@ const breadcrumbSchema = {
             setTimeout(() => {
               const result = ctrl.programmable.run(code, ctrl.standard);
               if (progOutput) {
-                progOutput.textContent = result.output.length > 0 ? result.output.join('\n') : '(No output)';
+                const outStr = result.output.length > 0 ? result.output.join('\n') : '(No output)';
+                progOutput.textContent = outStr;
                 if (result.error) progOutput.textContent += `\n\nError: ${result.error}`;
+                
+                if ((window as any).zcalculate_saveToHistory) {
+                  (window as any).zcalculate_saveToHistory('Programmable Calculator', code, result.error ? `Error: ${result.error}` : (result.output.length > 0 ? result.output.join(', ') : 'Success'));
+                }
               }
               if (progVars) {
                 const entries = Object.entries(result.variables);
@@ -1220,8 +1366,12 @@ const breadcrumbSchema = {
         if (casInput) {
           casInput.onkeydown = (e) => {
             if (e.key === 'Enter') {
-              const result = ctrl.cas.evaluate(casInput.value);
+              const val = casInput.value;
+              const result = ctrl.cas.evaluate(val);
               updateCASResult('Result', result);
+              if ((window as any).zcalculate_saveToHistory) {
+                (window as any).zcalculate_saveToHistory('CAS Calculator', val, result);
+              }
             }
           };
         }
@@ -1270,6 +1420,9 @@ const breadcrumbSchema = {
                 break;
             }
             updateCASResult(label, result);
+            if (op !== 'cas-clear' && (window as any).zcalculate_saveToHistory) {
+              (window as any).zcalculate_saveToHistory('CAS Calculator', `${label}: ${input}`, result);
+            }
           };
         });
       });
@@ -1532,31 +1685,16 @@ const breadcrumbSchema = {
       if (primaryLabel) primaryLabel.textContent = l;
 
       // History logger
-      if (v && v !== '-' && calcForm) {
-        try {
-          const raw = localStorage.getItem('zcalculate_history') || '[]';
-          const history = JSON.parse(raw);
-          const currentUrl = window.location.pathname.split('/').filter(Boolean).pop() || 'calculator';
-          const calcName = document.querySelector('h1')?.textContent || currentUrl;
-          
-          const inputsList = Array.from(calcForm.elements)
-            .filter((el: any) => el.name && el.value !== undefined && el.type !== 'submit')
-            .map((el: any) => `${el.name}: ${el.value}`)
-            .join(', ');
-          
-          const lastEntry = history[0];
-          if (!lastEntry || lastEntry.result !== v || lastEntry.query !== inputsList) {
-            history.unshift({
-              timestamp: Date.now(),
-              calculator: calcName,
-              query: inputsList || 'Calculated',
-              result: v
-            });
-            localStorage.setItem('zcalculate_history', JSON.stringify(history.slice(0, 100)));
-          }
-        } catch(e) {
-          console.error(e);
-        }
+      if (v && v !== '-' && calcForm && (window as any).zcalculate_saveToHistoryDebounced) {
+        const currentUrl = window.location.pathname.split('/').filter(Boolean).pop() || 'calculator';
+        const calcName = document.querySelector('h1')?.textContent?.replace(/\.$/, '') || currentUrl;
+        
+        const inputsList = Array.from(calcForm.elements)
+          .filter((el: any) => el.name && el.value !== undefined && el.type !== 'submit')
+          .map((el: any) => `${el.name.replace(/_/g, ' ')}: ${el.value}`)
+          .join(', ');
+        
+        (window as any).zcalculate_saveToHistoryDebounced(calcName, inputsList || 'Parameters', `${l}: ${v}`);
       }
     }
 
@@ -1608,6 +1746,140 @@ const breadcrumbSchema = {
       };
 
       document.onfullscreenchange = updateButton;
+    }
+
+    // Community Comments System
+    const commentForm = document.getElementById('comment-form') as HTMLFormElement;
+    const commentsList = document.getElementById('comments-list');
+
+    const DEFAULT_COMMENTS = [
+      { name: "Julian Vance", rating: 5, text: "Excellent calculator page. It has extremely precise digits and calculations, and the stark design matches my monitor perfectly.", date: "2026-07-10T14:32:00.000Z" },
+      { name: "Sophia K.", rating: 4, text: "The Retro sage green LCD feels very comfortable on the eyes. Instant results are very smooth.", date: "2026-07-11T09:15:00.000Z" }
+    ];
+
+    async function renderComments() {
+      if (!commentsList) return;
+      let comments = [];
+
+      try {
+        const dbComments = await zdb.getComments(slug);
+        if (dbComments && dbComments.length > 0) {
+          comments = dbComments;
+        } else {
+          comments = [...DEFAULT_COMMENTS];
+        }
+      } catch (err) {
+        console.error('Failed to read comments from IndexedDB:', err);
+        const key = `comments_${slug}`;
+        const saved = localStorage.getItem(key);
+        comments = saved ? JSON.parse(saved) : [...DEFAULT_COMMENTS];
+      }
+
+      commentsList.innerHTML = comments.map((c: any) => {
+        const repliesHtml = (c.replies || []).map((r: any) => `
+          <div class="ml-6 mt-3 bg-canvas border-l-2 border-hairline p-3 rounded-lg text-left space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-ink text-[11px] font-sans">${r.name}</span>
+              <span class="text-[8px] text-mute font-mono">${new Date(r.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+            </div>
+            <p class="text-body text-xs font-sans">${r.text}</p>
+          </div>
+        `).join('');
+
+        const commentId = c.id !== undefined ? c.id : (c.date ? c.date.replace(/[^0-9]/g, '') : Math.random().toString(36).substr(2, 5));
+
+        return `
+          <div class="bg-canvas-card-soft border border-canvas-card-border rounded-xl p-4 space-y-2 text-left" data-comment-id="${c.id || ''}">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-ink text-xs font-sans">${c.name}</span>
+              <span class="text-amber-500 text-xs">${'★'.repeat(c.rating)}${'☆'.repeat(5 - c.rating)}</span>
+            </div>
+            <p class="text-body text-xs font-sans leading-relaxed">${c.text}</p>
+            <div class="flex items-center justify-between mt-2 pt-1 border-t border-hairline/30">
+              <button class="toggle-reply-btn text-[10px] font-bold text-link hover:underline uppercase tracking-wider" data-id="${commentId}">Reply</button>
+              <div class="text-[9px] text-mute font-mono">${new Date(c.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+            </div>
+            <!-- Replies -->
+            <div class="space-y-2">${repliesHtml}</div>
+            <!-- Reply Form -->
+            <div id="reply-form-${commentId}" class="hidden mt-3 pl-6 space-y-2 border-l border-hairline">
+              <input type="text" id="reply-name-${commentId}" placeholder="Your Name" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg h-8 px-3 text-xs focus:outline-none focus:border-hairline-strong transition-all" />
+              <textarea id="reply-text-${commentId}" placeholder="Write a reply..." rows="2" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg p-2.5 text-xs focus:outline-none focus:border-hairline-strong transition-all resize-none"></textarea>
+              <button class="submit-reply-btn px-4 py-1.5 bg-brand-primary text-canvas rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#171717]" data-id="${commentId}" data-real-id="${c.id !== undefined ? c.id : ''}">Submit Reply</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach reply togglers
+      commentsList.querySelectorAll('.toggle-reply-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = () => {
+          const id = btn.getAttribute('data-id');
+          const form = document.getElementById(`reply-form-${id}`);
+          if (form) {
+            form.classList.toggle('hidden');
+          }
+        };
+      });
+
+      // Attach reply submit handlers
+      commentsList.querySelectorAll('.submit-reply-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = async () => {
+          const id = btn.getAttribute('data-id');
+          const realId = btn.getAttribute('data-real-id');
+          const nameEl = document.getElementById(`reply-name-${id}`) as HTMLInputElement;
+          const textEl = document.getElementById(`reply-text-${id}`) as HTMLTextAreaElement;
+          
+          if (!textEl.value.trim()) return;
+
+          if (realId && (window as any).zdb) {
+            try {
+              await zdb.addReply(Number(realId), nameEl.value.trim() || 'Anonymous User', textEl.value.trim());
+              renderComments();
+            } catch (err) {
+              console.error('Failed to submit reply:', err);
+            }
+          } else {
+            alert('Replies are only supported for comments saved in the database.');
+          }
+        };
+      });
+    }
+
+    if (commentForm) {
+      commentForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const nameEl = document.getElementById('comment-name') as HTMLInputElement;
+        const ratingEl = document.getElementById('comment-rating') as HTMLSelectElement;
+        const textEl = document.getElementById('comment-text') as HTMLTextAreaElement;
+
+        const nameVal = nameEl.value.trim() || 'Anonymous User';
+        const ratingVal = parseInt(ratingEl.value, 10);
+        const textVal = textEl.value.trim();
+
+        try {
+          await zdb.addComment(slug, nameVal, ratingVal, textVal);
+        } catch (err) {
+          console.error('Failed to write comment to IndexedDB:', err);
+          // localStorage fallback
+          const key = `comments_${slug}`;
+          const saved = localStorage.getItem(key);
+          const comments = saved ? JSON.parse(saved) : [...DEFAULT_COMMENTS];
+          comments.unshift({
+            name: nameVal,
+            rating: ratingVal,
+            text: textVal,
+            date: new Date().toISOString()
+          });
+          localStorage.setItem(key, JSON.stringify(comments));
+        }
+        
+        nameEl.value = '';
+        textEl.value = '';
+        renderComments();
+      };
+
+      renderComments();
     }
   }
 

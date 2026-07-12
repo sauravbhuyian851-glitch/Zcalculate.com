@@ -1,0 +1,403 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Community Comments Dashboard."
+  description="Manage and review the comments and ratings submitted by users across all calculators."
+>
+  <div class="relative min-h-[80vh] py-12 px-6 overflow-visible">
+    <!-- Atmospheric gradient glow -->
+    <div class="pointer-events-none absolute inset-x-0 top-0 z-0 h-[600px] w-full overflow-hidden">
+      <div class="mesh-gradient-backdrop absolute -top-[300px] left-1/2 h-[600px] w-[1200px] -translate-x-1/2 rounded-full opacity-40"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto space-y-8 text-left">
+      <!-- Header Section -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-canvas-card-border pb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-canvas-soft text-[11px] font-mono font-medium text-mute mb-4 shadow-sm">
+            <span class="font-mono text-link font-semibold font-bold uppercase tracking-wider">Moderation Dashboard</span>
+          </div>
+          <h1 class="display-lg text-ink font-semibold tracking-tight text-3xl sm:text-4xl leading-tight font-sans">
+            User Comments & Reviews<span class="text-link">.</span>
+          </h1>
+          <p class="mt-2 text-mute text-sm max-w-xl font-normal leading-relaxed">
+            Review the community feedback and ratings submitted by users across all tools.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button 
+            id="clear-all-comments" 
+            class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-xs font-bold text-red-600 bg-canvas border border-canvas-card-border hover:bg-canvas-soft hover:text-red-700 transition-all cursor-pointer shadow-sm uppercase tracking-wider"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-canvas-card border border-canvas-card-border p-5 rounded-xl shadow-sm space-y-1">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-wider block">Total Comments</span>
+          <span id="stat-total" class="text-2xl font-bold text-ink">0</span>
+        </div>
+        <div class="bg-canvas-card border border-canvas-card-border p-5 rounded-xl shadow-sm space-y-1">
+          <span class="text-[9px] font-bold text-mute uppercase tracking-wider block">Average Rating</span>
+          <span id="stat-rating" class="text-2xl font-bold text-amber-500">0.0 ★</span>
+        </div>
+      </div>
+
+      <!-- Add Comment Form -->
+      <div class="bg-canvas-card border border-canvas-card-border p-6 rounded-xl shadow-sm space-y-4">
+        <h2 class="text-sm font-bold text-ink uppercase tracking-wider">Leave a General Site Comment</h2>
+        <form id="comment-form-global" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="comment-name-global" class="block text-[10px] font-bold text-mute uppercase tracking-wider mb-2">Name</label>
+              <input type="text" id="comment-name-global" placeholder="Your Name (e.g. John Doe)" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg h-11 px-4 text-sm focus:outline-none focus:border-hairline-strong transition-all" />
+            </div>
+            <div>
+              <label for="comment-rating-global" class="block text-[10px] font-bold text-mute uppercase tracking-wider mb-2">Rating</label>
+              <select id="comment-rating-global" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg h-11 px-4 text-sm focus:outline-none focus:border-hairline-strong cursor-pointer transition-all">
+                <option value="5">★★★★★ (5 Stars)</option>
+                <option value="4">★★★★☆ (4 Stars)</option>
+                <option value="3">★★★☆☆ (3 Stars)</option>
+                <option value="2">★★☆☆☆ (2 Stars)</option>
+                <option value="1">★☆☆☆☆ (1 Star)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="comment-text-global" class="block text-[10px] font-bold text-mute uppercase tracking-wider mb-2">Comment</label>
+            <textarea id="comment-text-global" required rows="3" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg p-4 text-sm focus:outline-none focus:border-hairline-strong transition-all resize-none" placeholder="Share your experience or ask a question..."></textarea>
+          </div>
+          <button type="submit" class="px-6 py-2.5 bg-brand-primary text-canvas rounded-lg text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md bg-[#171717]">Post Comment</button>
+        </form>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-canvas-card border border-canvas-card-border p-4 rounded-xl shadow-sm">
+        <div>
+          <label for="comments-search" class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1.5">Search Feedback</label>
+          <input 
+            type="text" 
+            id="comments-search" 
+            placeholder="Search by review text or user name..." 
+            class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-10 px-3.5 text-xs font-bold focus:outline-none focus:border-hairline-strong transition-all"
+          />
+        </div>
+        <div>
+          <label for="comments-filter-calc" class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1.5">Filter by Calculator</label>
+          <select 
+            id="comments-filter-calc" 
+            class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-10 px-3.5 text-xs font-bold focus:outline-none focus:border-hairline-strong cursor-pointer transition-all"
+          >
+            <option value="all">All Calculators</option>
+          </select>
+        </div>
+        <div>
+          <label for="comments-filter-stars" class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1.5">Filter by Rating</label>
+          <select 
+            id="comments-filter-stars" 
+            class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-10 px-3.5 text-xs font-bold focus:outline-none focus:border-hairline-strong cursor-pointer transition-all"
+          >
+            <option value="all">All Ratings</option>
+            <option value="5">★★★★★ (5 Stars)</option>
+            <option value="4">★★★★☆ (4 Stars & Up)</option>
+            <option value="3">★★★☆☆ (3 Stars & Up)</option>
+            <option value="2">★★☆☆☆ (2 Stars & Up)</option>
+            <option value="1">★☆☆☆☆ (1 Star & Up)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Comments Records Wrapper -->
+      <div id="comments-items-container" class="space-y-4">
+        <div class="text-center py-16 text-mute border border-dashed border-canvas-card-border rounded-xl">
+          Loading comment logs...
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { zdb } from '../utils/db';
+
+  async function setupCommentsPage() {
+    const commentForm = document.getElementById('comment-form-global') as HTMLFormElement;
+    const searchInput = document.getElementById('comments-search') as HTMLInputElement;
+    const filterCalc = document.getElementById('comments-filter-calc') as HTMLSelectElement;
+    const filterStars = document.getElementById('comments-filter-stars') as HTMLSelectElement;
+    const clearBtn = document.getElementById('clear-all-comments');
+    const container = document.getElementById('comments-items-container');
+    const statTotal = document.getElementById('stat-total');
+    const statRating = document.getElementById('stat-rating');
+
+    if (!container) return;
+
+    // Helper to extract calculator human names
+    function getCalcHumanName(slug: string): string {
+      if (slug === 'general') return 'General Site';
+      return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+
+    async function renderCommentsList() {
+      // Fetch comments across all calculators
+      let allComments: any[] = [];
+      const dbInstance = (window as any).zdb;
+      if (dbInstance) {
+        try {
+          const db = await dbInstance.init();
+          allComments = await new Promise<any[]>((resolve, reject) => {
+            const tx = db.transaction('comments', 'readonly');
+            const store = tx.objectStore('comments');
+            const req = store.getAll();
+            req.onsuccess = () => {
+              const res = req.result;
+              res.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+              resolve(res);
+            };
+            req.onerror = () => reject(req.error);
+          });
+        } catch (err) {
+          console.error('Failed to query comments database:', err);
+        }
+      }
+
+      // Update Summary Stats
+      if (statTotal) statTotal.textContent = allComments.length.toString();
+      if (statRating) {
+        if (allComments.length > 0) {
+          const avg = allComments.reduce((acc, curr) => acc + curr.rating, 0) / allComments.length;
+          statRating.textContent = `${avg.toFixed(1)} ★`;
+        } else {
+          statRating.textContent = '0.0 ★';
+        }
+      }
+
+      // Update Calculator filter options
+      const uniqueSlugs = Array.from(new Set(allComments.map(c => c.slug))).sort();
+      if (filterCalc) {
+        const currentFilter = filterCalc.value;
+        filterCalc.innerHTML = '<option value="all">All Calculators</option>' + 
+          uniqueSlugs.map(slug => `<option value="${slug}">${getCalcHumanName(slug)}</option>`).join('');
+        if (uniqueSlugs.includes(currentFilter)) {
+          filterCalc.value = currentFilter;
+        } else {
+          filterCalc.value = 'all';
+        }
+      }
+
+      const searchQuery = searchInput?.value.toLowerCase() || '';
+      const selectedSlug = filterCalc?.value || 'all';
+      const selectedStars = filterStars?.value || 'all';
+
+      // Filter logic
+      const filtered = allComments.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(searchQuery) || c.text.toLowerCase().includes(searchQuery);
+        const matchesCalc = selectedSlug === 'all' || c.slug === selectedSlug;
+        const matchesStars = selectedStars === 'all' || c.rating >= parseInt(selectedStars, 10);
+        return matchesSearch && matchesCalc && matchesStars;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 text-mute border border-dashed border-canvas-card-border rounded-xl bg-canvas-card">
+            <svg class="mx-auto h-8 w-8 text-mute/50 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            </svg>
+            <p class="font-bold text-xs">No comments found matching the filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const dateStr = new Date(c.date).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const repliesHtml = (c.replies || []).map((r: any) => `
+          <div class="ml-6 mt-3 bg-canvas border-l-2 border-hairline p-3 rounded-lg text-left space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-ink text-[11px] font-sans">${r.name}</span>
+              <span class="text-[8px] text-mute font-mono">${new Date(r.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+            </div>
+            <p class="text-body text-xs font-sans">${r.text}</p>
+          </div>
+        `).join('');
+
+        const commentId = c.id !== undefined ? c.id : (c.date ? c.date.replace(/[^0-9]/g, '') : Math.random().toString(36).substr(2, 5));
+        const calcLink = c.slug === 'general' ? '/comments' : `/calculator/${c.slug}`;
+
+        return `
+          <div class="bg-canvas-card border border-canvas-card-border rounded-xl p-5 hover:shadow-md transition-all flex flex-col justify-between gap-4 relative overflow-hidden" data-comment-id="${c.id || ''}">
+            <div class="space-y-2 flex-1 text-left">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-ink text-sm font-sans">${c.name}</span>
+                <span class="text-amber-500 text-xs">${'★'.repeat(c.rating)}${'☆'.repeat(5 - c.rating)}</span>
+                <span class="text-[9px] text-mute font-mono">${dateStr}</span>
+                <a href="${calcLink}" class="inline-flex px-2 py-0.5 rounded bg-brand-primary/10 text-brand-primary text-[9px] font-bold uppercase tracking-wider hover:underline">${getCalcHumanName(c.slug)}</a>
+              </div>
+              <p class="text-body text-xs font-sans leading-relaxed text-left">${c.text}</p>
+            </div>
+            
+            <div class="flex items-center justify-between mt-2 pt-2 border-t border-hairline/30">
+              <div class="flex items-center gap-2">
+                <button class="toggle-reply-btn text-[10px] font-bold text-link hover:underline uppercase tracking-wider" data-id="${commentId}">Reply</button>
+                <button 
+                  class="delete-comment-btn text-[10px] font-bold text-red-500 hover:text-red-700 hover:underline uppercase tracking-wider ml-4" 
+                  data-id="${c.id || ''}"
+                  data-slug="${c.slug}"
+                  data-date="${c.date}"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            <!-- Replies -->
+            <div class="space-y-2">${repliesHtml}</div>
+
+            <!-- Reply Form -->
+            <div id="reply-form-${commentId}" class="hidden mt-3 pl-6 space-y-2 border-l border-hairline">
+              <input type="text" id="reply-name-${commentId}" placeholder="Your Name" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg h-8 px-3 text-xs focus:outline-none focus:border-hairline-strong transition-all" />
+              <textarea id="reply-text-${commentId}" placeholder="Write a reply..." rows="2" class="w-full bg-canvas border border-canvas-card-border text-ink rounded-lg p-2.5 text-xs focus:outline-none focus:border-hairline-strong transition-all resize-none"></textarea>
+              <button class="submit-reply-btn px-4 py-1.5 bg-brand-primary text-canvas rounded-lg text-[10px] font-bold uppercase tracking-wider bg-[#171717]" data-id="${commentId}" data-real-id="${c.id !== undefined ? c.id : ''}">Submit Reply</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Attach reply togglers
+      container.querySelectorAll('.toggle-reply-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = () => {
+          const id = btn.getAttribute('data-id');
+          const form = document.getElementById(`reply-form-${id}`);
+          if (form) {
+            form.classList.toggle('hidden');
+          }
+        };
+      });
+
+      // Attach reply submit handlers
+      container.querySelectorAll('.submit-reply-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = async () => {
+          const id = btn.getAttribute('data-id');
+          const realId = btn.getAttribute('data-real-id');
+          const nameEl = document.getElementById(`reply-name-${id}`) as HTMLInputElement;
+          const textEl = document.getElementById(`reply-text-${id}`) as HTMLTextAreaElement;
+          
+          if (!textEl.value.trim()) return;
+
+          if (realId && dbInstance) {
+            try {
+              await dbInstance.addReply(Number(realId), nameEl.value.trim() || 'Anonymous User', textEl.value.trim());
+              renderCommentsList();
+            } catch (err) {
+              console.error('Failed to submit reply:', err);
+            }
+          } else {
+            alert('Replies are only supported for comments saved in the database.');
+          }
+        };
+      });
+
+      // Add delete click handlers
+      container.querySelectorAll('.delete-comment-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = async () => {
+          if (!confirm('Are you sure you want to delete this comment?')) return;
+          const id = btn.getAttribute('data-id');
+          const slug = btn.getAttribute('data-slug');
+          const date = btn.getAttribute('data-date');
+          
+          if (dbInstance) {
+            try {
+              const db = await dbInstance.init();
+              const tx = db.transaction('comments', 'readwrite');
+              const store = tx.objectStore('comments');
+              
+              // Fallback to searching by slug and date if id is generated auto-increment
+              const req = store.openCursor();
+              req.onsuccess = () => {
+                const cursor = req.result;
+                if (cursor) {
+                  const val = cursor.value;
+                  if (val.slug === slug && val.date === date) {
+                    cursor.delete();
+                    renderCommentsList();
+                  } else {
+                    cursor.continue();
+                  }
+                }
+              };
+            } catch (err) {
+              console.error('Delete comment failed:', err);
+            }
+          }
+        };
+      });
+    }
+
+    if (commentForm) {
+      commentForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const nameEl = document.getElementById('comment-name-global') as HTMLInputElement;
+        const ratingEl = document.getElementById('comment-rating-global') as HTMLSelectElement;
+        const textEl = document.getElementById('comment-text-global') as HTMLTextAreaElement;
+
+        const nameVal = nameEl.value.trim() || 'Anonymous User';
+        const ratingVal = parseInt(ratingEl.value, 10);
+        const textVal = textEl.value.trim();
+
+        if (dbInstance) {
+          try {
+            await dbInstance.addComment('general', nameVal, ratingVal, textVal);
+            nameEl.value = '';
+            textEl.value = '';
+            renderCommentsList();
+          } catch (err) {
+            console.error('Failed to submit global comment:', err);
+          }
+        }
+      };
+    }
+
+    if (searchInput) searchInput.oninput = renderCommentsList;
+    if (filterCalc) filterCalc.onchange = renderCommentsList;
+    if (filterStars) filterStars.onchange = renderCommentsList;
+
+    if (clearBtn) {
+      clearBtn.onclick = async () => {
+        if (!confirm('Are you sure you want to delete all comments?')) return;
+        const dbInstance = (window as any).zdb;
+        if (dbInstance) {
+          try {
+            const db = await dbInstance.init();
+            const tx = db.transaction('comments', 'readwrite');
+            const store = tx.objectStore('comments');
+            store.clear();
+            tx.oncomplete = () => {
+              renderCommentsList();
+            };
+          } catch (err) {
+            console.error('Clear comments failed:', err);
+          }
+        }
+      };
+    }
+
+    renderCommentsList();
+  }
+
+  setupCommentsPage();
+  document.addEventListener('astro:after-swap', setupCommentsPage);
+</script>

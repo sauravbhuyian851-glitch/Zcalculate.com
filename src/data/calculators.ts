@@ -563,16 +563,59 @@ export const calculatorsList: CalculatorMetadata[] = [
     slug: 'scientific-calculator',
     name: 'Scientific Calculator',
     category: 'math',
-    description: 'A professional 4-mode scientific calculator with Standard, Programmable, Graphing, and CAS (Computer Algebra System) capabilities. Includes trigonometry, statistics, physical constants, 2D function plotting, symbolic calculus, and a built-in scripting engine.',
-    seoTitle: 'Free Online Scientific Calculator — Standard, Graphing, Programmable & CAS Modes',
-    seoDescription: 'Use our free 4-in-1 scientific calculator with standard scientific functions, programmable scripting, interactive 2D graphing with trace and zoom, and a Computer Algebra System for symbolic math, derivatives, integrals, and equation solving.',
+    description: 'A professional online scientific calculator. Includes trigonometry, logarithms, powers, root functions, factorial, permutations (nPr), combinations (nCr), and statistics with standard physical constants.',
+    seoTitle: 'Free Online Scientific Calculator — Standard Scientific Math Solver',
+    seoDescription: 'Use our free online scientific calculator with standard mathematical functions, trigonometric operations, logarithms, exponentials, combinatorics, and physical constants.',
     faqs: [
-      { question: 'What are the 4 modes of this scientific calculator?', answer: 'Standard mode provides trig, log, powers, factorial, nCr/nPr, statistics, physical constants, and DEG/RAD/GRAD angle modes. Programmable mode lets you write and run JavaScript-like scripts with loops, conditions, and math functions. Graphing mode plots up to 4 functions simultaneously with zoom, pan, trace, zero-finding, and numerical calculus. CAS mode performs symbolic algebra: simplify, factor, expand, differentiate, integrate, solve equations, and compute Taylor series.' },
-      { question: 'Does the CAS mode perform symbolic or numerical calculations?', answer: 'CAS mode uses the math.js library for true symbolic manipulation — it can compute exact derivatives, simplify expressions, factor polynomials, and solve equations algebraically. For integrals, it provides both symbolic antiderivatives for common patterns and high-precision numerical integration via Simpson\'s rule.' },
-      { question: 'Can I save programs in Programmable mode?', answer: 'Yes. Programmable mode has 10 save/load memory slots stored in your browser\'s local storage. You can also record macros from Standard mode button presses and replay them as scripts.' },
-      { question: 'What plotting types does Graphing mode support?', answer: 'Graphing mode supports Cartesian (y = f(x)), Polar (r = f(θ)), and Parametric (x(t), y(t)) plotting. You can also overlay scatter point data, find zeros and extrema, compute numerical derivatives and integrals, and generate value tables.' }
+      { question: 'What functions does this scientific calculator support?', answer: 'This calculator supports standard arithmetic, trigonometric functions (sin, cos, tan, and their inverses), logarithms (log, ln), exponents, powers (x^y), roots, factorials, permutations, and combinations.' },
+      { question: 'What angle units are supported?', answer: 'You can toggle between Degree (DEG), Radian (RAD), and Gradian (GRAD) angle modes for trigonometric calculations.' }
     ],
-    relatedSlugs: ['fraction-calculator', 'percentage-calculator', 'triangle-calculator'],
+    relatedSlugs: ['programmable-calculator', 'graphing-calculator', 'cas-calculator', 'fraction-calculator'],
+    customUI: true,
+    inputs: []
+  },
+  {
+    slug: 'programmable-calculator',
+    name: 'Programmable Calculator',
+    category: 'math',
+    description: 'A JavaScript-based programmable scripting calculator. Write custom functions, use conditions, loops, variable declarations, and save/load scripts directly in browser memory.',
+    seoTitle: 'Free Online Programmable Calculator — Scripting & Macros',
+    seoDescription: 'Write and run custom scripts online using our programmable calculator. Store custom programs, write loops/conditions, and record standard keyboard macro plays.',
+    faqs: [
+      { question: 'How do I run a custom script?', answer: 'Write your script using JavaScript syntax in the script editor and click the Run button. Your output will appear in the output console.' },
+      { question: 'Can I save programs?', answer: 'Yes. The calculator includes 10 save/load slots stored directly in your browser\'s local storage.' }
+    ],
+    relatedSlugs: ['scientific-calculator', 'graphing-calculator', 'cas-calculator'],
+    customUI: true,
+    inputs: []
+  },
+  {
+    slug: 'graphing-calculator',
+    name: 'Graphing Calculator',
+    category: 'math',
+    description: 'An interactive 2D function plotter. Graph multiple equations, zoom, pan, trace coordinates, and compute numerical derivatives or integrations.',
+    seoTitle: 'Free Online Graphing Calculator — Plot 2D Mathematical Functions',
+    seoDescription: 'Graph mathematical equations in real time. Plot Cartesian, Polar, or Parametric equations, trace coordinates, find zeros, and perform numerical calculus.',
+    faqs: [
+      { question: 'How do I plot a function?', answer: 'Type the equation (e.g. y = x^2 or f(x) = sin(x)) into the input field and click Plot. You can add up to 4 functions simultaneously.' },
+      { question: 'Can I find zeros and extrema?', answer: 'Yes. The graphing interface includes analytical tools to compute zeros, extrema, and numerical integrals under curves.' }
+    ],
+    relatedSlugs: ['scientific-calculator', 'programmable-calculator', 'cas-calculator'],
+    customUI: true,
+    inputs: []
+  },
+  {
+    slug: 'cas-calculator',
+    name: 'CAS Calculator (Computer Algebra System)',
+    category: 'math',
+    description: 'Solve mathematical equations and simplify expressions symbolically. Calculate exact analytical derivatives, integrals, polynomial factors, and Taylor series expansions.',
+    seoTitle: 'Free Online CAS Calculator — Symbolic Algebra & Calculus Solver',
+    seoDescription: 'Solve equations and simplify expressions symbolically. Compute exact derivatives, indefinite integrals, factor polynomials, and expand expressions online.',
+    faqs: [
+      { question: 'What is a Computer Algebra System (CAS)?', answer: 'A CAS performs symbolic mathematics rather than numerical approximations. It simplifies expressions, integrates, differentiates, and solves equations algebraically.' },
+      { question: 'Can it compute exact integrals and derivatives?', answer: 'Yes. The CAS engine computes exact algebraic antiderivatives and analytical derivative expressions.' }
+    ],
+    relatedSlugs: ['scientific-calculator', 'programmable-calculator', 'graphing-calculator'],
     customUI: true,
     inputs: []
   },

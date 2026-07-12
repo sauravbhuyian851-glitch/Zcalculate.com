@@ -1,0 +1,237 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Calculation History."
+  description="Review the calculations you have performed across all calculators."
+>
+  <div class="relative min-h-[80vh] py-12 px-6 overflow-visible">
+    <!-- Atmospheric gradient glow -->
+    <div class="pointer-events-none absolute inset-x-0 top-0 z-0 h-[600px] w-full overflow-hidden">
+      <div class="mesh-gradient-backdrop absolute -top-[300px] left-1/2 h-[600px] w-[1200px] -translate-x-1/2 rounded-full opacity-40"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto space-y-8 text-left">
+      <!-- Header Section -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-canvas-card-border pb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-hairline bg-canvas-soft text-[11px] font-mono font-medium text-mute mb-4 shadow-sm">
+            <span class="font-mono text-link font-semibold font-bold uppercase tracking-wider">Storage Tracker</span>
+          </div>
+          <h1 class="display-lg text-ink font-semibold tracking-tight text-3xl sm:text-4xl leading-tight font-sans">
+            Calculation History<span class="text-link">.</span>
+          </h1>
+          <p class="mt-2 text-mute text-sm max-w-xl font-normal leading-relaxed">
+            All your recent formulas, expressions, and parameters are saved automatically in your browser's local cache.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button 
+            id="clear-all-history" 
+            class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-xs font-bold text-red-600 bg-canvas border border-canvas-card-border hover:bg-canvas-soft hover:text-red-700 transition-all cursor-pointer shadow-sm uppercase tracking-wider"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-canvas-card border border-canvas-card-border p-4 rounded-xl shadow-sm">
+        <div class="sm:col-span-2">
+          <label for="history-search" class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1.5">Search Expressions</label>
+          <input 
+            type="text" 
+            id="history-search" 
+            placeholder="Search by input formula or result..." 
+            class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-10 px-3.5 text-xs font-bold focus:outline-none focus:border-hairline-strong transition-all"
+          />
+        </div>
+        <div>
+          <label for="history-filter-calc" class="block text-[9px] font-bold text-mute uppercase tracking-wider mb-1.5">Filter by Calculator</label>
+          <select 
+            id="history-filter-calc" 
+            class="w-full bg-canvas-card border border-canvas-card-border text-ink rounded-lg h-10 px-3.5 text-xs font-bold focus:outline-none focus:border-hairline-strong cursor-pointer transition-all"
+          >
+            <option value="all">All Calculators</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- History Records Wrapper -->
+      <div id="history-items-container" class="space-y-4">
+        <!-- Dynamic list injected by client JS -->
+        <div class="text-center py-16 text-mute border border-dashed border-canvas-card-border rounded-xl">
+          Loading your history logs...
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { zdb } from '../utils/db';
+
+  async function setupHistoryPage() {
+    const searchInput = document.getElementById('history-search') as HTMLInputElement;
+    const filterSelect = document.getElementById('history-filter-calc') as HTMLSelectElement;
+    const clearBtn = document.getElementById('clear-all-history');
+    const container = document.getElementById('history-items-container');
+
+    if (!container) return;
+
+    async function renderHistory() {
+      // Fetch from local IndexedDB database instead of localStorage
+      let history = [];
+      try {
+        history = await zdb.getHistory();
+      } catch (err) {
+        console.error('Failed to get history from database:', err);
+        // localStorage fallback
+        history = JSON.parse(localStorage.getItem('zcalculate_history') || '[]');
+      }
+      
+      // Update filter options
+      const calcNames = Array.from(new Set(history.map(item => item.calcName))).sort();
+      if (filterSelect) {
+        const currentFilter = filterSelect.value;
+        filterSelect.innerHTML = '<option value="all">All Calculators</option>' + 
+          calcNames.map(name => `<option value="${name}">${name}</option>`).join('');
+        if (calcNames.includes(currentFilter)) {
+          filterSelect.value = currentFilter;
+        } else {
+          filterSelect.value = 'all';
+        }
+      }
+
+      const searchQuery = searchInput?.value.toLowerCase() || '';
+      const filterCalc = filterSelect?.value || 'all';
+
+      const filteredItems = history.filter(item => {
+        const matchesSearch = item.input.toLowerCase().includes(searchQuery) || item.output.toLowerCase().includes(searchQuery);
+        const matchesCalc = filterCalc === 'all' || item.calcName === filterCalc;
+        return matchesSearch && matchesCalc;
+      });
+
+      if (filteredItems.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 text-mute border border-dashed border-canvas-card-border rounded-xl bg-canvas-card">
+            <svg class="mx-auto h-8 w-8 text-mute/50 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p class="font-bold text-xs">No matching calculation logs found.</p>
+            <p class="text-[10px] mt-1 text-mute">Perform calculations using any tool, and they will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filteredItems.map(item => {
+        const dateStr = new Date(item.timestamp).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        return `
+          <div class="bg-canvas-card border border-canvas-card-border rounded-xl p-5 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden" data-id="${item.id}">
+            <!-- Left block: Calc title + info -->
+            <div class="space-y-2 flex-1 text-left">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex px-2 py-0.5 rounded bg-brand-primary/10 text-brand-primary text-[9px] font-bold uppercase tracking-wider">${item.calcName}</span>
+                <span class="text-[9px] text-mute font-medium font-mono">${dateStr}</span>
+              </div>
+              <div class="space-y-1">
+                <div class="text-xs font-mono text-mute break-all select-all font-semibold">Input: <span class="text-body">${item.input}</span></div>
+                <div class="text-sm font-sans text-ink font-bold break-all select-all">Result: <span class="text-link font-semibold">${item.output}</span></div>
+              </div>
+            </div>
+
+            <!-- Right block: Actions -->
+            <div class="flex items-center gap-2 self-end md:self-center">
+              <button 
+                class="copy-history-btn px-2.5 py-1.5 rounded-lg border border-canvas-card-border bg-calc-btn text-[10px] font-bold text-mute hover:text-ink transition-all shadow-sm flex items-center gap-1 uppercase tracking-wider" 
+                data-text="${item.output}"
+                title="Copy result to clipboard"
+              >
+                Copy
+              </button>
+              <button 
+                class="delete-history-btn px-2.5 py-1.5 rounded-lg border border-canvas-card-border bg-calc-btn text-[10px] font-bold text-red-500 hover:text-red-700 transition-all shadow-sm flex items-center gap-1 uppercase tracking-wider" 
+                data-id="${item.id}"
+                title="Delete this calculation record"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add click handlers for buttons
+      container.querySelectorAll('.copy-history-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = (e) => {
+          const text = btn.getAttribute('data-text');
+          if (text) {
+            navigator.clipboard.writeText(text).then(() => {
+              const originalHTML = btn.innerHTML;
+              btn.innerHTML = 'Copied!';
+              btn.classList.add('text-link');
+              setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('text-link');
+              }, 1200);
+            });
+          }
+        };
+      });
+
+      container.querySelectorAll('.delete-history-btn').forEach(btn => {
+        (btn as HTMLButtonElement).onclick = async (e) => {
+          const id = btn.getAttribute('data-id');
+          if (id) {
+            try {
+              await zdb.deleteHistory(id);
+              renderHistory();
+            } catch (err) {
+              console.error('Failed to delete history item from database:', err);
+              // localStorage fallback
+              const currentHistory = JSON.parse(localStorage.getItem('zcalculate_history') || '[]');
+              const updated = currentHistory.filter(item => item.id !== id);
+              localStorage.setItem('zcalculate_history', JSON.stringify(updated));
+              renderHistory();
+            }
+          }
+        };
+      });
+    }
+
+    if (searchInput) searchInput.oninput = renderHistory;
+    if (filterSelect) filterSelect.onchange = renderHistory;
+
+    if (clearBtn) {
+      clearBtn.onclick = async () => {
+        if (confirm('Are you sure you want to clear your entire calculation history?')) {
+          try {
+            await zdb.clearHistory();
+            renderHistory();
+          } catch (err) {
+            console.error('Failed to clear history from database:', err);
+            // localStorage fallback
+            localStorage.setItem('zcalculate_history', '[]');
+            renderHistory();
+          }
+        }
+      };
+    }
+
+    renderHistory();
+
+    // Listen to real-time additions
+    window.addEventListener('history-updated', renderHistory);
+  }
+
+  setupHistoryPage();
+  document.addEventListener('astro:after-swap', setupHistoryPage);
+</script>

@@ -93,6 +93,230 @@ const websiteSchema = {
 			}
 		</script>
 
+		<!-- IndexedDB Database Engine -->
+		<script is:inline>
+			const DB_NAME = 'ZcalculateDB';
+			const DB_VERSION = 1;
+			let dbInstance = null;
+
+			function initDB() {
+				if (dbInstance) return Promise.resolve(dbInstance);
+				return new Promise((resolve, reject) => {
+					const request = indexedDB.open(DB_NAME, DB_VERSION);
+					request.onupgradeneeded = () => {
+						const db = request.result;
+						if (!db.objectStoreNames.contains('history')) {
+							db.createObjectStore('history', { keyPath: 'id' });
+						}
+						if (!db.objectStoreNames.contains('comments')) {
+							const commentStore = db.createObjectStore('comments', { keyPath: 'id', autoIncrement: true });
+							commentStore.createIndex('slug', 'slug', { unique: false });
+						}
+					};
+					request.onsuccess = () => {
+						dbInstance = request.result;
+						resolve(dbInstance);
+					};
+					request.onerror = () => reject(request.error);
+				});
+			}
+
+			window.zdb = {
+				async getHistory() {
+					const db = await initDB();
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('history', 'readonly');
+						const store = tx.objectStore('history');
+						const req = store.getAll();
+						req.onsuccess = () => {
+							const items = req.result;
+							items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+							resolve(items);
+						};
+						req.onerror = () => reject(req.error);
+					});
+				},
+				async addHistory(calcName, inputStr, outputStr) {
+					const db = await initDB();
+					const item = {
+						id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+						timestamp: new Date().toISOString(),
+						calcName,
+						input: inputStr,
+						output: outputStr
+					};
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('history', 'readwrite');
+						const store = tx.objectStore('history');
+						const req = store.put(item);
+						req.onsuccess = () => {
+							window.dispatchEvent(new Event('history-updated'));
+							resolve(item);
+						};
+						req.onerror = () => reject(req.error);
+					});
+				},
+				async deleteHistory(id) {
+					const db = await initDB();
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('history', 'readwrite');
+						const store = tx.objectStore('history');
+						const req = store.delete(id);
+						req.onsuccess = () => {
+							window.dispatchEvent(new Event('history-updated'));
+							resolve();
+						};
+						req.onerror = () => reject(req.error);
+					});
+				},
+				async clearHistory() {
+					const db = await initDB();
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('history', 'readwrite');
+						const store = tx.objectStore('history');
+						const req = store.clear();
+						req.onsuccess = () => {
+							window.dispatchEvent(new Event('history-updated'));
+							resolve();
+						};
+						req.onerror = () => reject(req.error);
+					});
+				},
+				async addComment(slug, name, rating, text) {
+					const db = await initDB();
+					const item = {
+						slug,
+						name,
+						rating,
+						text,
+						date: new Date().toISOString(),
+						replies: []
+					};
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('comments', 'readwrite');
+						const store = tx.objectStore('comments');
+						const req = store.add(item);
+						req.onsuccess = () => {
+							item.id = req.result;
+							resolve(item);
+						};
+						req.onerror = () => reject(req.error);
+					});
+				},
+				async addReply(commentId, name, text) {
+					const db = await initDB();
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('comments', 'readwrite');
+						const store = tx.objectStore('comments');
+						const getReq = store.get(Number(commentId));
+						getReq.onsuccess = () => {
+							const comment = getReq.result;
+							if (!comment) return reject(new Error('Comment not found'));
+							if (!comment.replies) comment.replies = [];
+							comment.replies.push({
+								name,
+								text,
+								date: new Date().toISOString()
+							});
+							const putReq = store.put(comment);
+							putReq.onsuccess = () => resolve(comment);
+							putReq.onerror = () => reject(putReq.error);
+						};
+						getReq.onerror = () => reject(getReq.error);
+					});
+				},
+				async getComments(slug) {
+					const db = await initDB();
+					return new Promise((resolve, reject) => {
+						const tx = db.transaction('comments', 'readonly');
+						const store = tx.objectStore('comments');
+						const index = store.index('slug');
+						const req = index.getAll(slug);
+						req.onsuccess = () => {
+							const items = req.result;
+							items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+							resolve(items);
+						};
+						req.onerror = () => reject(req.error);
+					});
+				}
+			};
+
+			window.zcalculate_saveToHistory = (calcName, inputStr, outputStr) => {
+				try {
+					if (!inputStr || !outputStr || outputStr === '0' || outputStr.includes('Select') || outputStr.includes('invalid') || outputStr.includes('Error')) return;
+					
+					initDB().then(db => {
+						const tx = db.transaction('history', 'readwrite');
+						const store = tx.objectStore('history');
+						
+						// Avoid duplicates of the last calculation
+						const getReq = store.getAll();
+						getReq.onsuccess = () => {
+							const items = getReq.result;
+							items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+							const lastItem = items[0];
+							if (lastItem && lastItem.calcName === calcName && lastItem.input === inputStr && lastItem.output === outputStr) return;
+
+							const item = {
+								id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+								timestamp: new Date().toISOString(),
+								calcName,
+								input: inputStr,
+								output: outputStr
+							};
+							
+							store.put(item);
+							window.dispatchEvent(new Event('history-updated'));
+						};
+					}).catch(err => {
+						console.error('Failed to add to database history:', err);
+					});
+				} catch (e) {
+					console.error('Failed to save to history:', e);
+				}
+			};
+
+			let zcalculate_historyTimeout;
+			window.zcalculate_saveToHistoryDebounced = (calcName, inputStr, outputStr) => {
+				clearTimeout(zcalculate_historyTimeout);
+				zcalculate_historyTimeout = setTimeout(() => {
+					window.zcalculate_saveToHistory(calcName, inputStr, outputStr);
+				}, 1500);
+			};
+
+			// Migrate old localStorage history to IndexedDB
+			try {
+				const oldRaw = localStorage.getItem('zcalculate_history');
+				if (oldRaw) {
+					const oldItems = JSON.parse(oldRaw);
+					if (Array.isArray(oldItems) && oldItems.length > 0) {
+						initDB().then(db => {
+							const tx = db.transaction('history', 'readwrite');
+							const store = tx.objectStore('history');
+							oldItems.forEach(item => {
+								if (item.timestamp && item.calcName && item.input && item.output) {
+									store.put({
+										id: item.id || (Date.now().toString() + Math.random().toString(36).substr(2, 5)),
+										timestamp: new Date(item.timestamp).toISOString(),
+										calcName: item.calcName,
+										input: item.input,
+										output: item.output
+									});
+								}
+							});
+							tx.oncomplete = () => {
+								localStorage.removeItem('zcalculate_history');
+								window.dispatchEvent(new Event('history-updated'));
+							};
+						});
+					}
+				}
+			} catch (e) {
+				console.error('History migration failed:', e);
+			}
+		</script>
+
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

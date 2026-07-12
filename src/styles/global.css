@@ -286,7 +286,8 @@
 
 /* Fullscreen Styles */
 #calculator-container:fullscreen,
-#calc-container:fullscreen {
+#calc-container:fullscreen,
+#sci-calc-root:fullscreen {
   background-color: var(--canvas-soft) !important;
   padding: 16px !important;
   width: 100vw !important;
@@ -299,8 +300,16 @@
   overflow: hidden !important;
 }
 
+#sci-calc-root:fullscreen {
+  background-color: var(--canvas-card) !important; /* Ensure scientific calculator inherits correct theme canvas in fullscreen */
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  overflow-y: auto !important;
+}
+
 #calculator-container:fullscreen > *,
-#calc-container:fullscreen > * {
+#calc-container:fullscreen > *,
+#sci-calc-root:fullscreen > * {
   max-height: 94vh !important;
   overflow-y: auto !important;
   width: 100% !important;
@@ -310,25 +319,27 @@
 
 @media (min-width: 1024px) {
   #calculator-container:fullscreen,
-  #calc-container:fullscreen {
+  #calc-container:fullscreen,
+  #sci-calc-root:fullscreen {
     padding: 32px !important;
   }
 }
 
-/* Calculator container overrides — neutral, theme-aware 50/50 gray */
+/* Calculator container overrides — premium theme-aware styling */
 #calculator-container,
 #calc-container {
-  /* Light mode: medium-gray card (#c8c8cc) on the light gray page (#f0f0f4) */
-  --canvas-card: #c8c8cc;
-  --canvas-card-soft: #c8c8cc; /* Same color for screens to blend in */
-  --canvas-card-soft-2: #b8b8bc;
-  --canvas-card-border: #a8a8b0;
-  --hairline: #a8a8b0;
+  /* Light mode: glossy white card, floating with dark shadow */
+  --canvas-card: rgba(255, 255, 255, 0.85);
+  --canvas-card-soft: #0c0c0e; /* screen background (dark obsidian) */
+  --canvas-card-soft-2: #e4e4e7; /* tab bar bg / secondary elements */
+  --canvas-card-border: rgba(0, 0, 0, 0.06);
+  --hairline: rgba(0, 0, 0, 0.06);
 
-  /* Text on the medium gray surface */
+  /* Text on the main surface */
   --ink: #171717;
-  --body: #333338;
-  --mute: #5a5a60;
+  --body: #3f3f46;
+  --mute: #71717a;
+  --brand-primary: #171717;
 
   /* Force evaluation of custom variables in subtree */
   --color-canvas-card: var(--canvas-card);
@@ -339,62 +350,84 @@
   --color-ink: var(--ink);
   --color-body: var(--body);
   --color-mute: var(--mute);
+  --color-brand-primary: var(--brand-primary);
 }
 
-/* Light Mode: Buttons are dark (less bright) */
-#calculator-container .bg-calc-btn,
-#calc-container .bg-calc-btn,
-#calculator-container .bg-calc-btn-soft,
-#calc-container .bg-calc-btn-soft,
-#calculator-container .bg-brand-primary,
-#calc-container .bg-brand-primary {
-  background-color: #222226 !important;
-  color: #ffffff !important;
-  border-color: #1a1a1e !important;
+/* Card wrappers - apply glossy white appearance and dark shadow */
+#calculator-container .bg-canvas-card:not(.calc-screen *),
+#calc-inner-wrap {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 250, 0.85) 100%) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 
+    0 30px 60px -15px rgba(0, 0, 0, 0.25), 
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#calculator-container .bg-calc-btn:hover,
-#calc-container .bg-calc-btn:hover,
-#calculator-container .bg-calc-btn-soft:hover,
-#calc-container .bg-calc-btn-soft:hover,
-#calculator-container .bg-brand-primary:hover,
-#calc-container .bg-brand-primary:hover {
-  background-color: #38383e !important;
+#calculator-container .bg-canvas-card:not(.calc-screen *):hover,
+#calc-inner-wrap:hover {
+  box-shadow: 
+    0 40px 80px -20px rgba(0, 0, 0, 0.32), 
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 1) !important;
+  transform: translateY(-2px);
 }
 
-/* Specific text color overlays inside operator/functional keys for legibility on dark buttons */
-#calculator-container .bg-calc-btn.text-link,
-#calc-container .bg-calc-btn.text-link,
-#calculator-container .bg-calc-btn-soft.text-link,
-#calc-container .bg-calc-btn-soft.text-link {
-  color: #3b82f6 !important;
-}
-#calculator-container .bg-calc-btn.text-mute,
-#calc-container .bg-calc-btn.text-mute,
-#calculator-container .bg-calc-btn-soft.text-mute,
-#calc-container .bg-calc-btn-soft.text-mute {
-  color: #a1a1aa !important;
-}
-#calculator-container .bg-calc-btn.text-body,
-#calc-container .bg-calc-btn.text-body,
-#calculator-container .bg-calc-btn-soft.text-body,
-#calc-container .bg-calc-btn-soft.text-body {
-  color: #e4e4e7 !important;
+/* Display Screens (Sage Green LCD screen) - Light & Dark Modes */
+#calculator-container .calc-screen,
+#calc-container .calc-screen {
+  background: #a3bfa2 !important;
+  border: 1.5px solid #8ba389 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
 }
 
-/* Dark mode: medium-dark gray card (#4b4b52) on the dark page (#050507) */
-.dark #calculator-container,
-.dark #calc-container {
-  --canvas-card: #4b4b52;
-  --canvas-card-soft: #4b4b52;
-  --canvas-card-soft-2: #3d3d45;
-  --canvas-card-border: #5c5c64;
-  --hairline: #5c5c64;
+/* Ensure display result/metrics inside sage screen are dark olive/black for readability */
+#calculator-container .calc-screen *,
+#calc-container .calc-screen *,
+#calculator-container #result-primary-val,
+#calculator-container #sci-display-expr,
+#calculator-container #sci-display-result,
+#calculator-container #cas-display-result,
+#calculator-container #calc-display-expr,
+#calculator-container #calc-display-result {
+  color: #1a2618 !important;
+}
 
-  /* Text on the dark gray surface */
-  --ink: #ffffff;
-  --body: #e4e4e7;
-  --mute: #b8b8bc;
+/* Screen inputs wrapper inside standard screen (sage background, inset border) */
+#calculator-container .calc-screen .bg-canvas-card,
+#calc-container .calc-screen .bg-canvas-card {
+  background-color: rgba(26, 38, 24, 0.08) !important;
+  background-image: none !important;
+  border: 1px solid rgba(26, 38, 24, 0.2) !important;
+  border-radius: 8px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+#calculator-container .calc-screen .bg-canvas-card *,
+#calc-container .calc-screen .bg-canvas-card * {
+  color: #1a2618 !important;
+}
+
+
+/* --- Light Mode Colors --- */
+#calculator-container,
+#calc-container {
+  --canvas-card: #f0f2f5;
+  --canvas-card-soft: #a3bfa2;
+  --canvas-card-soft-2: #e1e4e8;
+  --canvas-card-border: #d4d8df;
+  --hairline: #d4d8df;
+
+  /* Text colors outside screen */
+  --ink: #1e293b;
+  --body: #475569;
+  --mute: #64748b;
+  --brand-primary: #1e293b;
 
   --color-canvas-card: var(--canvas-card);
   --color-canvas-card-soft: var(--canvas-card-soft);
@@ -404,47 +437,215 @@
   --color-ink: var(--ink);
   --color-body: var(--body);
   --color-mute: var(--mute);
+  --color-brand-primary: var(--brand-primary);
 }
 
-/* Dark Mode: Buttons are light (less bright) */
+/* Card Body - Light Mode (Off-white card) */
+#calculator-container .bg-canvas-card,
+#calc-inner-wrap {
+  background: #f0f2f5 !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 
+    0 20px 40px -15px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 0 #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#calculator-container .bg-canvas-card:hover,
+#calc-inner-wrap:hover {
+  box-shadow: 
+    0 30px 50px -15px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 0 #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* Buttons - Light Mode (White buttons, dark slate text) */
+#calculator-container .bg-calc-btn,
+#calc-container .bg-calc-btn,
+#calculator-container .bg-calc-btn-soft,
+#calc-container .bg-calc-btn-soft,
+#calculator-container .sci-btn,
+#calculator-container .sci-btn-soft,
+#calculator-container .calib-tab,
+#calculator-container .cas-insert-btn,
+#calculator-container .cas-op-btn,
+#calculator-container .prog-slot-btn,
+#calculator-container .sci-mode-tab,
+#calculator-container button[type="submit"],
+#calculator-container #run-auto-detect,
+#calculator-container #run-diag-calc,
+#calculator-container #run-card-calc,
+#calculator-container #frac-calculate,
+#calculator-container #sub-calculate,
+#calculator-container #pass-generate,
+#calculator-container #tri-calculate {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 #ffffff !important;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#calculator-container .bg-calc-btn:hover,
+#calc-container .bg-calc-btn:hover,
+#calculator-container .bg-calc-btn-soft:hover,
+#calc-container .bg-calc-btn-soft:hover,
+#calculator-container .sci-btn:hover,
+#calculator-container .sci-btn-soft:hover,
+#calculator-container .calib-tab:hover,
+#calculator-container .cas-insert-btn:hover,
+#calculator-container .cas-op-btn:hover,
+#calculator-container .prog-slot-btn:hover,
+#calculator-container .sci-mode-tab:hover,
+#calculator-container button[type="submit"]:hover,
+#calculator-container #run-auto-detect:hover,
+#calculator-container #frac-calculate:hover,
+#calculator-container #sub-calculate:hover,
+#calculator-container #pass-generate:hover,
+#calculator-container #tri-calculate:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Orange color highlight for C / Reset buttons in Light Mode */
+#calculator-container button[data-val="clear"],
+#calc-container button[data-val="clear"],
+#calculator-container button[data-sci="clear"],
+#calculator-container button#prog-clear,
+#calculator-container button#sci-toggle-const,
+#calc-container button#calc-clear-history {
+  color: #ea580c !important;
+}
+
+
+/* --- Dark Mode Colors --- */
+.dark #calculator-container,
+.dark #calc-container {
+  --canvas-card: #111622;
+  --canvas-card-soft: #94ad8a;
+  --canvas-card-soft-2: #19202e;
+  --canvas-card-border: #1f2736;
+  --hairline: #1f2736;
+
+  /* Text colors outside screen */
+  --ink: #ffffff;
+  --body: #94a3b8;
+  --mute: #64748b;
+  --brand-primary: #ffffff;
+
+  --color-canvas-card: var(--canvas-card);
+  --color-canvas-card-soft: var(--canvas-card-soft);
+  --color-canvas-card-soft-2: var(--canvas-card-soft-2);
+  --color-canvas-card-border: var(--canvas-card-border);
+  --color-hairline: var(--hairline);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-mute: var(--mute);
+  --color-brand-primary: var(--brand-primary);
+}
+
+/* Card Body - Dark Mode (Sleek dark navy card) */
+.dark #calculator-container .bg-canvas-card:not(.calc-screen *),
+.dark #calc-inner-wrap {
+  background: #111622 !important;
+  border: 1px solid #1c2331 !important;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark #calculator-container .bg-canvas-card:not(.calc-screen *):hover,
+.dark #calc-inner-wrap:hover {
+  box-shadow: 
+    0 35px 60px -15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px);
+}
+
+/* Buttons - Dark Mode (Navy-gray buttons, white text) */
 .dark #calculator-container .bg-calc-btn,
 .dark #calc-container .bg-calc-btn,
 .dark #calculator-container .bg-calc-btn-soft,
 .dark #calc-container .bg-calc-btn-soft,
-.dark #calculator-container .bg-brand-primary,
-.dark #calc-container .bg-brand-primary {
-  background-color: #e2e2e8 !important;
-  color: #171717 !important;
-  border-color: #d2d2dc !important;
+.dark #calculator-container .sci-btn,
+.dark #calculator-container .sci-btn-soft,
+.dark #calculator-container .calib-tab,
+.dark #calculator-container .cas-insert-btn,
+.dark #calculator-container .cas-op-btn,
+.dark #calculator-container .prog-slot-btn,
+.dark #calculator-container .sci-mode-tab,
+.dark #calculator-container button[type="submit"],
+.dark #calculator-container #run-auto-detect,
+.dark #calculator-container #run-diag-calc,
+.dark #calculator-container #run-card-calc,
+.dark #calculator-container #frac-calculate,
+.dark #calculator-container #sub-calculate,
+.dark #calculator-container #pass-generate,
+.dark #calculator-container #tri-calculate {
+  background-color: #19202e !important;
+  color: #ffffff !important;
+  border: 1px solid #232d40 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .dark #calculator-container .bg-calc-btn:hover,
 .dark #calc-container .bg-calc-btn:hover,
 .dark #calculator-container .bg-calc-btn-soft:hover,
 .dark #calc-container .bg-calc-btn-soft:hover,
-.dark #calculator-container .bg-brand-primary:hover,
-.dark #calc-container .bg-brand-primary:hover {
-  background-color: #d4d4dc !important;
+.dark #calculator-container .sci-btn:hover,
+.dark #calculator-container .sci-btn-soft:hover,
+.dark #calculator-container .calib-tab:hover,
+.dark #calculator-container .cas-insert-btn:hover,
+.dark #calculator-container .cas-op-btn:hover,
+.dark #calculator-container .prog-slot-btn:hover,
+.dark #calculator-container .sci-mode-tab:hover,
+.dark #calculator-container button[type="submit"]:hover,
+.dark #calculator-container #run-auto-detect:hover,
+.dark #calculator-container #frac-calculate:hover,
+.dark #calculator-container #sub-calculate:hover,
+.dark #calculator-container #pass-generate:hover,
+.dark #calculator-container #tri-calculate:hover {
+  background-color: #232d40 !important;
 }
 
-/* Specific text color overlays on light buttons in dark mode */
-.dark #calculator-container .bg-calc-btn.text-link,
-.dark #calc-container .bg-calc-btn.text-link,
-.dark #calculator-container .bg-calc-btn-soft.text-link,
-.dark #calc-container .bg-calc-btn-soft.text-link {
-  color: #0070f3 !important;
+/* Orange color highlight for C / Reset buttons in Dark Mode */
+.dark #calculator-container button[data-val="clear"],
+.dark #calc-container button[data-val="clear"],
+.dark #calculator-container button[data-sci="clear"],
+.dark #calculator-container button#prog-clear,
+.dark #calculator-container button#sci-toggle-const,
+.dark #calc-container button#calc-clear-history {
+  color: #f59e0b !important;
 }
-.dark #calculator-container .bg-calc-btn.text-mute,
-.dark #calc-container .bg-calc-btn.text-mute,
-.dark #calculator-container .bg-calc-btn-soft.text-mute,
-.dark #calc-container .bg-calc-btn-soft.text-mute {
-  color: #71717a !important;
+
+
+/* Clean form styling (Inputs, Selects) outside calculator display */
+#calculator-container input,
+#calculator-container select,
+#calculator-container textarea {
+  background-color: #ffffff !important;
+  border: 1px solid #d2d2dc !important;
+  color: #171717 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
-.dark #calculator-container .bg-calc-btn.text-body,
-.dark #calc-container .bg-calc-btn.text-body,
-.dark #calculator-container .bg-calc-btn-soft.text-body,
-.dark #calc-container .bg-calc-btn-soft.text-body {
-  color: #4d4d4d !important;
+
+.dark #calculator-container input,
+.dark #calculator-container select,
+.dark #calculator-container textarea {
+  background-color: #19202e !important;
+  border: 1px solid #232d40 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
 }
+
 
 
