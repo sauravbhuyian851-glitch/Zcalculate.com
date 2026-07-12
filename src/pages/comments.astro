@@ -150,20 +150,9 @@ import Layout from '../layouts/Layout.astro';
       // Fetch comments across all calculators
       let allComments: any[] = [];
       const dbInstance = (window as any).zdb;
-      if (dbInstance) {
+      if (dbInstance && typeof dbInstance.getAllComments === 'function') {
         try {
-          const db = await dbInstance.init();
-          allComments = await new Promise<any[]>((resolve, reject) => {
-            const tx = db.transaction('comments', 'readonly');
-            const store = tx.objectStore('comments');
-            const req = store.getAll();
-            req.onsuccess = () => {
-              const res = req.result;
-              res.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-              resolve(res);
-            };
-            req.onerror = () => reject(req.error);
-          });
+          allComments = await dbInstance.getAllComments();
         } catch (err) {
           console.error('Failed to query comments database:', err);
         }
@@ -316,29 +305,12 @@ import Layout from '../layouts/Layout.astro';
         (btn as HTMLButtonElement).onclick = async () => {
           if (!confirm('Are you sure you want to delete this comment?')) return;
           const id = btn.getAttribute('data-id');
-          const slug = btn.getAttribute('data-slug');
-          const date = btn.getAttribute('data-date');
           
-          if (dbInstance) {
+          const dbInstance = (window as any).zdb;
+          if (dbInstance && typeof dbInstance.deleteComment === 'function' && id) {
             try {
-              const db = await dbInstance.init();
-              const tx = db.transaction('comments', 'readwrite');
-              const store = tx.objectStore('comments');
-              
-              // Fallback to searching by slug and date if id is generated auto-increment
-              const req = store.openCursor();
-              req.onsuccess = () => {
-                const cursor = req.result;
-                if (cursor) {
-                  const val = cursor.value;
-                  if (val.slug === slug && val.date === date) {
-                    cursor.delete();
-                    renderCommentsList();
-                  } else {
-                    cursor.continue();
-                  }
-                }
-              };
+              await dbInstance.deleteComment(id);
+              renderCommentsList();
             } catch (err) {
               console.error('Delete comment failed:', err);
             }
@@ -379,15 +351,10 @@ import Layout from '../layouts/Layout.astro';
       clearBtn.onclick = async () => {
         if (!confirm('Are you sure you want to delete all comments?')) return;
         const dbInstance = (window as any).zdb;
-        if (dbInstance) {
+        if (dbInstance && typeof dbInstance.clearComments === 'function') {
           try {
-            const db = await dbInstance.init();
-            const tx = db.transaction('comments', 'readwrite');
-            const store = tx.objectStore('comments');
-            store.clear();
-            tx.oncomplete = () => {
-              renderCommentsList();
-            };
+            await dbInstance.clearComments();
+            renderCommentsList();
           } catch (err) {
             console.error('Clear comments failed:', err);
           }

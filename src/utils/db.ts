@@ -60,5 +60,24 @@ export const zdb = {
       return (window as any).zdb.getComments(slug);
     }
     return [];
+  },
+
+  async getAllComments(): Promise<CommentItem[]> {
+    if (typeof window !== 'undefined' && (window as any).zdb) {
+      return (window as any).zdb.getAllComments();
+    }
+    return [];
+  },
+
+  async deleteComment(id: number | string): Promise<void> {
+    if (typeof window !== 'undefined' && (window as any).zdb) {
+      return (window as any).zdb.deleteComment(id);
+    }
+  },
+
+  async clearComments(): Promise<void> {
+    if (typeof window !== 'undefined' && (window as any).zdb) {
+      return (window as any).zdb.clearComments();
+    }
   }
 };
