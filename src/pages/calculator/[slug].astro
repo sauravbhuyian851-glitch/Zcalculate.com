@@ -316,9 +316,9 @@ const breadcrumbSchema = {
         <p class="text-body text-base mb-10">Explore more tools that complement this calculator.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {relatedCalcs.map(rc => (
-            <a href={`/calculator/${rc.slug}`} class="group p-6 bg-canvas border border-hairline hover:border-hairline-strong rounded-xl transition-all hover:shadow-lg">
+            <a href={`/calculator/${rc.slug}`} class="calc-card group p-6 bg-canvas-card border border-canvas-card-border hover:border-hairline-strong rounded-xl transition-all hover:shadow-lg">
               <div class="flex items-center gap-3 mb-3">
-                <span class="inline-block px-2 py-0.5 bg-canvas-soft border border-hairline text-[9px] font-bold text-mute rounded uppercase tracking-wider">{rc.category}</span>
+                <span class="inline-block px-2 py-0.5 bg-canvas-card-soft border border-canvas-card-border text-[9px] font-bold text-mute rounded uppercase tracking-wider">{rc.category}</span>
               </div>
               <h3 class="text-base font-semibold text-ink group-hover:text-link transition-colors">{rc.name}</h3>
               <p class="mt-2 text-sm text-body leading-relaxed line-clamp-2">{rc.description}</p>

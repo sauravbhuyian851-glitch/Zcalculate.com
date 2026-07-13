@@ -325,55 +325,66 @@
   }
 }
 
-/* Calculator container overrides — premium theme-aware styling */
+/* Calculator container overrides — premium styling, unified to dark mode colors */
 #calculator-container,
 #calc-container {
-  /* Light mode: glossy white card, floating with dark shadow */
-  --canvas-card: rgba(255, 255, 255, 0.85);
-  --canvas-card-soft: #0c0c0e; /* screen background (dark obsidian) */
-  --canvas-card-soft-2: #e4e4e7; /* tab bar bg / secondary elements */
-  --canvas-card-border: rgba(0, 0, 0, 0.06);
-  --hairline: rgba(0, 0, 0, 0.06);
+  --canvas: #000000;
+  --canvas-soft: #050507;
+  --canvas-soft-2: #0e0e12;
+  --canvas-card: #111622;
+  --canvas-card-soft: #94ad8a;
+  --canvas-card-soft-2: #19202e;
+  --canvas-card-border: #1f2736;
+  --hairline: #1f2736;
+  --hairline-strong: #5a5a65;
+  --calc-btn: #19202e;
+  --calc-btn-soft: #111622;
 
-  /* Text on the main surface */
-  --ink: #171717;
-  --body: #3f3f46;
-  --mute: #71717a;
-  --brand-primary: #171717;
+  /* Text colors outside screen */
+  --ink: #ffffff;
+  --body: #94a3b8;
+  --mute: #64748b;
+  --brand-primary: #ffffff;
 
   /* Force evaluation of custom variables in subtree */
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-canvas-soft-2: var(--canvas-soft-2);
   --color-canvas-card: var(--canvas-card);
   --color-canvas-card-soft: var(--canvas-card-soft);
   --color-canvas-card-soft-2: var(--canvas-card-soft-2);
   --color-canvas-card-border: var(--canvas-card-border);
   --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-calc-btn: var(--calc-btn);
+  --color-calc-btn-soft: var(--calc-btn-soft);
   --color-ink: var(--ink);
   --color-body: var(--body);
   --color-mute: var(--mute);
   --color-brand-primary: var(--brand-primary);
 }
 
-/* Card wrappers - apply glossy white appearance and dark shadow */
+/* Card wrappers - apply dark style appearance in both modes */
 #calculator-container .bg-canvas-card:not(.calc-screen *),
 #calc-inner-wrap {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 250, 0.85) 100%) !important;
-  backdrop-filter: blur(20px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  background: #111622 !important;
+  border: 1px solid #1c2331 !important;
   box-shadow: 
-    0 30px 60px -15px rgba(0, 0, 0, 0.25), 
-    0 0 0 1px rgba(0, 0, 0, 0.04),
-    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9) !important;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    0 25px 50px -12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #calculator-container .bg-canvas-card:not(.calc-screen *):hover,
 #calc-inner-wrap:hover {
   box-shadow: 
-    0 40px 80px -20px rgba(0, 0, 0, 0.32), 
-    0 0 0 1px rgba(0, 0, 0, 0.04),
-    inset 0 1.5px 0 0 rgba(255, 255, 255, 1) !important;
-  transform: translateY(-2px);
+    0 35px 60px -15px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-1px);
 }
 
 /* Display Screens (Sage Green LCD screen) - Light & Dark Modes */
@@ -413,57 +424,7 @@
   color: #1a2618 !important;
 }
 
-
-/* --- Light Mode Colors --- */
-#calculator-container,
-#calc-container {
-  --canvas-card: #f0f2f5;
-  --canvas-card-soft: #a3bfa2;
-  --canvas-card-soft-2: #e1e4e8;
-  --canvas-card-border: #d4d8df;
-  --hairline: #d4d8df;
-
-  /* Text colors outside screen */
-  --ink: #1e293b;
-  --body: #475569;
-  --mute: #64748b;
-  --brand-primary: #1e293b;
-
-  --color-canvas-card: var(--canvas-card);
-  --color-canvas-card-soft: var(--canvas-card-soft);
-  --color-canvas-card-soft-2: var(--canvas-card-soft-2);
-  --color-canvas-card-border: var(--canvas-card-border);
-  --color-hairline: var(--hairline);
-  --color-ink: var(--ink);
-  --color-body: var(--body);
-  --color-mute: var(--mute);
-  --color-brand-primary: var(--brand-primary);
-}
-
-/* Card Body - Light Mode (Off-white card) */
-#calculator-container .bg-canvas-card,
-#calc-inner-wrap {
-  background: #f0f2f5 !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 
-    0 20px 40px -15px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(0, 0, 0, 0.02),
-    inset 0 1px 0 0 #ffffff !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#calculator-container .bg-canvas-card:hover,
-#calc-inner-wrap:hover {
-  box-shadow: 
-    0 30px 50px -15px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(0, 0, 0, 0.02),
-    inset 0 1px 0 0 #ffffff !important;
-  transform: translateY(-1px);
-}
-
-/* Buttons - Light Mode (White buttons, dark slate text) */
+/* Buttons - Navy-gray buttons, white text in both modes */
 #calculator-container .bg-calc-btn,
 #calc-container .bg-calc-btn,
 #calculator-container .bg-calc-btn-soft,
@@ -483,10 +444,10 @@
 #calculator-container #sub-calculate,
 #calculator-container #pass-generate,
 #calculator-container #tri-calculate {
-  background-color: #ffffff !important;
-  color: #1e293b !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03), inset 0 1px 0 0 #ffffff !important;
+  background-color: #19202e !important;
+  color: #ffffff !important;
+  border: 1px solid #232d40 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
@@ -507,144 +468,59 @@
 #calculator-container #sub-calculate:hover,
 #calculator-container #pass-generate:hover,
 #calculator-container #tri-calculate:hover {
-  background-color: #f8fafc !important;
+  background-color: #232d40 !important;
 }
 
-/* Orange color highlight for C / Reset buttons in Light Mode */
+/* Orange color highlight for C / Reset buttons in both modes */
 #calculator-container button[data-val="clear"],
 #calc-container button[data-val="clear"],
 #calculator-container button[data-sci="clear"],
 #calculator-container button#prog-clear,
 #calculator-container button#sci-toggle-const,
 #calc-container button#calc-clear-history {
-  color: #ea580c !important;
+  color: #f59e0b !important;
 }
 
 
-/* --- Dark Mode Colors --- */
-.dark #calculator-container,
-.dark #calc-container {
+/* Clean form styling (Inputs, Selects) outside calculator display in both modes */
+#calculator-container input,
+#calculator-container select,
+#calculator-container textarea {
+  background-color: #19202e !important;
+  border: 1px solid #232d40 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Homepage and related library cards — always dark themed like calculators */
+.calc-card {
   --canvas-card: #111622;
-  --canvas-card-soft: #94ad8a;
-  --canvas-card-soft-2: #19202e;
+  --canvas-card-soft: #19202e;
+  --canvas-card-soft-2: #1e293b;
   --canvas-card-border: #1f2736;
   --hairline: #1f2736;
-
-  /* Text colors outside screen */
+  --hairline-strong: #232d40;
   --ink: #ffffff;
   --body: #94a3b8;
   --mute: #64748b;
-  --brand-primary: #ffffff;
+
+  background-color: #111622 !important;
+  border-color: #1f2736 !important;
+  color: #ffffff !important;
 
   --color-canvas-card: var(--canvas-card);
   --color-canvas-card-soft: var(--canvas-card-soft);
   --color-canvas-card-soft-2: var(--canvas-card-soft-2);
   --color-canvas-card-border: var(--canvas-card-border);
   --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
   --color-ink: var(--ink);
   --color-body: var(--body);
   --color-mute: var(--mute);
-  --color-brand-primary: var(--brand-primary);
 }
 
-/* Card Body - Dark Mode (Sleek dark navy card) */
-.dark #calculator-container .bg-canvas-card:not(.calc-screen *),
-.dark #calc-inner-wrap {
-  background: #111622 !important;
-  border: 1px solid #1c2331 !important;
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark #calculator-container .bg-canvas-card:not(.calc-screen *):hover,
-.dark #calc-inner-wrap:hover {
-  box-shadow: 
-    0 35px 60px -15px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
-  transform: translateY(-1px);
-}
-
-/* Buttons - Dark Mode (Navy-gray buttons, white text) */
-.dark #calculator-container .bg-calc-btn,
-.dark #calc-container .bg-calc-btn,
-.dark #calculator-container .bg-calc-btn-soft,
-.dark #calc-container .bg-calc-btn-soft,
-.dark #calculator-container .sci-btn,
-.dark #calculator-container .sci-btn-soft,
-.dark #calculator-container .calib-tab,
-.dark #calculator-container .cas-insert-btn,
-.dark #calculator-container .cas-op-btn,
-.dark #calculator-container .prog-slot-btn,
-.dark #calculator-container .sci-mode-tab,
-.dark #calculator-container button[type="submit"],
-.dark #calculator-container #run-auto-detect,
-.dark #calculator-container #run-diag-calc,
-.dark #calculator-container #run-card-calc,
-.dark #calculator-container #frac-calculate,
-.dark #calculator-container #sub-calculate,
-.dark #calculator-container #pass-generate,
-.dark #calculator-container #tri-calculate {
-  background-color: #19202e !important;
-  color: #ffffff !important;
-  border: 1px solid #232d40 !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.dark #calculator-container .bg-calc-btn:hover,
-.dark #calc-container .bg-calc-btn:hover,
-.dark #calculator-container .bg-calc-btn-soft:hover,
-.dark #calc-container .bg-calc-btn-soft:hover,
-.dark #calculator-container .sci-btn:hover,
-.dark #calculator-container .sci-btn-soft:hover,
-.dark #calculator-container .calib-tab:hover,
-.dark #calculator-container .cas-insert-btn:hover,
-.dark #calculator-container .cas-op-btn:hover,
-.dark #calculator-container .prog-slot-btn:hover,
-.dark #calculator-container .sci-mode-tab:hover,
-.dark #calculator-container button[type="submit"]:hover,
-.dark #calculator-container #run-auto-detect:hover,
-.dark #calculator-container #frac-calculate:hover,
-.dark #calculator-container #sub-calculate:hover,
-.dark #calculator-container #pass-generate:hover,
-.dark #calculator-container #tri-calculate:hover {
-  background-color: #232d40 !important;
-}
-
-/* Orange color highlight for C / Reset buttons in Dark Mode */
-.dark #calculator-container button[data-val="clear"],
-.dark #calc-container button[data-val="clear"],
-.dark #calculator-container button[data-sci="clear"],
-.dark #calculator-container button#prog-clear,
-.dark #calculator-container button#sci-toggle-const,
-.dark #calc-container button#calc-clear-history {
-  color: #f59e0b !important;
-}
-
-
-/* Clean form styling (Inputs, Selects) outside calculator display */
-#calculator-container input,
-#calculator-container select,
-#calculator-container textarea {
-  background-color: #ffffff !important;
-  border: 1px solid #d2d2dc !important;
-  color: #171717 !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-}
-
-.dark #calculator-container input,
-.dark #calculator-container select,
-.dark #calculator-container textarea {
-  background-color: #19202e !important;
-  border: 1px solid #232d40 !important;
-  color: #ffffff !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+.calc-card:hover {
+  border-color: #232d40 !important;
 }
 
 
