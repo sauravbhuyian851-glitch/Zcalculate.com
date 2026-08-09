@@ -63,10 +63,126 @@
         <button class="calc-btn col-span-2 text-2xl sm:text-3xl font-black bg-brand-primary hover:opacity-90 text-canvas rounded-xl py-3 sm:py-3.5 shadow-lg transition-all" data-val="equals">=</button>
       </div>
     </div>
+
+    <!-- User Manual / Function Guide Accordion -->
+    <details class="mt-4 group bg-canvas border border-canvas-card-border rounded-xl p-3 shadow-sm text-left">
+      <summary class="text-[10px] font-bold text-mute hover:text-ink cursor-pointer uppercase tracking-wider flex items-center justify-between select-none">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          User Manual & Function Examples
+        </span>
+        <svg class="w-3.5 h-3.5 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </summary>
+      <div class="mt-3 pt-3 border-t border-canvas-card-border space-y-2 text-[11px]">
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Addition (+)</span>
+          <span class="text-body text-[10px]">Adds two numbers together.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 4 + 4 = 8</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Subtraction (-)</span>
+          <span class="text-body text-[10px]">Subtracts the second number from the first.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 10 - 3 = 7</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Multiplication (×)</span>
+          <span class="text-body text-[10px]">Multiplies two numbers together.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 6 × 7 = 42</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Division (÷)</span>
+          <span class="text-body text-[10px]">Divides the first number by the second.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 20 ÷ 4 = 5</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Percentage (%)</span>
+          <span class="text-body text-[10px]">Computes standalone or relative percentage.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 50% = 0.5 | 100 + 10% = 110</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Decimal (.)</span>
+          <span class="text-body text-[10px]">Inserts a decimal point for fractional numbers.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 3.14 + 1.86 = 5</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Clear (C)</span>
+          <span class="text-body text-[10px]">Clears input expression and resets display to 0.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: Press C to reset to 0</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Backspace (⌫)</span>
+          <span class="text-body text-[10px]">Deletes the last entered digit or symbol.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 123 -> 12</code>
+        </div>
+        <div class="p-2 rounded bg-canvas-card-soft border border-canvas-card-border">
+          <span class="font-bold text-ink block">Equals (=)</span>
+          <span class="text-body text-[10px]">Evaluates the expression and shows final answer.</span>
+          <code class="block mt-1 text-[10px] font-mono text-link font-bold">Example: 5 × 8 = 40</code>
+        </div>
+      </div>
+    </details>
   </div>
 </div>
 
 <script>
+  function getLeftOperand(expr: string, index: number) {
+    let i = index - 1;
+    while (i >= 0 && /\s/.test(expr[i])) i--;
+    if (i < 0) return null;
+
+    if (expr[i] === ')') {
+      let depth = 1;
+      i--;
+      while (i >= 0 && depth > 0) {
+        if (expr[i] === ')') depth++;
+        else if (expr[i] === '(') depth--;
+        i--;
+      }
+      return { text: expr.substring(i + 1, index).trim(), isGroup: true };
+    } else {
+      let start = i;
+      while (start >= 0 && /[\d\.]/.test(expr[start])) start--;
+      return { text: expr.substring(start + 1, index).trim(), isGroup: false };
+    }
+  }
+
+  function preprocessPercentage(expr: string): string {
+    if (!expr || !expr.includes('%')) return expr;
+
+    let s = expr;
+    let pctIdx: number;
+    while ((pctIdx = s.indexOf('%')) !== -1) {
+      let numEnd = pctIdx;
+      let numStart = numEnd - 1;
+      while (numStart >= 0 && /[\d\.]/.test(s[numStart])) numStart--;
+      numStart++;
+
+      const pctValStr = s.substring(numStart, numEnd);
+      if (!pctValStr || isNaN(parseFloat(pctValStr))) {
+        s = s.replace('%', '');
+        continue;
+      }
+
+      let opIdx = numStart - 1;
+      while (opIdx >= 0 && /\s/.test(s[opIdx])) opIdx--;
+
+      if (opIdx >= 0 && (s[opIdx] === '+' || s[opIdx] === '-')) {
+        const op = s[opIdx];
+        const leftObj = getLeftOperand(s, opIdx);
+        if (leftObj && (!leftObj.isGroup || leftObj.text.includes('+') || leftObj.text.includes('-'))) {
+          const leftStart = opIdx - leftObj.text.length;
+          const replacement = `(${leftObj.text} ${op} (${leftObj.text} * ${pctValStr} / 100))`;
+          s = s.substring(0, leftStart) + replacement + s.substring(pctIdx + 1);
+          continue;
+        }
+      }
+
+      s = s.substring(0, numStart) + `(${pctValStr} / 100)` + s.substring(pctIdx + 1);
+    }
+
+    return s;
+  }
+
   function initStandardCalculator() {
     let currentExpr = '';
     let resultShown = false;
@@ -156,6 +272,7 @@
       if (!currentExpr) return;
       try {
         let prep = currentExpr.replace(/×/g, '*').replace(/÷/g, '/');
+        prep = preprocessPercentage(prep);
         const result = new Function(`return ${prep}`)();
         const finalAns = typeof result === 'number' && !isNaN(result) ? Number(result.toFixed(10)).toString() : 'Error';
         if (displayResult) {

@@ -477,7 +477,67 @@ export function calculateDueDate(lastPeriodDateStr: string, cycleLengthDays: num
 }
 
 
-// ==================== MATH UTILITIES ====================
+// Helper to parse left operand for percentage handling
+function getLeftOperand(expr: string, index: number) {
+  let i = index - 1;
+  while (i >= 0 && /\s/.test(expr[i])) i--;
+  if (i < 0) return null;
+
+  if (expr[i] === ')') {
+    let depth = 1;
+    i--;
+    while (i >= 0 && depth > 0) {
+      if (expr[i] === ')') depth++;
+      else if (expr[i] === '(') depth--;
+      i--;
+    }
+    return { text: expr.substring(i + 1, index).trim(), isGroup: true };
+  } else {
+    let start = i;
+    while (start >= 0 && /[\d\.]/.test(expr[start])) start--;
+    return { text: expr.substring(start + 1, index).trim(), isGroup: false };
+  }
+}
+
+export function preprocessPercentage(expr: string): string {
+  if (!expr || !expr.includes('%')) return expr;
+
+  let s = expr;
+
+  // Process % one by one from left to right
+  let pctIdx: number;
+  while ((pctIdx = s.indexOf('%')) !== -1) {
+    let numEnd = pctIdx;
+    let numStart = numEnd - 1;
+    while (numStart >= 0 && /[\d\.]/.test(s[numStart])) numStart--;
+    numStart++;
+
+    const pctValStr = s.substring(numStart, numEnd);
+    if (!pctValStr || isNaN(parseFloat(pctValStr))) {
+      s = s.replace('%', '');
+      continue;
+    }
+
+    let opIdx = numStart - 1;
+    while (opIdx >= 0 && /\s/.test(s[opIdx])) opIdx--;
+
+    if (opIdx >= 0 && (s[opIdx] === '+' || s[opIdx] === '-')) {
+      const op = s[opIdx];
+      const leftObj = getLeftOperand(s, opIdx);
+      if (leftObj && (!leftObj.isGroup || leftObj.text.includes('+') || leftObj.text.includes('-'))) {
+        const leftStart = opIdx - leftObj.text.length;
+        const replacement = `(${leftObj.text} ${op} (${leftObj.text} * ${pctValStr} / 100))`;
+        s = s.substring(0, leftStart) + replacement + s.substring(pctIdx + 1);
+        continue;
+      }
+    }
+
+    // Default: replace N% with (N / 100)
+    s = s.substring(0, numStart) + `(${pctValStr} / 100)` + s.substring(pctIdx + 1);
+  }
+
+  return s;
+}
 
 export function calculatePercentage(x: number, y: number, type: string) {
   let result = 0;
@@ -488,8 +548,9 @@ export function calculatePercentage(x: number, y: number, type: string) {
   } else if (type === 'percent_change') {
     result = x !== 0 ? ((y - x) / x) * 100 : 0;
   }
-  return { result };
+  return { result: parseFloat(result.toFixed(8)) };
 }
+
 
 export function calculateRandomNumbers(min: number, max: number, count: number, allowDuplicates: boolean) {
   const results = [];

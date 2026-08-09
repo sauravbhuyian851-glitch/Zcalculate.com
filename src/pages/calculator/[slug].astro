@@ -291,6 +291,32 @@ const breadcrumbSchema = {
       </div>
     </div>
 
+    <!-- User Manual & Function Guide Section -->
+    {calc.manual && calc.manual.length > 0 && (
+      <section class="mt-24 border-t border-hairline pt-16">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="inline-block px-2.5 py-1 bg-canvas-soft border border-hairline text-[10px] font-bold text-mute rounded-md uppercase tracking-wider font-mono">Documentation</span>
+          <h2 class="display-lg text-ink">User manual & function guide.</h2>
+        </div>
+        <p class="text-body text-base mb-10 leading-relaxed max-w-3xl">Detailed manual explaining every function, input parameter, and operational example for the {calc.name}.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {calc.manual.map(m => (
+            <div class="bg-canvas-card border border-canvas-card-border rounded-xl p-6 shadow-sm hover:shadow-md transition-all text-left">
+              <div class="flex items-center justify-between gap-4 mb-2">
+                <h3 class="text-base font-semibold text-ink">{m.name}</h3>
+                <span class="px-2 py-0.5 bg-canvas-card-soft border border-canvas-card-border text-[9px] font-bold text-mute rounded uppercase tracking-wider font-mono">Function</span>
+              </div>
+              <p class="text-body text-sm leading-relaxed mb-4">{m.description}</p>
+              <div class="bg-canvas-card-soft border border-canvas-card-border rounded-lg p-3">
+                <span class="text-[9px] font-bold text-mute uppercase tracking-widest block mb-1">Example Operation</span>
+                <code class="text-xs font-mono font-bold text-link block break-all">{m.example}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
     <!-- FAQ Section (SEO + UX) -->
     {calc.faqs.length > 0 && (
       <section class="mt-24 border-t border-hairline pt-16">

@@ -1,3 +1,9 @@
+export interface CalculatorManualFunction {
+  name: string;
+  description: string;
+  example: string;
+}
+
 export interface CalculatorFAQ {
   question: string;
   answer: string;
@@ -24,6 +30,7 @@ export interface CalculatorMetadata {
   seoTitle: string;
   seoDescription: string;
   faqs: CalculatorFAQ[];
+  manual?: CalculatorManualFunction[];
   relatedSlugs: string[];
   customUI?: boolean;
   inputs: CalculatorInput[];
@@ -56,6 +63,38 @@ export const calculatorsList: CalculatorMetadata[] = [
   // ==================== FINANCIAL CALCULATORS ====================
   {
     slug: 'mortgage-calculator',
+    manual: [
+          {
+                "name": "Home Value",
+                "description": "Total purchase price of the home.",
+                "example": "Home Value = $400,000"
+          },
+          {
+                "name": "Down Payment",
+                "description": "Upfront cash paid toward purchase price.",
+                "example": "Down Payment = $80,000 (20%)"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Annual percentage interest rate (APR).",
+                "example": "Interest Rate = 6.5%"
+          },
+          {
+                "name": "Loan Term",
+                "description": "Total loan duration in years.",
+                "example": "Loan Term = 30 years"
+          },
+          {
+                "name": "Monthly Payment Calculation",
+                "description": "Computes fixed monthly principal and interest payment.",
+                "example": "$400,000 Home Value - $80,000 Down Payment @ 6.5% for 30 yrs = $2,022.62 / mo"
+          },
+          {
+                "name": "Amortization Schedule",
+                "description": "Generates annual principal paid, interest paid, and remaining balance.",
+                "example": "Year 1 Balance = $315,400"
+          }
+    ],
     name: 'Mortgage Calculator',
     category: 'financial',
     description: 'Estimate monthly mortgage payments, total interest costs, and view a complete amortization schedule.',
@@ -76,6 +115,33 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'loan-calculator',
+    manual: [
+          {
+                "name": "Loan Amount",
+                "description": "Total principal money borrowed.",
+                "example": "Loan Amount = $25,000"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Annual interest rate charged for the loan.",
+                "example": "Interest Rate = 7.2%"
+          },
+          {
+                "name": "Loan Term",
+                "description": "Repayment term duration in years.",
+                "example": "Loan Term = 5 years"
+          },
+          {
+                "name": "Monthly Payment",
+                "description": "Calculates fixed monthly installment.",
+                "example": "$25,000 @ 7.2% for 5 yrs = $497.41 / mo"
+          },
+          {
+                "name": "Total Interest",
+                "description": "Calculates total interest paid over loan lifetime.",
+                "example": "Total Interest = $4,844.75"
+          }
+    ],
     name: 'Loan Calculator',
     category: 'financial',
     description: 'Compute payments and total interest for general personal or business loans.',
@@ -94,6 +160,43 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'auto-loan-calculator',
+    manual: [
+          {
+                "name": "Vehicle Price",
+                "description": "Base sticker price of vehicle.",
+                "example": "Vehicle Price = $35,000"
+          },
+          {
+                "name": "Down Payment",
+                "description": "Upfront cash paid.",
+                "example": "Down Payment = $5,000"
+          },
+          {
+                "name": "Trade-in Value",
+                "description": "Allowance given for trade-in vehicle.",
+                "example": "Trade-in Value = $2,000"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Annual financing percentage rate.",
+                "example": "Interest Rate = 5.9%"
+          },
+          {
+                "name": "Loan Term",
+                "description": "Financing duration in months.",
+                "example": "Loan Term = 60 months"
+          },
+          {
+                "name": "Sales Tax Rate",
+                "description": "Local vehicle sales tax percentage.",
+                "example": "Sales Tax Rate = 7.0%"
+          },
+          {
+                "name": "Monthly Auto Payment",
+                "description": "Calculates net financed amount and monthly payment.",
+                "example": "$35,000 + $2,450 tax - $5,000 down - $2,000 trade = $30,450 financed -> $586.82 / mo"
+          }
+    ],
     name: 'Auto Loan Calculator',
     category: 'financial',
     description: 'Determine monthly payments, total costs, and tax schedules for vehicle financing.',
@@ -115,6 +218,33 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'interest-calculator',
+    manual: [
+          {
+                "name": "Principal Amount",
+                "description": "Initial amount invested or deposited.",
+                "example": "Principal = $10,000"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Annual percentage interest rate.",
+                "example": "Interest Rate = 5.0%"
+          },
+          {
+                "name": "Term Duration",
+                "description": "Total duration in years.",
+                "example": "Term = 10 years"
+          },
+          {
+                "name": "Compound Interest Mode",
+                "description": "Calculates exponential compound interest growth.",
+                "example": "$10,000 @ 5% for 10 yrs (Compound) = $16,288.95"
+          },
+          {
+                "name": "Simple Interest Mode",
+                "description": "Calculates linear interest growth on principal.",
+                "example": "$10,000 @ 5% for 10 yrs (Simple) = $15,000.00"
+          }
+    ],
     name: 'Interest Calculator',
     category: 'financial',
     description: 'Compare simple and compound interest returns over time.',
@@ -143,6 +273,33 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'payment-calculator',
+    manual: [
+          {
+                "name": "Purchase Price",
+                "description": "Price of item being financed.",
+                "example": "Purchase Price = $15,000"
+          },
+          {
+                "name": "Down Payment",
+                "description": "Initial down payment.",
+                "example": "Down Payment = $1,500"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Annual interest percentage rate.",
+                "example": "Interest Rate = 8.0%"
+          },
+          {
+                "name": "Term Duration",
+                "description": "Duration in months.",
+                "example": "Term = 36 months"
+          },
+          {
+                "name": "Installment Calculation",
+                "description": "Computes monthly payment installment.",
+                "example": "$13,500 financed @ 8% for 36 mos = $423.23 / mo"
+          }
+    ],
     name: 'Payment Calculator',
     category: 'financial',
     description: 'Convert total item cost, sales tax, down payments, and finance terms into regular payments.',
@@ -161,6 +318,43 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'retirement-calculator',
+    manual: [
+          {
+                "name": "Current Age",
+                "description": "Your starting age today.",
+                "example": "Current Age = 30"
+          },
+          {
+                "name": "Retirement Age",
+                "description": "Target age to begin retirement.",
+                "example": "Retirement Age = 65"
+          },
+          {
+                "name": "Current Savings",
+                "description": "Total nest egg currently saved.",
+                "example": "Current Savings = $50,000"
+          },
+          {
+                "name": "Monthly Deposit",
+                "description": "Recurring monthly contribution.",
+                "example": "Monthly Deposit = $500"
+          },
+          {
+                "name": "Expected Return",
+                "description": "Projected annual market return rate.",
+                "example": "Expected Return = 7.5%"
+          },
+          {
+                "name": "Inflation Adjustment",
+                "description": "Estimated annual inflation rate.",
+                "example": "Inflation Rate = 2.5%"
+          },
+          {
+                "name": "Retirement Projection",
+                "description": "Calculates retirement nest egg and 4% rule monthly income.",
+                "example": "Balance at age 65 = $976,511 -> $3,255.04 / mo income"
+          }
+    ],
     name: 'Retirement Calculator',
     category: 'financial',
     description: 'Determine if your current savings, contributions, and expected returns will meet retirement goals.',
@@ -182,6 +376,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'amortization-calculator',
+    manual: [
+          {
+                "name": "Loan Amount",
+                "description": "Total principal loan balance.",
+                "example": "Loan Amount = $250,000"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Fixed interest rate.",
+                "example": "Interest Rate = 6.2%"
+          },
+          {
+                "name": "Loan Term",
+                "description": "Repayment duration in years.",
+                "example": "Loan Term = 15 years"
+          },
+          {
+                "name": "Amortization Breakdown",
+                "description": "Shows period breakdown of principal and interest.",
+                "example": "Month 1: $909.10 Principal + $1,291.67 Interest = $2,200.77"
+          }
+    ],
     name: 'Amortization Calculator',
     category: 'financial',
     description: 'Examine detailed periodic payment breakdowns, principal payouts, and running interest balances.',
@@ -199,6 +415,33 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'investment-calculator',
+    manual: [
+          {
+                "name": "Starting Capital",
+                "description": "Initial portfolio balance.",
+                "example": "Starting Capital = $20,000"
+          },
+          {
+                "name": "Monthly Contribution",
+                "description": "Added monthly investment.",
+                "example": "Monthly Contribution = $300"
+          },
+          {
+                "name": "Expected Annual Return",
+                "description": "Projected annual growth rate.",
+                "example": "Annual Return = 8.0%"
+          },
+          {
+                "name": "Investment Horizon",
+                "description": "Investment duration in years.",
+                "example": "Horizon = 20 years"
+          },
+          {
+                "name": "End Balance Calculation",
+                "description": "Calculates total future portfolio value.",
+                "example": "$20k + $300/mo @ 8% for 20 yrs = $267,048 total"
+          }
+    ],
     name: 'Investment Calculator',
     category: 'financial',
     description: 'Forecast the end balance of a portfolio with recurring contributions and compound growth.',
@@ -218,6 +461,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'inflation-calculator',
+    manual: [
+          {
+                "name": "Starting Value",
+                "description": "Baseline amount in current dollars.",
+                "example": "Starting Value = $1,000"
+          },
+          {
+                "name": "Average Annual Inflation",
+                "description": "Annual inflation percentage rate.",
+                "example": "Inflation Rate = 3.2%"
+          },
+          {
+                "name": "Number of Years",
+                "description": "Future time horizon in years.",
+                "example": "Years = 15 years"
+          },
+          {
+                "name": "Purchasing Power Calculation",
+                "description": "Calculates real future purchasing power and equivalent cost.",
+                "example": "$1,000 today buys $624.49 worth of goods in 15 yrs"
+          }
+    ],
     name: 'Inflation Calculator',
     category: 'financial',
     description: 'Calculate purchase power shifts and value changes over time due to average inflation.',
@@ -235,6 +500,33 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'finance-calculator',
+    manual: [
+          {
+                "name": "Present Value (PV)",
+                "description": "Initial monetary value today.",
+                "example": "PV = $10,000"
+          },
+          {
+                "name": "Future Value (FV)",
+                "description": "Target or calculated future value.",
+                "example": "FV = $15,000"
+          },
+          {
+                "name": "Annual Rate",
+                "description": "Periodic interest rate.",
+                "example": "Annual Rate = 5.5%"
+          },
+          {
+                "name": "Number of Periods",
+                "description": "Total compounding periods.",
+                "example": "Periods = 8"
+          },
+          {
+                "name": "TVM Growth Calculation",
+                "description": "Computes compound future value and growth multiplier.",
+                "example": "$10,000 @ 5.5% for 8 periods = $15,346.86 (1.5347x multiplier)"
+          }
+    ],
     name: 'Finance Calculator (TVM)',
     category: 'financial',
     description: 'Compute Time Value of Money (TVM) parameters: Present Value, Future Value, Term, and Payments.',
@@ -253,6 +545,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'income-tax-calculator',
+    manual: [
+          {
+                "name": "Annual Gross Income",
+                "description": "Total taxable gross earnings.",
+                "example": "Gross Income = $85,000"
+          },
+          {
+                "name": "Filing Status",
+                "description": "Filing status (Single, Married, Head of Household).",
+                "example": "Filing Status = Single"
+          },
+          {
+                "name": "Net Take-Home Calculation",
+                "description": "Computes progressive federal tax liability and net pay.",
+                "example": "$85,000 Single -> $10,020 Tax (11.8% Effective Rate) -> $74,980 Take-Home"
+          }
+    ],
     name: 'Income Tax Calculator',
     category: 'financial',
     description: 'Estimate federal income tax liabilities, marginal brackets, and net take-home salary.',
@@ -280,6 +589,33 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'compound-interest-calculator',
+    manual: [
+          {
+                "name": "Initial Deposit",
+                "description": "Starting principal balance.",
+                "example": "Principal = $10,000"
+          },
+          {
+                "name": "Interest Rate",
+                "description": "Annual percentage interest rate.",
+                "example": "Rate = 6.0%"
+          },
+          {
+                "name": "Duration",
+                "description": "Total duration in years.",
+                "example": "Duration = 15 years"
+          },
+          {
+                "name": "Compounding Frequency",
+                "description": "Compounding frequency (Annually, Quarterly, Monthly, Daily).",
+                "example": "Frequency = Monthly (12x/yr)"
+          },
+          {
+                "name": "Compounded Balance",
+                "description": "Calculates end balance with compounding.",
+                "example": "$10,000 @ 6% monthly for 15 yrs = $24,540.94"
+          }
+    ],
     name: 'Compound Interest Calculator',
     category: 'financial',
     description: 'Investigate the compound growth curve for principal savings compounding daily, monthly, or annually.',
@@ -309,6 +645,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'salary-calculator',
+    manual: [
+          {
+                "name": "Base Gross Salary",
+                "description": "Total yearly gross salary.",
+                "example": "Salary = $75,000"
+          },
+          {
+                "name": "Hours per Week",
+                "description": "Standard working hours per week.",
+                "example": "Hours = 40 hours/week"
+          },
+          {
+                "name": "Salary Conversions",
+                "description": "Converts annual salary to hourly, daily, weekly, bi-weekly, monthly.",
+                "example": "$75,000 / year = $36.06 / hr = $288.46 / day = $1,442.31 / wk = $6,250.00 / mo"
+          }
+    ],
     name: 'Salary Calculator',
     category: 'financial',
     description: 'Convert annual gross earnings into daily, weekly, bi-weekly, or hourly equivalents.',
@@ -325,6 +678,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'interest-rate-calculator',
+    manual: [
+          {
+                "name": "Loan Principal",
+                "description": "Total borrowed loan principal.",
+                "example": "Principal = $10,000"
+          },
+          {
+                "name": "Monthly Payment",
+                "description": "Regular monthly payment amount.",
+                "example": "Payment = $210"
+          },
+          {
+                "name": "Term Duration",
+                "description": "Total loan term in months.",
+                "example": "Term = 60 months"
+          },
+          {
+                "name": "Effective APR",
+                "description": "Solves for actual annual percentage rate using Newton-Raphson method.",
+                "example": "$10,000 loan with $210/mo for 60 mos -> 9.88% APR (10.34% APY)"
+          }
+    ],
     name: 'Interest Rate Calculator',
     category: 'financial',
     description: 'Find the effective interest rate of a loan or investment based on payment structures.',
@@ -342,6 +717,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'sales-tax-calculator',
+    manual: [
+          {
+                "name": "Base Price",
+                "description": "Pre-tax purchase cost.",
+                "example": "Base Price = $150.00"
+          },
+          {
+                "name": "Tax Rate",
+                "description": "Sales tax percentage rate.",
+                "example": "Tax Rate = 8.25%"
+          },
+          {
+                "name": "Sales Tax Calculation",
+                "description": "Computes exact tax amount and grand total.",
+                "example": "$150.00 @ 8.25% tax = $12.38 tax -> Total = $162.38"
+          }
+    ],
     name: 'Sales Tax Calculator',
     category: 'financial',
     description: 'Calculate net price, gross tax values, and purchase totals with sales tax percentages.',
@@ -360,6 +752,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   // ==================== FITNESS & HEALTH CALCULATORS ====================
   {
     slug: 'bmi-calculator',
+    manual: [
+          {
+                "name": "Weight (kg)",
+                "description": "Total body mass in kilograms.",
+                "example": "Weight = 70 kg"
+          },
+          {
+                "name": "Height (cm)",
+                "description": "Body height in centimeters.",
+                "example": "Height = 175 cm"
+          },
+          {
+                "name": "BMI Calculation",
+                "description": "Calculates Body Mass Index ratio (kg/m²) and WHO health category.",
+                "example": "70 kg / (1.75m)² = 22.9 BMI (Normal Category)"
+          }
+    ],
     name: 'BMI Calculator',
     category: 'health',
     description: 'Calculate Body Mass Index (BMI) and discover your health category based on medical standards.',
@@ -377,6 +786,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'calorie-calculator',
+    manual: [
+          {
+                "name": "Age & Biological Sex",
+                "description": "Demographic parameters for metabolic baseline.",
+                "example": "Age = 28, Sex = Male"
+          },
+          {
+                "name": "Weight & Height",
+                "description": "Physical body parameters.",
+                "example": "Weight = 75 kg, Height = 180 cm"
+          },
+          {
+                "name": "Activity Intensity",
+                "description": "Activity multiplier factor.",
+                "example": "Activity = Moderate (1.55x)"
+          },
+          {
+                "name": "TDEE Calculation",
+                "description": "Computes Total Daily Energy Expenditure and weight targets.",
+                "example": "BMR = 1,730 cal -> TDEE = 2,682 cal/day (Weight Loss Target = 2,182 cal/day)"
+          }
+    ],
     name: 'Calorie Calculator (TDEE)',
     category: 'health',
     description: 'Calculate Total Daily Energy Expenditure (TDEE) and target calories for weight shifts.',
@@ -417,6 +848,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'body-fat-calculator',
+    manual: [
+          {
+                "name": "Circumference Measurements",
+                "description": "Neck, waist, and hip circumferences in cm.",
+                "example": "Neck = 38 cm, Waist = 88 cm"
+          },
+          {
+                "name": "US Navy Body Fat",
+                "description": "Calculates estimated body fat percentage using US Navy formula.",
+                "example": "Male, Height 175 cm, Neck 38 cm, Waist 88 cm -> 18.4% Body Fat"
+          }
+    ],
     name: 'Body Fat Calculator',
     category: 'health',
     description: 'Estimate your body fat percentage using standard US Navy circumference measurements.',
@@ -445,6 +888,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'bmr-calculator',
+    manual: [
+          {
+                "name": "Mifflin-St Jeor Parameters",
+                "description": "Age, biological sex, weight, height.",
+                "example": "30 yr Male, 80 kg, 180 cm"
+          },
+          {
+                "name": "Basal Metabolic Rate",
+                "description": "Calculates minimum calories burned at rest.",
+                "example": "BMR = 1,780 cal/day"
+          }
+    ],
     name: 'BMR Calculator',
     category: 'health',
     description: 'Calculate your Basal Metabolic Rate (BMR) - the calorie scale needed to sustain vital functions.',
@@ -472,6 +927,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'ideal-weight-calculator',
+    manual: [
+          {
+                "name": "Devine Formula",
+                "description": "Medical ideal weight formula.",
+                "example": "175 cm Male (5'9\") -> 70.7 kg Ideal Weight"
+          },
+          {
+                "name": "Robinson Formula",
+                "description": "Alternative medical ideal weight formula.",
+                "example": "175 cm Male -> 69.1 kg Ideal Weight"
+          }
+    ],
     name: 'Ideal Weight Calculator',
     category: 'health',
     description: 'Review ideal body weight estimates based on Devine, Robinson, and Miller formulas.',
@@ -497,6 +964,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'pace-calculator',
+    manual: [
+          {
+                "name": "Total Distance",
+                "description": "Distance in kilometers.",
+                "example": "Distance = 10 km"
+          },
+          {
+                "name": "Duration Time",
+                "description": "Elapsed time in minutes.",
+                "example": "Time = 50 minutes"
+          },
+          {
+                "name": "Pace & Speed Calculation",
+                "description": "Calculates average pace per km and speed in km/h.",
+                "example": "10 km in 50 mins = 5:00 /km pace (12.00 km/h speed)"
+          }
+    ],
     name: 'Pace Calculator',
     category: 'health',
     description: 'Calculate race splits, distance metrics, and target pace profiles.',
@@ -513,6 +997,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'pregnancy-calculator',
+    manual: [
+          {
+                "name": "Last Period Date",
+                "description": "First day of last menstrual period (LMP).",
+                "example": "LMP = 2026-01-01"
+          },
+          {
+                "name": "Gestational Age & Trimester",
+                "description": "Computes pregnancy week, day, trimester, and due date.",
+                "example": "LMP 2026-01-01 on 2026-08-09 -> 31 weeks 3 days (3rd Trimester, Due Oct 8, 2026)"
+          }
+    ],
     name: 'Pregnancy Weeks Calculator',
     category: 'health',
     description: 'Identify pregnancy gestational timeline, key trimester benchmarks, and baby size metrics.',
@@ -528,6 +1024,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'pregnancy-conception-calculator',
+    manual: [
+          {
+                "name": "Expected Due Date",
+                "description": "Anticipated delivery date.",
+                "example": "Due Date = 2026-10-08"
+          },
+          {
+                "name": "Conception Window",
+                "description": "Calculates probable conception window.",
+                "example": "Due Date Oct 8, 2026 -> Conception Window: Jan 8 – Jan 22, 2026"
+          }
+    ],
     name: 'Pregnancy Conception Calculator',
     category: 'health',
     description: 'Calculate historical conception date windows based on due dates or last periods.',
@@ -543,6 +1051,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'due-date-calculator',
+    manual: [
+          {
+                "name": "Last Period & Cycle",
+                "description": "LMP date and average cycle length in days.",
+                "example": "LMP = 2026-01-01, Cycle = 28 days"
+          },
+          {
+                "name": "Naegele's Rule Calculation",
+                "description": "Calculates adjusted due date.",
+                "example": "2026-01-01 + 280 days = October 8, 2026"
+          }
+    ],
     name: 'Pregnancy Due Date Calculator',
     category: 'health',
     description: 'Locate conception windows and due dates using standard gestational cycle adjustments.',
@@ -561,6 +1081,53 @@ export const calculatorsList: CalculatorMetadata[] = [
   // ==================== MATH CALCULATORS ====================
   {
     slug: 'scientific-calculator',
+    manual: [
+          {
+                "name": "Arithmetic (+, -, ×, ÷)",
+                "description": "Performs basic arithmetic operations.",
+                "example": "4 + 4 = 8 | 20 ÷ 4 = 5"
+          },
+          {
+                "name": "Percentage (%)",
+                "description": "Calculates standalone or relative percentage.",
+                "example": "50% = 0.5 | 100 + 10% = 110"
+          },
+          {
+                "name": "Trigonometry (sin, cos, tan)",
+                "description": "Computes trigonometric functions in DEG/RAD/GRAD modes.",
+                "example": "sin(30°) = 0.5"
+          },
+          {
+                "name": "Inverse Trig (sin⁻¹, cos⁻¹, tan⁻¹)",
+                "description": "Computes arc-trigonometric functions.",
+                "example": "asin(0.5) = 30°"
+          },
+          {
+                "name": "Logarithms (log, ln)",
+                "description": "Base-10 logarithm and natural logarithm.",
+                "example": "log(100) = 2 | ln(e) = 1"
+          },
+          {
+                "name": "Exponents & Powers (xʸ, 10ˣ, eˣ)",
+                "description": "Calculates powers and exponential values.",
+                "example": "2^3 = 8 | 10^2 = 100"
+          },
+          {
+                "name": "Factorial (x!)",
+                "description": "Computes factorial of non-negative integers.",
+                "example": "5! = 120"
+          },
+          {
+                "name": "Combinatorics (nCr, nPr)",
+                "description": "Calculates combinations and permutations.",
+                "example": "nCr(5, 2) = 10 | nPr(5, 2) = 20"
+          },
+          {
+                "name": "Physical Constants",
+                "description": "Inserts physical and mathematical constants.",
+                "example": "2 * π = 6.2831853"
+          }
+    ],
     name: 'Scientific Calculator',
     category: 'math',
     description: 'A professional online scientific calculator. Includes trigonometry, logarithms, powers, root functions, factorial, permutations (nPr), combinations (nCr), and statistics with standard physical constants.',
@@ -576,6 +1143,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'programmable-calculator',
+    manual: [
+          {
+                "name": "Script Editor",
+                "description": "Write JavaScript code with print() output.",
+                "example": "let sum = 0; for(let i=1;i<=4;i++) sum += i; print(sum); -> 10"
+          },
+          {
+                "name": "Macro Recorder",
+                "description": "Record keystrokes to automate calculation sequences.",
+                "example": "Record [4, +, 4, =] -> Executed"
+          },
+          {
+                "name": "Memory Slots",
+                "description": "Save and load up to 10 persistent script programs in local storage.",
+                "example": "Slot 1 Saved"
+          }
+    ],
     name: 'Programmable Calculator',
     category: 'math',
     description: 'A JavaScript-based programmable scripting calculator. Write custom functions, use conditions, loops, variable declarations, and save/load scripts directly in browser memory.',
@@ -591,6 +1175,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'graphing-calculator',
+    manual: [
+          {
+                "name": "Function Plotter f(x)",
+                "description": "Graph 2D Cartesian equations in real time.",
+                "example": "f1(x) = x^2"
+          },
+          {
+                "name": "Polar & Parametric Plotting",
+                "description": "Graph r=f(θ) and (x(t), y(t)).",
+                "example": "r = cos(3*theta)"
+          },
+          {
+                "name": "Root & Extrema Finder",
+                "description": "Calculate analytical zeros and local min/max points.",
+                "example": "y = x^2 - 4 -> Zeros at x = -2, x = 2"
+          },
+          {
+                "name": "Numerical Calculus",
+                "description": "Calculate definite integral area under curve or derivative slope.",
+                "example": "∫ x^2 dx from 0 to 3 = 9"
+          }
+    ],
     name: 'Graphing Calculator',
     category: 'math',
     description: 'An interactive 2D function plotter. Graph multiple equations, zoom, pan, trace coordinates, and compute numerical derivatives or integrations.',
@@ -606,6 +1212,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'cas-calculator',
+    manual: [
+          {
+                "name": "Symbolic Evaluation",
+                "description": "Evaluate mathematical expressions symbolically.",
+                "example": "x^2 + 2*x + 1 with x=3 -> 16"
+          },
+          {
+                "name": "Polynomial Factorization",
+                "description": "Factor expressions into prime factors.",
+                "example": "factor(x^2 - 9) -> (x - 3)*(x + 3)"
+          },
+          {
+                "name": "Expression Expansion",
+                "description": "Expand algebraic products.",
+                "example": "expand((x + 2)^2) -> x^2 + 4*x + 4"
+          },
+          {
+                "name": "Symbolic Differentiation & Integration",
+                "description": "Compute exact analytical derivatives and antiderivatives.",
+                "example": "d/dx(x^3) -> 3*x^2"
+          }
+    ],
     name: 'CAS Calculator (Computer Algebra System)',
     category: 'math',
     description: 'Solve mathematical equations and simplify expressions symbolically. Calculate exact analytical derivatives, integrals, polynomial factors, and Taylor series expansions.',
@@ -621,6 +1249,28 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'fraction-calculator',
+    manual: [
+          {
+                "name": "Fraction Addition (+)",
+                "description": "Adds two fractions with LCD reduction.",
+                "example": "1/2 + 1/3 = 5/6 (0.8333)"
+          },
+          {
+                "name": "Fraction Subtraction (-)",
+                "description": "Subtracts second fraction from first.",
+                "example": "3/4 - 1/2 = 1/4 (0.25)"
+          },
+          {
+                "name": "Fraction Multiplication (×)",
+                "description": "Multiplies numerators and denominators.",
+                "example": "2/3 × 3/5 = 2/5 (0.4)"
+          },
+          {
+                "name": "Fraction Division (÷)",
+                "description": "Divides by multiplying by reciprocal.",
+                "example": "1/2 ÷ 1/4 = 2 (2.0)"
+          }
+    ],
     name: 'Fraction Calculator',
     category: 'math',
     description: 'Compute fractional operations (add, subtract, multiply, divide) with full reduction steps.',
@@ -635,6 +1285,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'percentage-calculator',
+    manual: [
+          {
+                "name": "What is X% of Y?",
+                "description": "Calculates specified percentage of a number.",
+                "example": "25% of 200 = 50"
+          },
+          {
+                "name": "X is what % of Y?",
+                "description": "Determines what percentage X represents of Y.",
+                "example": "25 is what % of 200 = 12.5%"
+          },
+          {
+                "name": "Percentage Change X to Y",
+                "description": "Calculates percentage increase or decrease.",
+                "example": "Change from 25 to 200 = 700% increase"
+          }
+    ],
     name: 'Percentage Calculator',
     category: 'math',
     description: 'Solve common percentage calculations: increases/decreases, fraction equivalents, and ratios.',
@@ -662,6 +1329,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'random-number-generator',
+    manual: [
+          {
+                "name": "Min / Max Range",
+                "description": "Defines bounds for random integer generation.",
+                "example": "Min = 1, Max = 100"
+          },
+          {
+                "name": "Quantity & Duplicates",
+                "description": "Specifies quantity of numbers and toggle for duplicate values.",
+                "example": "Generate 5 unique numbers -> [14, 42, 67, 88, 93]"
+          }
+    ],
     name: 'Random Number Generator',
     category: 'math',
     description: 'Create arrays of random integers in ranges, allowing or preventing duplicates.',
@@ -680,6 +1359,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'triangle-calculator',
+    manual: [
+          {
+                "name": "Sides (a, b, c)",
+                "description": "Side lengths of triangle.",
+                "example": "a = 3, b = 4, c = 5"
+          },
+          {
+                "name": "Heron's Area Calculation",
+                "description": "Computes exact area and perimeter.",
+                "example": "a=3, b=4, c=5 -> Right Triangle, Area = 6.0, Perimeter = 12"
+          },
+          {
+                "name": "Law of Cosines Angles",
+                "description": "Calculates internal angles in degrees.",
+                "example": "Angles: A = 36.87°, B = 53.13°, C = 90.00°"
+          }
+    ],
     name: 'Triangle Calculator',
     category: 'math',
     description: 'Solve missing sides, angles, area, and perimeter of any triangle from three parameters.',
@@ -694,6 +1390,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'standard-deviation-calculator',
+    manual: [
+          {
+                "name": "Data Input",
+                "description": "Comma-separated list of numeric values.",
+                "example": "Data: 10, 20, 30, 40, 50"
+          },
+          {
+                "name": "Mean & Variance",
+                "description": "Computes arithmetic mean and variance.",
+                "example": "Mean = 30.00, Population Variance = 200.00"
+          },
+          {
+                "name": "Sample & Population Standard Deviation",
+                "description": "Computes standard deviation.",
+                "example": "Sample SD = 15.8114, Population SD = 14.1421"
+          }
+    ],
     name: 'Standard Deviation Calculator',
     category: 'math',
     description: 'Compute mean, variance, population standard deviation, and sample standard deviation from lists of values.',
@@ -711,6 +1424,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   // ==================== OTHER CALCULATORS ====================
   {
     slug: 'age-calculator',
+    manual: [
+          {
+                "name": "Date of Birth & Target Date",
+                "description": "Start and end dates.",
+                "example": "DOB = 1995-06-15, Target = 2026-06-14"
+          },
+          {
+                "name": "Exact Age Breakdown",
+                "description": "Calculates age in years, months, days, and total days.",
+                "example": "Age = 30 years, 11 months, 30 days (11,322 total days)"
+          }
+    ],
     name: 'Age Calculator',
     category: 'other',
     description: 'Extract exact age calculations down to years, months, days, minutes, and seconds from dates of birth.',
@@ -727,6 +1452,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'date-calculator',
+    manual: [
+          {
+                "name": "Start Date & Days Offset",
+                "description": "Base date and offset amount.",
+                "example": "Start = 2026-01-01, Offset = 30 days"
+          },
+          {
+                "name": "Date Addition / Subtraction",
+                "description": "Calculates future or past target date.",
+                "example": "2026-01-01 + 30 days = Friday, January 31, 2026"
+          }
+    ],
     name: 'Date Calculator',
     category: 'other',
     description: 'Add or subtract days, weeks, and months from dates, or compute direct duration intervals.',
@@ -753,6 +1490,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'time-calculator',
+    manual: [
+          {
+                "name": "Hours & Minutes Input",
+                "description": "Two time durations (h1, m1) and (h2, m2).",
+                "example": "2h 30m and 1h 45m"
+          },
+          {
+                "name": "Time Duration Addition / Subtraction",
+                "description": "Computes cumulative time.",
+                "example": "2h 30m + 1h 45m = 4h 15m (255 total minutes)"
+          }
+    ],
     name: 'Time Duration Calculator',
     category: 'other',
     description: 'Sum or subtract custom hour, minute, and second intervals.',
@@ -781,6 +1530,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'hours-calculator',
+    manual: [
+          {
+                "name": "Daily Clock In / Out",
+                "description": "Shift start and end hours for Mon-Fri.",
+                "example": "Mon: 9am - 5pm (8 hrs), Tue: 9am - 5pm (8 hrs)"
+          },
+          {
+                "name": "Total Weekly Hours",
+                "description": "Sums weekly working hours.",
+                "example": "5 days × 8 hrs = 40.0 total weekly hours"
+          }
+    ],
     name: 'Hours Worked Calculator',
     category: 'other',
     description: 'Compile daily workcard clocks to estimate weekly hours, breaks, and payroll values.',
@@ -805,6 +1566,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'gpa-calculator',
+    manual: [
+          {
+                "name": "Course Credits & Grades",
+                "description": "Credit hours and letter grades (A=4, B=3, C=2, D=1, F=0).",
+                "example": "Course 1: 3 cr (A), Course 2: 4 cr (B), Course 3: 3 cr (A)"
+          },
+          {
+                "name": "Semester GPA Calculation",
+                "description": "Computes weighted Grade Point Average.",
+                "example": "(3*4 + 4*3 + 3*4) / 10 credits = 3.60 GPA"
+          }
+    ],
     name: 'GPA Calculator',
     category: 'other',
     description: 'Combine course grades and credit parameters to estimate semester and cumulative GPA.',
@@ -861,6 +1634,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'grade-calculator',
+    manual: [
+          {
+                "name": "Current Grade & Target Grade",
+                "description": "Existing course percentage and desired final grade.",
+                "example": "Current Grade = 85%, Target Grade = 90%"
+          },
+          {
+                "name": "Exam Weight",
+                "description": "Percentage weight of final exam.",
+                "example": "Final Exam Weight = 20%"
+          },
+          {
+                "name": "Required Final Exam Score",
+                "description": "Calculates necessary score on final.",
+                "example": "To get 90% target with 85% current grade & 20% exam weight -> Required Final Score = 110.0% (⚠ Needs >100%)"
+          }
+    ],
     name: 'Grade Calculator',
     category: 'other',
     description: 'Calculate the required score on final exams to hit target term grades.',
@@ -878,6 +1668,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'concrete-calculator',
+    manual: [
+          {
+                "name": "Dimensions (Length, Width, Depth)",
+                "description": "Length (ft), Width (ft), Depth (in).",
+                "example": "Length = 10 ft, Width = 10 ft, Depth = 4 in"
+          },
+          {
+                "name": "Concrete Volume & Bag Count",
+                "description": "Calculates cubic feet, cubic yards, and 80lb bags needed.",
+                "example": "10ft × 10ft × 4in = 33.3 ft³ = 1.23 yd³ -> 56 bags (80lb)"
+          }
+    ],
     name: 'Concrete Calculator',
     category: 'other',
     description: 'Calculate slab volume and estimate bag counts for concrete construction.',
@@ -895,6 +1697,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'subnet-calculator',
+    manual: [
+          {
+                "name": "Base IP & CIDR Prefix",
+                "description": "IP address and subnet CIDR mask.",
+                "example": "IP = 192.168.1.1, CIDR = /24"
+          },
+          {
+                "name": "Subnet Architecture",
+                "description": "Computes netmask, network ID, broadcast IP, and usable host count.",
+                "example": "192.168.1.1/24 -> Subnet Mask: 255.255.255.0, Network: 192.168.1.0, Broadcast: 192.168.1.255, Usable Hosts: 254"
+          }
+    ],
     name: 'Subnet Calculator (CIDR)',
     category: 'other',
     description: 'Compute IP subnet bounds, binary breakdowns, wildcard masks, and host quantity ranges.',
@@ -909,6 +1723,23 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'password-generator',
+    manual: [
+          {
+                "name": "Length Slider",
+                "description": "Desired character length (6 to 64 chars).",
+                "example": "Length = 16 chars"
+          },
+          {
+                "name": "Character Sets",
+                "description": "Toggle uppercase, lowercase, numbers, special symbols.",
+                "example": "All sets enabled"
+          },
+          {
+                "name": "Crypto Generator & Entropy",
+                "description": "Generates cryptographically secure password and calculates entropy bits.",
+                "example": "Generated: k9#mP2$xL8!vQ5@w -> 105.1 bits entropy (Very Strong)"
+          }
+    ],
     name: 'Password Generator',
     category: 'other',
     description: 'Generate high-entropy random password strings based on character checklists.',
@@ -923,6 +1754,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'conversion-calculator',
+    manual: [
+          {
+                "name": "Value & Unit Pair",
+                "description": "Input number and conversion category (Length, Weight, Temperature).",
+                "example": "Value = 100"
+          },
+          {
+                "name": "Unit Conversion",
+                "description": "Converts between metric and imperial units.",
+                "example": "100 m -> 328.084 ft | 100 kg -> 220.462 lbs | 100 °C -> 212 °F"
+          }
+    ],
     name: 'Conversion Calculator',
     category: 'other',
     description: 'Quick unit conversions for length, mass, volume, and temperature scales.',
@@ -952,6 +1795,18 @@ export const calculatorsList: CalculatorMetadata[] = [
   },
   {
     slug: 'screen-size-calculator',
+    manual: [
+          {
+                "name": "Resolution & Pixel Ratio",
+                "description": "Screen width/height in px and device pixel ratio.",
+                "example": "1920 × 1080 px @ 15.6\""
+          },
+          {
+                "name": "PPI & Physical Dimensions",
+                "description": "Calculates pixel density (PPI) and width/height in inches.",
+                "example": "1920×1080 on 15.6\" screen -> 141.21 PPI (Width: 13.60\", Height: 7.65\")"
+          }
+    ],
     name: 'Screen Size Calibrator',
     category: 'other',
     description: 'Determine exact physical screen dimensions, aspect ratios, and PPI/DPI using calibration slides, direct diagonals, or automated device recognition.',

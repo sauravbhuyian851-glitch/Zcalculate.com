@@ -83,6 +83,8 @@ export function decToDms(decimal: number): { deg: number; min: number; sec: numb
   return { deg: sign * deg, min, sec: Math.round(sec * 1000) / 1000 };
 }
 
+import { preprocessPercentage } from './calculatorMath';
+
 // ==================== STANDARD ENGINE ====================
 export class StandardEngine {
   expr = '';
@@ -103,11 +105,12 @@ export class StandardEngine {
   }
 
   evaluate(expression: string): number {
-    let prep = expression
+    let prep = preprocessPercentage(expression)
       .replace(/×/g, '*')
       .replace(/÷/g, '/')
       .replace(/π/g, `(${Math.PI})`)
       .replace(/Ans/gi, `(${this.lastAnswer})`);
+
 
     // Replace standalone 'e' (not inside function names)
     prep = prep.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, `(${Math.E})`);
