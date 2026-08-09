@@ -80,7 +80,7 @@ const breadcrumbSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline slot="head" />
   {calc.slug === 'scientific-calculator' && <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.2/math.min.js" is:inline slot="head" />}
 
-  <div class={calc.slug === 'scientific-calculator' ? "mx-auto max-w-6xl px-6 py-16" : "mx-auto max-w-5xl px-6 py-16"}>
+  <div class={calc.slug === 'scientific-calculator' ? "mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-16" : "mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-16"}>
     <!-- Breadcrumb Navigation -->
     <nav aria-label="Breadcrumb" class="mb-6">
       <ol class="flex items-center gap-2 text-[11px] font-mono text-mute uppercase tracking-widest">
@@ -224,14 +224,14 @@ const breadcrumbSchema = {
           <h2 class="text-[11px] font-bold text-mute mb-8 font-mono uppercase tracking-[0.2em] border-b border-canvas-card-border pb-3">Computed Results</h2>
           
           <!-- Large Prominent Display Card -->
-          <div class="bg-canvas-card-soft border border-canvas-card-border rounded-2xl p-6 sm:p-8 text-center shadow-inner mb-8">
+          <div class="bg-canvas-card-soft border border-canvas-card-border rounded-2xl p-4 sm:p-8 text-center shadow-inner mb-8 overflow-x-auto">
             <span class="text-[10px] font-bold font-mono text-mute uppercase tracking-[0.2em] block mb-2">Primary Metric</span>
-            <div id="result-primary-val" class="text-6xl font-black text-link tracking-tighter">-</div>
-            <div id="result-primary-label" class="text-sm font-semibold text-body mt-2">-</div>
+            <div id="result-primary-val" class="text-4xl sm:text-6xl font-black text-link tracking-tighter break-all max-w-full font-sans">-</div>
+            <div id="result-primary-label" class="text-xs sm:text-sm font-semibold text-body mt-2">-</div>
           </div>
 
           <!-- Secondary Metrics Grid -->
-          <div class="grid grid-cols-2 gap-4" id="result-secondary-grid">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4" id="result-secondary-grid">
             <!-- Filled dynamically -->
           </div>
         </div>

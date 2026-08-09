@@ -64,10 +64,10 @@ const itemListSchema = {
       </div>
 
       <!-- Categories Navigation -->
-      <div class="flex flex-wrap gap-2 mb-10 border-b border-canvas-card-border pb-6" id="category-filters">
-        <button class="filter-tab active px-5 py-2 rounded-full text-xs font-semibold bg-brand-primary text-canvas transition-all cursor-pointer shadow-md" data-category="all">All Tools</button>
+      <div class="flex items-center gap-2 mb-10 border-b border-canvas-card-border pb-6 overflow-x-auto whitespace-nowrap scrollbar-none max-w-full select-none" id="category-filters">
+        <button class="filter-tab active shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-brand-primary text-canvas transition-all cursor-pointer shadow-md" data-category="all">All Tools</button>
         {Object.entries(CATEGORIES).map(([key, cat]) => (
-          <button class="filter-tab px-5 py-2 rounded-full text-xs font-semibold text-mute hover:text-ink hover:bg-canvas-card transition-all cursor-pointer border border-transparent" data-category={key}>{cat.name}</button>
+          <button class="filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-semibold text-mute hover:text-ink hover:bg-canvas-card transition-all cursor-pointer border border-transparent" data-category={key}>{cat.name}</button>
         ))}
       </div>
 
@@ -125,8 +125,8 @@ const itemListSchema = {
   let searchQuery = '';
 
   // Active/inactive tab class constants using design system tokens
-  const ACTIVE_TAB_CLASS = "filter-tab active px-5 py-2 rounded-full text-xs font-semibold bg-brand-primary text-canvas transition-all cursor-pointer shadow-md";
-  const INACTIVE_TAB_CLASS = "filter-tab px-5 py-2 rounded-full text-xs font-semibold text-mute hover:text-ink hover:bg-canvas-card transition-all cursor-pointer border border-transparent";
+  const ACTIVE_TAB_CLASS = "filter-tab active shrink-0 px-5 py-2 rounded-full text-xs font-semibold bg-brand-primary text-canvas transition-all cursor-pointer shadow-md";
+  const INACTIVE_TAB_CLASS = "filter-tab shrink-0 px-5 py-2 rounded-full text-xs font-semibold text-mute hover:text-ink hover:bg-canvas-card transition-all cursor-pointer border border-transparent";
 
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
