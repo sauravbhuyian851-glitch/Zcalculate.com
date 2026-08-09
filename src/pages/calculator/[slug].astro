@@ -920,8 +920,6 @@ const breadcrumbSchema = {
             const activeTitle = document.querySelector('h1')?.textContent?.replace(/\.$/, '') || 'Scientific Calculator';
             (window as any).zcalculate_saveToHistory(activeTitle, expr, formatted);
           }
-          
-          expr = !isNaN(result) ? result.toString() : '';
         };
 
         const handleSciKeyDown = (e: KeyboardEvent) => {

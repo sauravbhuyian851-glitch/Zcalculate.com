@@ -237,20 +237,12 @@
     });
 
     function appendVal(val: string) {
-      if (resultShown) {
-        if (['+', '-', '×', '÷', '%'].includes(val)) {
-          currentExpr = (displayResult?.textContent || '0') + val;
-        } else {
-          currentExpr = val;
-        }
-        resultShown = false;
+      if (currentExpr === '0' && !['+', '-', '×', '÷', '%', '.'].includes(val)) {
+        currentExpr = val;
       } else {
-        if (currentExpr === '0' && !['+', '-', '×', '÷', '%', '.'].includes(val)) {
-          currentExpr = val;
-        } else {
-          currentExpr += val;
-        }
+        currentExpr += val;
       }
+      resultShown = false;
       updateDisplay();
     }
 
