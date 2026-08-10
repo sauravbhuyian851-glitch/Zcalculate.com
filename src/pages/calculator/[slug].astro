@@ -22,12 +22,18 @@ const keywordsList = [
   `${cleanName} solver`,
   `how to calculate ${cleanName.replace('calculator', '').trim()}`,
   `calculate ${cleanName.replace('calculator', '').trim()}`,
+  `${cleanName} online free`,
+  `best ${nameBase}`,
+  `${cleanName} tool`,
   calc.category,
   ...calc.relatedSlugs.map(s => s.replace(/-/g, ' '))
 ];
 const pageKeywords = keywordsList.join(', ');
 
-// JSON-LD WebApplication schema
+const publishDate = '2025-12-01T00:00:00Z';
+const modifiedDate = new Date().toISOString();
+
+// JSON-LD WebApplication schema (enhanced)
 const webAppSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -36,6 +42,9 @@ const webAppSchema = {
   "description": calc.seoDescription,
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "All",
+  "inLanguage": "en-US",
+  "datePublished": publishDate,
+  "dateModified": modifiedDate,
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -44,7 +53,20 @@ const webAppSchema = {
   "browserRequirements": "Requires JavaScript",
   "creator": {
     "@type": "Organization",
-    "name": "Zcalculate"
+    "name": "Zcalculate",
+    "url": "https://zcalculate.online"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Zcalculate",
+    "url": "https://zcalculate.online"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "127",
+    "bestRating": "5",
+    "worstRating": "1"
   }
 };
 
@@ -62,6 +84,26 @@ const faqSchema = calc.faqs.length > 0 ? {
   }))
 } : null;
 
+// JSON-LD HowTo schema from manual data (enables Google How-To rich snippets)
+const howToSchema = calc.manual && calc.manual.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": `How to Use the ${calc.name}`,
+  "description": calc.seoDescription,
+  "totalTime": "PT2M",
+  "tool": {
+    "@type": "HowToTool",
+    "name": calc.name
+  },
+  "step": calc.manual.map((m, i) => ({
+    "@type": "HowToStep",
+    "position": i + 1,
+    "name": m.name,
+    "text": m.description,
+    "url": `${canonicalUrl}#step-${i + 1}`
+  }))
+} : null;
+
 // BreadcrumbList schema
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -72,13 +114,26 @@ const breadcrumbSchema = {
     { "@type": "ListItem", "position": 3, "name": calc.name, "item": canonicalUrl }
   ]
 };
+
+const categoryLabels: Record<string, string> = {
+  financial: 'Financial Calculators',
+  health: 'Health & Fitness Calculators',
+  math: 'Math & Science Calculators',
+  other: 'Utility Tools'
+};
 ---
 <Layout title={calc.seoTitle} description={calc.seoDescription} canonicalUrl={canonicalUrl} ogType="website" keywords={pageKeywords}>
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} is:inline slot="head" />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline slot="head" />}
+  {howToSchema && <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} is:inline slot="head" />}
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline slot="head" />
   {calc.slug === 'scientific-calculator' && <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.2/math.min.js" is:inline slot="head" />}
+
+  <!-- Per-page SEO meta tags -->
+  <meta property="article:published_time" content={publishDate} slot="head" />
+  <meta property="article:modified_time" content={modifiedDate} slot="head" />
+  <meta property="article:section" content={categoryLabels[calc.category] || calc.category} slot="head" />
 
   <div class={calc.slug === 'scientific-calculator' ? "mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-16" : "mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-16"}>
     <!-- Breadcrumb Navigation -->

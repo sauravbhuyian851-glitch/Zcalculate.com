@@ -19,8 +19,10 @@ const {
   canonicalUrl = "https://zcalculate.online",
   ogType = "website",
   ogImage = "/og-image.png",
-  keywords = "calculators, online calculators, free math tools, interest estimator, body index checker, finance formulas"
+  keywords = "calculators, online calculators, free math tools, interest estimator, body index checker, finance formulas, mortgage calculator, BMI calculator, compound interest calculator, scientific calculator, loan calculator, salary calculator, GPA calculator, percentage calculator, age calculator, date calculator"
 } = Astro.props;
+
+const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalculate.online${ogImage}`;
 
 // JSON-LD WebSite schema for the site
 const websiteSchema = {
@@ -29,9 +31,24 @@ const websiteSchema = {
   "name": "Zcalculate",
   "url": "https://zcalculate.online",
   "description": "A professional collection of 40+ free online calculators covering financial, health, math, and utility categories.",
+  "inLanguage": "en-US",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zcalculate",
+    "url": "https://zcalculate.online",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zcalculate.online/favicon-96x96.png",
+      "width": 96,
+      "height": 96
+    }
+  },
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://zcalculate.online/#all-calculators?q={search_term_string}",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://zcalculate.online/#all-calculators?q={search_term_string}"
+    },
     "query-input": "required name=search_term_string"
   }
 };
@@ -54,7 +71,11 @@ const websiteSchema = {
 		<meta name="description" content={description} />
 		<meta name="keywords" content={keywords} />
 		<link rel="canonical" href={canonicalUrl} />
-		<meta name="robots" content="index, follow" />
+		<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+		<meta name="author" content="Zcalculate" />
+		<meta name="theme-color" content="#171717" />
+		<link rel="alternate" hreflang="en" href={canonicalUrl} />
+		<link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content={ogType} />
@@ -62,12 +83,19 @@ const websiteSchema = {
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:site_name" content="Zcalculate" />
+		<meta property="og:image" content={absoluteOgImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={title} />
+		<meta property="og:locale" content="en_US" />
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content={canonicalUrl} />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={absoluteOgImage} />
+		<meta name="twitter:image:alt" content={title} />
 
 		<!-- JSON-LD Structured Data -->
 		<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} is:inline />
@@ -352,7 +380,10 @@ const websiteSchema = {
 			}
 		</script>
 
-		<!-- Google Fonts -->
+		<!-- DNS Prefetch & Preconnect for Performance -->
+		<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+		<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+		<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:wght@300..900&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet" />

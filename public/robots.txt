@@ -1,6 +1,28 @@
 # Zcalculate.online Robots
+# Professional calculator suite — 40+ tools
+# https://zcalculate.online
+
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /history
+Disallow: /comments
+Disallow: /404
 
 # Sitemap
 Sitemap: https://zcalculate.online/sitemap-index.xml
+
+# Crawl directives for major search bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: SemrushBot
+Allow: /

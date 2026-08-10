@@ -3,22 +3,38 @@ import Layout from '../layouts/Layout.astro';
 import StandardCalculator from '../components/StandardCalculator.astro';
 import { calculatorsList, CATEGORIES } from '../data/calculators';
 
-// Homepage JSON-LD ItemList for all calculators
+// Homepage JSON-LD ItemList for all calculators (enhanced with descriptions)
 const itemListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   "name": "Online Calculator Collection",
+  "description": "A comprehensive collection of 40+ free online calculators for financial, health, math, and utility calculations.",
   "numberOfItems": calculatorsList.length,
   "itemListElement": calculatorsList.map((calc, i) => ({
     "@type": "ListItem",
     "position": i + 1,
     "name": calc.name,
-    "url": `https://zcalculate.online/calculator/${calc.slug}`
+    "description": calc.seoDescription,
+    "url": `https://zcalculate.online/calculator/${calc.slug}`,
+    "image": "https://zcalculate.online/og-image.png"
   }))
+};
+
+// Organization schema for Google Knowledge Panel
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Zcalculate",
+  "url": "https://zcalculate.online",
+  "logo": "https://zcalculate.online/favicon-96x96.png",
+  "description": "Free professional online calculators for math, health, finance, and more. 40+ tools, no ads, no logins.",
+  "foundingDate": "2025",
+  "sameAs": []
 };
 ---
 <Layout>
   <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} is:inline slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} is:inline slot="head" />
 
   <!-- Hero Section -->
   <section class="relative mx-auto max-w-7xl px-6 pt-24 pb-24 flex flex-col items-center text-center overflow-visible">
