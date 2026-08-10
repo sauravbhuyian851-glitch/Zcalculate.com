@@ -14,6 +14,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const allowedHosts = [
     'localhost:4321',
     'localhost:4322',
+    'zcalculate.online',
+    'www.zcalculate.online',
     'zcalculate.com',
     'www.zcalculate.com',
     'zcalculate-com.vercel.app'
@@ -31,6 +33,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // 2. CORS Checks for API Routes
   const origin = request.headers.get('origin');
   const allowedOrigins = [
+    'https://zcalculate.online',
+    'https://www.zcalculate.online',
     'https://zcalculate.com',
     'https://www.zcalculate.com',
     'https://zcalculate-com.vercel.app'

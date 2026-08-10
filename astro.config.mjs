@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://zcalculate.com',
+  site: 'https://zcalculate.online',
   integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],

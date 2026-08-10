@@ -1,6 +1,6 @@
-# Zcalculate.com Robots
+# Zcalculate.online Robots
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://zcalculate.com/sitemap-index.xml
+Sitemap: https://zcalculate.online/sitemap-index.xml

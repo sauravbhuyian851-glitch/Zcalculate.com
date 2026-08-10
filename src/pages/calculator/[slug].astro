@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
 const { calc } = Astro.props;
 const relatedCalcs = calculatorsList.filter(c => calc.relatedSlugs.includes(c.slug));
-const canonicalUrl = `https://zcalculate.com/calculator/${calc.slug}`;
+const canonicalUrl = `https://zcalculate.online/calculator/${calc.slug}`;
 
 const cleanName = calc.name.replace(/\(.*\)/g, '').trim().toLowerCase();
 const nameBase = cleanName.endsWith('calculator') ? cleanName : `${cleanName} calculator`;
@@ -67,8 +67,8 @@ const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://zcalculate.com/" },
-    { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://zcalculate.com/#all-calculators" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://zcalculate.online/" },
+    { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://zcalculate.online/#all-calculators" },
     { "@type": "ListItem", "position": 3, "name": calc.name, "item": canonicalUrl }
   ]
 };
