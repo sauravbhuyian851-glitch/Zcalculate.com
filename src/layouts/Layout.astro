@@ -24,8 +24,6 @@ const {
 
 const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalculate.online${ogImage}`;
 
-const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
-
 // JSON-LD WebSite schema for the site
 const websiteSchema = {
   "@context": "https://schema.org",
@@ -391,15 +389,13 @@ const websiteSchema = {
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:wght@300..900&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet" />
 
 		<!-- Microsoft Clarity Analytics -->
-		{clarityId && (
-			<script type="text/javascript" is:inline define:vars={{ clarityId }}>
-				(function(c,l,a,r,i,t,y){
-					c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-					t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-					y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-				})(window, document, "clarity", "script", clarityId);
-			</script>
-		)}
+		<script type="text/javascript" is:inline>
+			(function(c,l,a,r,i,t,y){
+				c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+				t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+				y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+			})(window, document, "clarity", "script", "y17fr36ecs");
+		</script>
 	</head>
 	<body class="flex min-h-screen flex-col font-sans antialiased selection:bg-ink selection:text-canvas">
 
