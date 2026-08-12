@@ -1,11 +1,6 @@
 {
-  "name": "Zcalculate — Free Online Calculators",
-  "short_name": "Zcalculate",
-  "description": "40+ free professional calculators for math, health, finance, and more. No ads, no logins — instant precision results.",
-  "start_url": "/",
-  "scope": "/",
-  "lang": "en-US",
-  "categories": ["utilities", "finance", "education", "productivity"],
+  "name": "Zcalculate",
+  "short_name": "Zcal",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -20,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#171717",
-  "background_color": "#fafafa",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "display": "standalone"
 }
