@@ -92,7 +92,6 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -117,19 +116,20 @@
   }
 }
 
-/* Custom Mesh Gradient Backdrop */
+/* Custom Mesh Gradient Backdrop - Hardware Accelerated & Optimized */
 .mesh-gradient-backdrop {
   background-image: 
-    radial-gradient(at 27% 37%, hsla(240, 4%, 55%, 0.08) 0px, transparent 50%),
-    radial-gradient(at 97% 21%, hsla(240, 4%, 60%, 0.08) 0px, transparent 50%),
-    radial-gradient(at 52% 99%, hsla(240, 4%, 70%, 0.07) 0px, transparent 50%),
-    radial-gradient(at 10% 29%, hsla(240, 4%, 50%, 0.06) 0px, transparent 50%),
-    radial-gradient(at 97% 96%, hsla(240, 4%, 45%, 0.06) 0px, transparent 50%),
-    radial-gradient(at 33% 50%, hsla(240, 4%, 55%, 0.06) 0px, transparent 50%),
-    radial-gradient(at 79% 53%, hsla(240, 4%, 60%, 0.06) 0px, transparent 50%);
-  filter: blur(80px);
-  will-change: transform;
+    radial-gradient(at 27% 37%, hsla(240, 4%, 55%, 0.12) 0px, transparent 60%),
+    radial-gradient(at 97% 21%, hsla(240, 4%, 60%, 0.12) 0px, transparent 60%),
+    radial-gradient(at 52% 99%, hsla(240, 4%, 70%, 0.10) 0px, transparent 60%),
+    radial-gradient(at 10% 29%, hsla(240, 4%, 50%, 0.08) 0px, transparent 60%),
+    radial-gradient(at 97% 96%, hsla(240, 4%, 45%, 0.08) 0px, transparent 60%),
+    radial-gradient(at 33% 50%, hsla(240, 4%, 55%, 0.08) 0px, transparent 60%),
+    radial-gradient(at 79% 53%, hsla(240, 4%, 60%, 0.08) 0px, transparent 60%);
+  filter: blur(24px);
   transform: translate3d(0, 0, 0);
+  contain: strict;
+  pointer-events: none;
   backface-visibility: hidden;
 }
 
@@ -140,7 +140,8 @@
 /* Glassmorphism surfaces */
 .glass-panel {
   background: var(--color-canvas);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--color-hairline);
   box-shadow: var(--shadow-level-2);
 }

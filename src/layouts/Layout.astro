@@ -358,35 +358,39 @@ const websiteSchema = {
 				}, 1500);
 			};
 
-			// Migrate old localStorage history to IndexedDB
-			try {
-				const oldRaw = localStorage.getItem('zcalculate_history');
-				if (oldRaw) {
-					const oldItems = JSON.parse(oldRaw);
-					if (Array.isArray(oldItems) && oldItems.length > 0) {
-						initDB().then(db => {
-							const tx = db.transaction('history', 'readwrite');
-							const store = tx.objectStore('history');
-							oldItems.forEach(item => {
-								if (item.timestamp && item.calcName && item.input && item.output) {
-									store.put({
-										id: item.id || (Date.now().toString() + Math.random().toString(36).substr(2, 5)),
-										timestamp: new Date(item.timestamp).toISOString(),
-										calcName: item.calcName,
-										input: item.input,
-										output: item.output
+			// Migrate old localStorage history to IndexedDB (deferred to idle time)
+			if (typeof window !== 'undefined' && 'localStorage' in window && localStorage.getItem('zcalculate_history')) {
+				setTimeout(() => {
+					try {
+						const oldRaw = localStorage.getItem('zcalculate_history');
+						if (oldRaw) {
+							const oldItems = JSON.parse(oldRaw);
+							if (Array.isArray(oldItems) && oldItems.length > 0) {
+								initDB().then(db => {
+									const tx = db.transaction('history', 'readwrite');
+									const store = tx.objectStore('history');
+									oldItems.forEach(item => {
+										if (item.timestamp && item.calcName && item.input && item.output) {
+											store.put({
+												id: item.id || (Date.now().toString() + Math.random().toString(36).substr(2, 5)),
+												timestamp: new Date(item.timestamp).toISOString(),
+												calcName: item.calcName,
+												input: item.input,
+												output: item.output
+											});
+										}
 									});
-								}
-							});
-							tx.oncomplete = () => {
-								localStorage.removeItem('zcalculate_history');
-								window.dispatchEvent(new Event('history-updated'));
-							};
-						});
+									tx.oncomplete = () => {
+										localStorage.removeItem('zcalculate_history');
+										window.dispatchEvent(new Event('history-updated'));
+									};
+								});
+							}
+						}
+					} catch (e) {
+						console.error('History migration failed:', e);
 					}
-				}
-			} catch (e) {
-				console.error('History migration failed:', e);
+				}, 1000);
 			}
 		</script>
 
