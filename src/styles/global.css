@@ -92,6 +92,22 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Global smoothness: all interactive elements get GPU-hinted transitions */
+  *, *::before, *::after {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -157,12 +173,14 @@
   border-radius: 8px;
   padding: 24px;
   box-shadow: var(--shadow-level-2);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .card-vercel:hover {
   box-shadow: var(--shadow-level-3);
   border-color: var(--color-hairline-strong);
+  transform: translateY(-1px);
 }
 
 /* Typography Helpers */
@@ -201,11 +219,16 @@
   justify-content: center;
   font-weight: 500;
   font-size: 16px;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-pill-primary:hover {
   opacity: 0.9;
+  transform: translateY(-0.5px);
+}
+
+.btn-pill-primary:active {
+  transform: translateY(0.5px) scale(0.98);
 }
 
 .btn-pill-secondary {
@@ -220,11 +243,16 @@
   justify-content: center;
   font-weight: 500;
   font-size: 16px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-pill-secondary:hover {
   background-color: var(--color-canvas-soft);
+  transform: translateY(-0.5px);
+}
+
+.btn-pill-secondary:active {
+  transform: translateY(0.5px) scale(0.98);
 }
 
 /* Input Styles */
@@ -376,7 +404,7 @@
     inset 0 1px 0 0 rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #calculator-container .bg-canvas-card:not(.calc-screen *):hover,
@@ -449,7 +477,7 @@
   color: #ffffff !important;
   border: 1px solid #232d40 !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #calculator-container .bg-calc-btn:hover,
@@ -508,6 +536,8 @@
   background-color: #111622 !important;
   border-color: #1f2736 !important;
   color: #ffffff !important;
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 
   --color-canvas-card: var(--canvas-card);
   --color-canvas-card-soft: var(--canvas-card-soft);
@@ -522,6 +552,8 @@
 
 .calc-card:hover {
   border-color: #232d40 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 
