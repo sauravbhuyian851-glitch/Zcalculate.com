@@ -60,7 +60,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const headers = response.headers;
   
   if (!headers.has('Content-Security-Policy')) {
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.clarity.ms https://scripts.clarity.ms https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.clarity.ms https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://vitals.vercel-insights.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self';");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://*.clarity.ms https://www.clarity.ms https://scripts.clarity.ms https://*.googletagmanager.com https://*.google-analytics.com https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.clarity.ms https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net https://vitals.vercel-insights.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self';");
   }
   if (!headers.has('Strict-Transport-Security')) {
     headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
