@@ -80,6 +80,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (!headers.has('Permissions-Policy')) {
     headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()');
   }
+  if (!headers.has('Cross-Origin-Opener-Policy')) {
+    headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  }
+  if (!headers.has('Cross-Origin-Resource-Policy')) {
+    headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+  }
 
   return response;
 });
