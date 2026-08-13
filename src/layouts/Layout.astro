@@ -14,12 +14,12 @@ interface Props {
 }
 
 const { 
-  title = "Zcalculate", 
-  description = "40+ free professional calculators: mortgage, BMI, compound interest, GPA, salary, and more. No ads, no logins — instant precision results.",
+  title = "Free Online Calculator — Math, Finance, Health & Science | Zcalculate", 
+  description = "Free online calculator for math, finance, health, and science. 40+ professional calculators including mortgage, BMI, compound interest, scientific, loan, and more. No ads, no logins — instant precision results.",
   canonicalUrl = "https://zcalculate.online",
   ogType = "website",
   ogImage = "/og-image.png",
-  keywords = "calculators, online calculators, free math tools, interest estimator, body index checker, finance formulas, mortgage calculator, BMI calculator, compound interest calculator, scientific calculator, loan calculator, salary calculator, GPA calculator, percentage calculator, age calculator, date calculator"
+  keywords = "calculator, online calculator, free calculator, math calculator, scientific calculator, mortgage calculator, BMI calculator, loan calculator, compound interest calculator, financial calculator, health calculator, percentage calculator, salary calculator, GPA calculator, age calculator, calorie calculator, fraction calculator, date calculator, free online calculators"
 } = Astro.props;
 
 const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalculate.online${ogImage}`;
@@ -28,9 +28,10 @@ const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalcula
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Zcalculate",
+  "name": "Zcalculate — Free Online Calculator",
+  "alternateName": ["Zcalculate", "Zcalculate Online Calculator"],
   "url": "https://zcalculate.online",
-  "description": "A professional collection of 40+ free online calculators covering financial, health, math, and utility categories.",
+  "description": "Free online calculator with 40+ professional tools for math, finance, health, and science. Mortgage, BMI, compound interest, scientific, loan calculators and more.",
   "inLanguage": "en-US",
   "publisher": {
     "@type": "Organization",
@@ -47,9 +48,30 @@ const websiteSchema = {
     "@type": "SearchAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "https://zcalculate.online/#all-calculators?q={search_term_string}"
+      "urlTemplate": "https://zcalculate.online/?q={search_term_string}"
     },
     "query-input": "required name=search_term_string"
+  }
+};
+
+// JSON-LD SoftwareApplication schema (helps Google identify this as a calculator tool)
+const softwareAppSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Zcalculate — Free Online Calculator",
+  "url": "https://zcalculate.online",
+  "description": "Free online calculator suite with 40+ professional calculators for math, finance, health, and science calculations.",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "Zcalculate",
+    "url": "https://zcalculate.online"
   }
 };
 ---
@@ -109,6 +131,7 @@ const websiteSchema = {
 
 		<!-- JSON-LD Structured Data -->
 		<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} is:inline />
+		<script type="application/ld+json" set:html={JSON.stringify(softwareAppSchema)} is:inline />
 
 		<!-- Head slot for per-page structured data -->
 		<slot name="head" />

@@ -1,6 +1,9 @@
 {
-  "name": "Zcalculate",
-  "short_name": "Zcal",
+  "name": "Zcalculate — Free Online Calculator",
+  "short_name": "Zcalculate",
+  "description": "Free online calculator with 40+ professional tools for math, finance, health, and science. Mortgage, BMI, scientific, compound interest calculators and more.",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +18,8 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "theme_color": "#171717",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "categories": ["utilities", "education", "finance"]
 }

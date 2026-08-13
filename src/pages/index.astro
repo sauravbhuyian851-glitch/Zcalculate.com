@@ -31,10 +31,51 @@ const organizationSchema = {
   "foundingDate": "2025",
   "sameAs": []
 };
+
+// Homepage FAQ schema for rich snippets
+const homepageFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What free online calculators are available on Zcalculate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zcalculate offers 40+ free online calculators across four categories: Financial (mortgage, loan, compound interest, salary, investment, retirement), Health & Fitness (BMI, calorie, body fat, BMR, ideal weight, pregnancy), Math & Science (scientific, fraction, percentage, triangle, standard deviation, graphing), and Utility tools (age, date, subnet, GPA, concrete, password generator). All calculators are free with no ads or sign-ups required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the online calculator on Zcalculate free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, every calculator on Zcalculate is 100% free to use. There are no ads, no account requirements, and no hidden fees. You get instant, professional-grade calculation results."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate are the online calculators?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All calculators use industry-standard formulas and algorithms. Financial calculators use the standard amortization formula, health calculators use WHO-recognized formulas like Mifflin-St Jeor for BMR, and math calculators provide precision up to 15 decimal places."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the calculator on my phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, all Zcalculate calculators are fully responsive and work on any device — desktop, tablet, or mobile phone. The interface automatically adapts to your screen size for the best experience."
+      }
+    }
+  ]
+};
 ---
-<Layout>
+<Layout title="Free Online Calculator — Math, Finance, Health & Science | Zcalculate" description="Free online calculator with 40+ professional tools: mortgage, BMI, scientific, compound interest, loan, salary, and more. No ads, no logins — instant results.">
   <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} is:inline slot="head" />
   <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} is:inline slot="head" />
+  <script type="application/ld+json" set:html={JSON.stringify(homepageFaqSchema)} is:inline slot="head" />
 
   <!-- Hero Section -->
   <section class="relative mx-auto max-w-7xl px-6 pt-24 pb-24 flex flex-col items-center text-center overflow-visible">
@@ -44,10 +85,10 @@ const organizationSchema = {
     </div>
 
     <h1 class="display-xl text-ink max-w-4xl leading-[1.1]">
-      Calculations, simplified<span class="text-link">.</span>
+      Free online calculator<span class="text-link">.</span>
     </h1>
     <p class="mt-6 text-body max-w-2xl text-lg md:text-xl font-normal leading-relaxed">
-      A stark, high-precision workspace for students, developers, and finance professionals. No ads, no logins, just results.
+      A high-precision calculator workspace with 40+ professional tools for students, developers, and finance professionals. No ads, no logins, just results.
     </p>
 
     <!-- Embedded Calculator Widget -->
@@ -126,6 +167,69 @@ const organizationSchema = {
         <p class="mt-2 text-mute">Try checking your spelling or search another category.</p>
       </div>
 
+    </div>
+  </section>
+
+  <!-- SEO Content Section — Keyword-rich text content for Google -->
+  <section class="bg-canvas py-24 px-6 border-t border-hairline">
+    <div class="mx-auto max-w-4xl text-left">
+      <h2 class="display-lg text-ink mb-8">Free online calculator for every need.</h2>
+      <div class="space-y-6 text-body text-base leading-relaxed">
+        <p>
+          Zcalculate is a free online calculator suite offering 40+ professional-grade calculators for math, finance, health, and science. Whether you need a quick <a href="/calculator/percentage-calculator" class="text-link hover:underline">percentage calculator</a>, a detailed <a href="/calculator/mortgage-calculator" class="text-link hover:underline">mortgage calculator</a>, or a full-featured <a href="/calculator/scientific-calculator" class="text-link hover:underline">scientific calculator</a>, every tool delivers instant, precise results — completely free, with no ads and no login required.
+        </p>
+        <h3 class="text-lg font-semibold text-ink pt-4">Financial calculators.</h3>
+        <p>
+          Plan your financial future with our collection of free financial calculators. The <a href="/calculator/mortgage-calculator" class="text-link hover:underline">mortgage calculator</a> helps you estimate monthly payments and total interest for home loans. Use the <a href="/calculator/compound-interest-calculator" class="text-link hover:underline">compound interest calculator</a> to see how your savings grow over time with daily, monthly, or annual compounding. Our <a href="/calculator/loan-calculator" class="text-link hover:underline">loan calculator</a>, <a href="/calculator/investment-calculator" class="text-link hover:underline">investment calculator</a>, <a href="/calculator/retirement-calculator" class="text-link hover:underline">retirement calculator</a>, and <a href="/calculator/income-tax-calculator" class="text-link hover:underline">income tax calculator</a> cover every aspect of personal finance planning.
+        </p>
+        <h3 class="text-lg font-semibold text-ink pt-4">Health & fitness calculators.</h3>
+        <p>
+          Track your wellness with clinically-validated formulas. Our <a href="/calculator/bmi-calculator" class="text-link hover:underline">BMI calculator</a> uses the WHO Body Mass Index formula to determine your health category. The <a href="/calculator/calorie-calculator" class="text-link hover:underline">calorie calculator</a> and <a href="/calculator/bmr-calculator" class="text-link hover:underline">BMR calculator</a> use the Mifflin-St Jeor equation for accurate metabolic estimates. We also offer <a href="/calculator/body-fat-calculator" class="text-link hover:underline">body fat</a>, <a href="/calculator/ideal-weight-calculator" class="text-link hover:underline">ideal weight</a>, and <a href="/calculator/pregnancy-calculator" class="text-link hover:underline">pregnancy</a> calculators.
+        </p>
+        <h3 class="text-lg font-semibold text-ink pt-4">Math & science calculators.</h3>
+        <p>
+          From basic arithmetic to advanced equations, our math calculators handle it all. The <a href="/calculator/scientific-calculator" class="text-link hover:underline">scientific calculator</a> supports trigonometry, logarithms, and complex expressions. Solve problems with the <a href="/calculator/fraction-calculator" class="text-link hover:underline">fraction calculator</a>, <a href="/calculator/percentage-calculator" class="text-link hover:underline">percentage calculator</a>, <a href="/calculator/triangle-calculator" class="text-link hover:underline">triangle calculator</a>, and <a href="/calculator/standard-deviation-calculator" class="text-link hover:underline">standard deviation calculator</a>.
+        </p>
+        <h3 class="text-lg font-semibold text-ink pt-4">Everyday utility calculators.</h3>
+        <p>
+          Zcalculate also includes practical everyday tools: an <a href="/calculator/age-calculator" class="text-link hover:underline">age calculator</a> for exact age in years, months, and days; a <a href="/calculator/date-calculator" class="text-link hover:underline">date calculator</a> for date arithmetic; a <a href="/calculator/gpa-calculator" class="text-link hover:underline">GPA calculator</a> for students; a <a href="/calculator/subnet-calculator" class="text-link hover:underline">subnet calculator</a> for network engineers; and a <a href="/calculator/password-generator" class="text-link hover:underline">password generator</a> for security.
+        </p>
+      </div>
+
+      <!-- Homepage FAQ Section -->
+      <div class="mt-16 pt-16 border-t border-hairline">
+        <h2 class="display-lg text-ink mb-10">Frequently asked questions.</h2>
+        <div class="space-y-6">
+          <details class="group bg-canvas border border-hairline rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+            <summary class="text-base font-semibold text-ink cursor-pointer list-none flex items-center justify-between gap-4">
+              What free online calculators are available on Zcalculate?
+              <svg class="w-5 h-5 text-mute transition-transform group-open:rotate-180 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <p class="mt-4 text-body text-sm leading-relaxed">Zcalculate offers 40+ free online calculators across four categories: Financial (mortgage, loan, compound interest, salary, investment, retirement), Health & Fitness (BMI, calorie, body fat, BMR, ideal weight, pregnancy), Math & Science (scientific, fraction, percentage, triangle, standard deviation, graphing), and Utility tools (age, date, subnet, GPA, concrete, password generator). All calculators are free with no ads or sign-ups required.</p>
+          </details>
+          <details class="group bg-canvas border border-hairline rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+            <summary class="text-base font-semibold text-ink cursor-pointer list-none flex items-center justify-between gap-4">
+              Is the online calculator free to use?
+              <svg class="w-5 h-5 text-mute transition-transform group-open:rotate-180 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <p class="mt-4 text-body text-sm leading-relaxed">Yes, every calculator on Zcalculate is 100% free to use. There are no ads, no account requirements, and no hidden fees. You get instant, professional-grade calculation results on any device.</p>
+          </details>
+          <details class="group bg-canvas border border-hairline rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+            <summary class="text-base font-semibold text-ink cursor-pointer list-none flex items-center justify-between gap-4">
+              How accurate are the online calculators?
+              <svg class="w-5 h-5 text-mute transition-transform group-open:rotate-180 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <p class="mt-4 text-body text-sm leading-relaxed">All calculators use industry-standard formulas and algorithms. Financial calculators use the standard amortization formula, health calculators use WHO-recognized formulas like Mifflin-St Jeor for BMR, and math calculators provide precision up to 15 decimal places.</p>
+          </details>
+          <details class="group bg-canvas border border-hairline rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
+            <summary class="text-base font-semibold text-ink cursor-pointer list-none flex items-center justify-between gap-4">
+              Can I use the calculator on my phone?
+              <svg class="w-5 h-5 text-mute transition-transform group-open:rotate-180 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <p class="mt-4 text-body text-sm leading-relaxed">Yes, all Zcalculate calculators are fully responsive and work on any device — desktop, tablet, or mobile phone. The interface automatically adapts to your screen size for the best experience.</p>
+          </details>
+        </div>
+      </div>
     </div>
   </section>
 </Layout>

@@ -14,7 +14,7 @@ export default defineConfig({
         !page.includes('/comments') &&
         !page.includes('/404'),
       changefreq: 'weekly',
-      lastmod: new Date(),
+      lastmod: new Date('2026-08-13'),
       priority: 0.7,
       serialize(item) {
         // Homepage gets highest priority
