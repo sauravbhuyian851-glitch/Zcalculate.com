@@ -15,11 +15,11 @@ interface Props {
 
 const { 
   title = "Zcalculate", 
-  description = "Free online calculator for math, finance, health, and science. 40+ professional calculators including mortgage, BMI, compound interest, scientific, loan, and more. No ads, no logins — instant precision results.",
+  description = "Free floating web calculator with 40+ tools. Always on top online calculator, resizable floating calculator, and picture in picture calculator online for multitasking. No ads, no logins.",
   canonicalUrl = "https://zcalculate.online",
   ogType = "website",
   ogImage = "/og-image.png",
-  keywords = "calculator, online calculator, free calculator, math calculator, scientific calculator, mortgage calculator, BMI calculator, loan calculator, compound interest calculator, financial calculator, health calculator, percentage calculator, salary calculator, GPA calculator, age calculator, calorie calculator, fraction calculator, date calculator, free online calculators"
+  keywords = "floating web calculator, always on top online calculator, resizable floating calculator, calculator that stays on top of other tabs, picture in picture calculator online, multitasking online calculator, document picture-in-picture calculator, PWA floating calculator web, online calculator, free calculator, math calculator, scientific calculator, mortgage calculator, BMI calculator, loan calculator, compound interest calculator"
 } = Astro.props;
 
 const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalculate.online${ogImage}`;
@@ -28,10 +28,10 @@ const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalcula
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Zcalculate — Free Online Calculator",
-  "alternateName": ["Zcalculate", "Zcalculate Online Calculator"],
+  "name": "Zcalculate — Floating Web Calculator",
+  "alternateName": ["Zcalculate", "Zcalculate Online Calculator", "Floating Web Calculator"],
   "url": "https://zcalculate.online",
-  "description": "Free online calculator with 40+ professional tools for math, finance, health, and science. Mortgage, BMI, compound interest, scientific, loan calculators and more.",
+  "description": "Free floating web calculator and always on top online calculator with 40+ professional tools for math, finance, health, and science. Document picture-in-picture calculator for seamless multitasking.",
   "inLanguage": "en-US",
   "publisher": {
     "@type": "Organization",
@@ -54,13 +54,13 @@ const websiteSchema = {
   }
 };
 
-// JSON-LD SoftwareApplication schema (helps Google identify this as an interactive calculator tool)
+// JSON-LD SoftwareApplication schema (helps Google identify this as an interactive floating calculator tool)
 const softwareAppSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Zcalculate — Free Online Calculator",
+  "name": "Zcalculate — Floating Web Calculator",
   "url": "https://zcalculate.online",
-  "description": "Free online calculator suite with 40+ interactive browser-based calculators for math, finance, health, and science. Each calculator runs entirely in-browser with real-time results.",
+  "description": "Free floating web calculator and always on top online calculator suite with 40+ interactive browser-based calculators. Features document picture-in-picture calculator support and PWA floating calculator web capabilities for multitasking.",
   "applicationCategory": "UtilityApplication",
   "applicationSubCategory": "Calculator",
   "operatingSystem": "All",
@@ -69,16 +69,16 @@ const softwareAppSchema = {
   "browserRequirements": "Requires JavaScript. Works in all modern browsers.",
   "permissions": "none",
   "featureList": [
-    "Interactive real-time calculations in the browser",
-    "40+ floating calculator widgets embedded on page",
-    "Mortgage, loan, compound interest, and investment calculators",
-    "BMI, calorie, body fat, and BMR health calculators",
-    "Scientific, fraction, percentage, and graphing math calculators",
-    "Age, date, GPA, subnet, and password utility tools",
-    "Instant results without page reload",
+    "Floating web calculator with picture-in-picture support",
+    "Always on top online calculator for multitasking across tabs",
+    "Resizable floating calculator interface",
+    "Document picture-in-picture calculator web app",
+    "PWA floating calculator web capabilities",
+    "40+ interactive calculator tools for math, finance, health & utility",
+    "Instant real-time calculation results without page reload",
     "No installation required — runs entirely in the browser",
-    "Dark mode and responsive design",
-    "Calculation history with IndexedDB persistence"
+    "Dark mode and responsive mobile/desktop design",
+    "Calculation history saved with IndexedDB"
   ],
   "offers": {
     "@type": "Offer",

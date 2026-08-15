@@ -18,6 +18,10 @@ const cleanName = calc.name.replace(/\(.*\)/g, '').trim().toLowerCase();
 const nameBase = cleanName.endsWith('calculator') ? cleanName : `${cleanName} calculator`;
 const keywordsList = [
   nameBase,
+  `floating ${nameBase}`,
+  `always on top ${nameBase}`,
+  `picture in picture ${nameBase}`,
+  `multitasking ${cleanName} calculator`,
   `free online ${nameBase}`,
   `${cleanName} solver`,
   `how to calculate ${cleanName.replace('calculator', '').trim()}`,
@@ -25,6 +29,14 @@ const keywordsList = [
   `${cleanName} online free`,
   `best ${nameBase}`,
   `${cleanName} tool`,
+  "floating web calculator",
+  "always on top online calculator",
+  "resizable floating calculator",
+  "calculator that stays on top of other tabs",
+  "picture in picture calculator online",
+  "multitasking online calculator",
+  "document picture-in-picture calculator",
+  "PWA floating calculator web",
   calc.category,
   ...calc.relatedSlugs.map(s => s.replace(/-/g, ' '))
 ];
