@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://zcalculate.online',
+  trailingSlash: 'never',
   integrations: [
     sitemap({
       filter: (page) => 

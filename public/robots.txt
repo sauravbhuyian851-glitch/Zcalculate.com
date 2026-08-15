@@ -1,23 +1,31 @@
-# Zcalculate.online — Free Online Calculator Suite
-# 40+ professional calculators for math, finance, health, and science
+# Zcalculate.online — Free Floating Web Calculator & Online Tool Suite
 # https://zcalculate.online
 
 User-agent: *
 Allow: /
+Allow: /_astro/
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.svg
+Allow: /*.ico
 Disallow: /api/
 Disallow: /history
 Disallow: /comments
 Disallow: /404
 
-# Sitemap
+# Sitemap Location
 Sitemap: https://zcalculate.online/sitemap-index.xml
 
-# Crawl directives for major search bots
+# Explicit Bot Directives
 User-agent: Googlebot
 Allow: /
+Allow: /_astro/
 
 User-agent: Bingbot
 Allow: /
+Allow: /_astro/
 
 User-agent: AhrefsBot
 Allow: /

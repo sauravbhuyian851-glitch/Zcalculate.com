@@ -1,7 +1,7 @@
 {
-  "name": "Zcalculate — Free Online Calculator",
+  "name": "Zcalculate — Floating Web Calculator",
   "short_name": "Zcalculate",
-  "description": "Free online calculator with 40+ professional tools for math, finance, health, and science. Mortgage, BMI, scientific, compound interest calculators and more.",
+  "description": "Free floating web calculator and always on top online calculator with 40+ professional tools for math, finance, health, and science. Document picture-in-picture calculator.",
   "start_url": "/",
   "scope": "/",
   "icons": [
@@ -21,5 +21,6 @@
   "theme_color": "#171717",
   "background_color": "#fafafa",
   "display": "standalone",
-  "categories": ["utilities", "education", "finance"]
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "categories": ["utilities", "education", "finance", "productivity"]
 }
