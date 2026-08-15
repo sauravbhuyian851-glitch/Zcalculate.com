@@ -3,12 +3,12 @@ import Layout from '../layouts/Layout.astro';
 import StandardCalculator from '../components/StandardCalculator.astro';
 import { calculatorsList, CATEGORIES } from '../data/calculators';
 
-// Homepage JSON-LD ItemList for all calculators (enhanced with descriptions)
+// Homepage JSON-LD ItemList for all calculators (enhanced with floating interactive calculator signals)
 const itemListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   "name": "Online Calculator Collection",
-  "description": "A comprehensive collection of 40+ free online calculators for financial, health, math, and utility calculations.",
+  "description": "A comprehensive collection of 40+ free interactive online calculators that float directly on the page. Each calculator runs in-browser with real-time results for financial, health, math, and utility calculations.",
   "numberOfItems": calculatorsList.length,
   "itemListElement": calculatorsList.map((calc, i) => ({
     "@type": "ListItem",
@@ -16,7 +16,23 @@ const itemListSchema = {
     "name": calc.name,
     "description": calc.seoDescription,
     "url": `https://zcalculate.online/calculator/${calc.slug}`,
-    "image": "https://zcalculate.online/og-image.png"
+    "image": "https://zcalculate.online/og-image.png",
+    "item": {
+      "@type": "WebApplication",
+      "name": calc.name,
+      "url": `https://zcalculate.online/calculator/${calc.slug}`,
+      "applicationCategory": "UtilityApplication",
+      "applicationSubCategory": "Calculator",
+      "operatingSystem": "All",
+      "isAccessibleForFree": true,
+      "interactivityType": "active",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
   }))
 };
 

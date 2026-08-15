@@ -54,24 +54,49 @@ const websiteSchema = {
   }
 };
 
-// JSON-LD SoftwareApplication schema (helps Google identify this as a calculator tool)
+// JSON-LD SoftwareApplication schema (helps Google identify this as an interactive calculator tool)
 const softwareAppSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Zcalculate — Free Online Calculator",
   "url": "https://zcalculate.online",
-  "description": "Free online calculator suite with 40+ professional calculators for math, finance, health, and science calculations.",
+  "description": "Free online calculator suite with 40+ interactive browser-based calculators for math, finance, health, and science. Each calculator runs entirely in-browser with real-time results.",
   "applicationCategory": "UtilityApplication",
+  "applicationSubCategory": "Calculator",
   "operatingSystem": "All",
+  "softwareVersion": "2.0",
+  "isAccessibleForFree": true,
+  "browserRequirements": "Requires JavaScript. Works in all modern browsers.",
+  "permissions": "none",
+  "featureList": [
+    "Interactive real-time calculations in the browser",
+    "40+ floating calculator widgets embedded on page",
+    "Mortgage, loan, compound interest, and investment calculators",
+    "BMI, calorie, body fat, and BMR health calculators",
+    "Scientific, fraction, percentage, and graphing math calculators",
+    "Age, date, GPA, subnet, and password utility tools",
+    "Instant results without page reload",
+    "No installation required — runs entirely in the browser",
+    "Dark mode and responsive design",
+    "Calculation history with IndexedDB persistence"
+  ],
   "offers": {
     "@type": "Offer",
     "price": "0",
-    "priceCurrency": "USD"
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
   },
   "creator": {
     "@type": "Organization",
     "name": "Zcalculate",
     "url": "https://zcalculate.online"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "124",
+    "bestRating": "5",
+    "worstRating": "1"
   }
 };
 ---

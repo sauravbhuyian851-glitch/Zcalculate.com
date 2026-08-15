@@ -33,7 +33,7 @@ const pageKeywords = keywordsList.join(', ');
 const publishDate = '2025-12-01T00:00:00Z';
 const modifiedDate = new Date().toISOString();
 
-// JSON-LD WebApplication schema (enhanced)
+// JSON-LD WebApplication schema (enhanced for floating interactive calculator SEO)
 const webAppSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
@@ -41,16 +41,41 @@ const webAppSchema = {
   "url": canonicalUrl,
   "description": calc.seoDescription,
   "applicationCategory": "UtilityApplication",
+  "applicationSubCategory": "Calculator",
   "operatingSystem": "All",
   "inLanguage": "en-US",
   "datePublished": publishDate,
   "dateModified": modifiedDate,
+  "softwareVersion": "2.0",
+  "isAccessibleForFree": true,
+  "browserRequirements": "Requires JavaScript. Runs entirely in the browser — no server round-trips.",
+  "permissions": "none",
+  "interactivityType": "active",
+  "accessibilityFeature": [
+    "alternativeText",
+    "highContrastDisplay",
+    "largePrint",
+    "structuralNavigation"
+  ],
+  "featureList": [
+    `Interactive ${calc.name} embedded directly on the page`,
+    "Real-time instant results without page reload",
+    "Floating calculator widget that runs in-browser",
+    "Responsive design for desktop, tablet, and mobile",
+    "Dark mode support",
+    "Calculation history saved locally"
+  ],
+  "screenshot": {
+    "@type": "ImageObject",
+    "url": "https://zcalculate.online/og-image.png",
+    "caption": `${calc.name} — interactive floating calculator widget`
+  },
   "offers": {
     "@type": "Offer",
     "price": "0",
-    "priceCurrency": "USD"
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
   },
-  "browserRequirements": "Requires JavaScript",
   "creator": {
     "@type": "Organization",
     "name": "Zcalculate",
