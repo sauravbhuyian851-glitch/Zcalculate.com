@@ -7,9 +7,6 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://zcalculate.online',
   trailingSlash: 'never',
-  build: {
-    inlineStylesheets: 'always',
-  },
   integrations: [
     sitemap({
       filter: (page) => 

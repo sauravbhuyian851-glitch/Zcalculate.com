@@ -448,47 +448,36 @@ const softwareAppSchema = {
 		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:wght@300..900&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" is:inline />
 		<noscript><link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:wght@300..900&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet" /></noscript>
 
-		<!-- Deferred Analytics & Tracking (Google Analytics & Microsoft Clarity) -->
-		<!-- Deferred until first user interaction or 4s fallback to prevent unneeded JS/network requests during initial page load -->
+		<!-- Google Analytics — deferred to after page load to avoid blocking FCP -->
 		<script is:inline>
-			(function() {
-				var loaded = false;
-				function loadAnalytics() {
-					if (loaded) return;
-					loaded = true;
-
-					var events = ['pointerdown', 'scroll', 'keydown', 'touchstart', 'mousemove'];
-					events.forEach(function(evt) {
-						window.removeEventListener(evt, loadAnalytics, { passive: true });
-					});
-
-					// Load Google Analytics (gtag.js)
-					var sGtag = document.createElement('script');
-					sGtag.async = true;
-					sGtag.src = 'https://www.googletagmanager.com/gtag/js?id=G-6YHSEYVGJN';
-					document.head.appendChild(sGtag);
+			window.addEventListener('load', function() {
+				var ric = window.requestIdleCallback || function(cb) { setTimeout(cb, 150); };
+				ric(function() {
+					var s = document.createElement('script');
+					s.async = true;
+					s.src = 'https://www.googletagmanager.com/gtag/js?id=G-6YHSEYVGJN';
+					document.head.appendChild(s);
 					window.dataLayer = window.dataLayer || [];
 					function gtag(){dataLayer.push(arguments);}
 					window.gtag = gtag;
 					gtag('js', new Date());
 					gtag('config', 'G-6YHSEYVGJN');
+				});
+			});
+		</script>
 
-					// Load Microsoft Clarity
+		<!-- Microsoft Clarity — deferred to after page load -->
+		<script is:inline>
+			window.addEventListener('load', function() {
+				var ric = window.requestIdleCallback || function(cb) { setTimeout(cb, 150); };
+				ric(function() {
 					(function(c,l,a,r,i,t,y){
 						c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
 						t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
 						y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 					})(window, document, 'clarity', 'script', 'y17fr36ecs');
-				}
-
-				var events = ['pointerdown', 'scroll', 'keydown', 'touchstart', 'mousemove'];
-				events.forEach(function(evt) {
-					window.addEventListener(evt, loadAnalytics, { passive: true, once: true });
 				});
-
-				// Fallback timer for non-interactive sessions
-				setTimeout(loadAnalytics, 4000);
-			})();
+			});
 		</script>
 	</head>
 	<body class="flex min-h-screen flex-col font-sans antialiased selection:bg-ink selection:text-canvas">
