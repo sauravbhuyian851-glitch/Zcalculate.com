@@ -16,11 +16,16 @@ interface Props {
 const { 
   title = "Zcalculate", 
   description = "Free floating web calculator with 40+ tools. Always on top online calculator, resizable floating calculator, and picture in picture calculator online for multitasking. No ads, no logins.",
-  canonicalUrl = "https://zcalculate.online",
+  canonicalUrl,
   ogType = "website",
   ogImage = "/og-image.png",
   keywords = "floating web calculator, always on top online calculator, resizable floating calculator, calculator that stays on top of other tabs, picture in picture calculator online, multitasking online calculator, document picture-in-picture calculator, PWA floating calculator web, online calculator, free calculator, math calculator, scientific calculator, mortgage calculator, BMI calculator, loan calculator, compound interest calculator"
 } = Astro.props;
+
+// Auto-compute canonical URL from the current page path if not explicitly provided.
+// This ensures the canonical always matches the URL Google actually crawls,
+// preventing "Alternate page with proper canonical tag" indexing issues.
+const resolvedCanonical = canonicalUrl ?? `https://zcalculate.online${Astro.url.pathname}`;
 
 const absoluteOgImage = ogImage.startsWith('http') ? ogImage : `https://zcalculate.online${ogImage}`;
 
@@ -127,16 +132,14 @@ const softwareAppSchema = {
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<meta name="keywords" content={keywords} />
-		<link rel="canonical" href={canonicalUrl} />
+		<link rel="canonical" href={resolvedCanonical} />
 		<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 		<meta name="author" content="Zcalculate" />
 		<meta name="theme-color" content="#171717" />
-		<link rel="alternate" hreflang="en" href={canonicalUrl} />
-		<link rel="alternate" hreflang="x-default" href={canonicalUrl} />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content={ogType} />
-		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:url" content={resolvedCanonical} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:site_name" content="Zcalculate" />
@@ -148,7 +151,7 @@ const softwareAppSchema = {
 
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:url" content={canonicalUrl} />
+		<meta name="twitter:url" content={resolvedCanonical} />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={absoluteOgImage} />
