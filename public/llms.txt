@@ -1,0 +1,70 @@
+# Zcalculate — Floating Web Calculator
+
+> Free floating web calculator and always-on-top online calculator suite with 40+ professional tools for math, finance, health, and science. Features document picture-in-picture support for seamless multitasking across browser tabs.
+
+## Site Info
+- URL: https://zcalculate.online
+- Category: Online Calculator / Web Application / Utility
+- Language: English (en-US)
+- Free to use: Yes (no ads, no accounts, no fees)
+
+## Main Features
+- Floating web calculator with Picture-in-Picture API support
+- Always on top calculator that stays visible across browser tabs
+- Resizable calculator interface with dark mode
+- 40+ specialized calculators across four categories
+- Real-time instant results computed entirely in-browser
+- Calculation history saved locally via IndexedDB
+- PWA-capable (installable as a desktop/mobile app)
+
+## Financial Calculators
+- [Mortgage Calculator](https://zcalculate.online/calculator/mortgage-calculator): Monthly payment, amortization schedule, total interest
+- [Loan Calculator](https://zcalculate.online/calculator/loan-calculator): Personal/business loan payment estimator
+- [Auto Loan Calculator](https://zcalculate.online/calculator/auto-loan-calculator): Car payment with trade-in, tax, down payment
+- [Compound Interest Calculator](https://zcalculate.online/calculator/compound-interest-calculator): Daily, monthly, quarterly, annual compounding
+- [Interest Calculator](https://zcalculate.online/calculator/interest-calculator): Simple vs compound interest comparison
+- [Investment Calculator](https://zcalculate.online/calculator/investment-calculator): Portfolio growth with recurring contributions
+- [Retirement Calculator](https://zcalculate.online/calculator/retirement-calculator): Savings projection with 4% withdrawal rule
+- [Income Tax Calculator](https://zcalculate.online/calculator/income-tax-calculator): Federal tax brackets and effective rate
+- [Salary Calculator](https://zcalculate.online/calculator/salary-calculator): Annual to hourly/weekly/monthly conversion
+- [Amortization Calculator](https://zcalculate.online/calculator/amortization-calculator): Detailed periodic payment breakdown
+- [Inflation Calculator](https://zcalculate.online/calculator/inflation-calculator): Purchasing power over time
+- [Payment Calculator](https://zcalculate.online/calculator/payment-calculator): Monthly installment for any financed purchase
+- [Finance Calculator (TVM)](https://zcalculate.online/calculator/finance-calculator): Time Value of Money solver
+- [Interest Rate Calculator](https://zcalculate.online/calculator/interest-rate-calculator): Reverse-solve for APR from payments
+- [Sales Tax Calculator](https://zcalculate.online/calculator/sales-tax-calculator): Tax amount and total price
+
+## Health & Fitness Calculators
+- [BMI Calculator](https://zcalculate.online/calculator/bmi-calculator): Body Mass Index with WHO health categories
+- [Calorie Calculator](https://zcalculate.online/calculator/calorie-calculator): TDEE and daily calorie targets (Mifflin-St Jeor)
+- [BMR Calculator](https://zcalculate.online/calculator/bmr-calculator): Basal Metabolic Rate estimation
+- [Body Fat Calculator](https://zcalculate.online/calculator/body-fat-calculator): US Navy method body fat percentage
+- [Ideal Weight Calculator](https://zcalculate.online/calculator/ideal-weight-calculator): Devine and Robinson formulas
+- [Pace Calculator](https://zcalculate.online/calculator/pace-calculator): Running/walking pace and speed
+- [Pregnancy Calculator](https://zcalculate.online/calculator/pregnancy-calculator): Gestational age and due date
+- [Conception Calculator](https://zcalculate.online/calculator/pregnancy-conception-calculator): Estimated conception window
+- [Due Date Calculator](https://zcalculate.online/calculator/due-date-calculator): Estimated delivery date
+
+## Math & Science Calculators
+- [Scientific Calculator](https://zcalculate.online/calculator/scientific-calculator): Trigonometry, logarithms, complex expressions
+- [Programmable Calculator](https://zcalculate.online/calculator/programmable-calculator): Custom programmable calculations
+- [Graphing Calculator](https://zcalculate.online/calculator/graphing-calculator): Function plotting and visualization
+- [CAS Calculator](https://zcalculate.online/calculator/cas-calculator): Computer Algebra System
+- [Fraction Calculator](https://zcalculate.online/calculator/fraction-calculator): Add, subtract, multiply, divide fractions
+- [Percentage Calculator](https://zcalculate.online/calculator/percentage-calculator): Percent-of, what-percent, percent-change
+- [Random Number Generator](https://zcalculate.online/calculator/random-number-generator): Customizable random number generation
+- [Triangle Calculator](https://zcalculate.online/calculator/triangle-calculator): Sides, angles, area, perimeter
+- [Standard Deviation Calculator](https://zcalculate.online/calculator/standard-deviation-calculator): Population and sample statistics
+
+## Utility Tools
+- [Age Calculator](https://zcalculate.online/calculator/age-calculator): Exact age in years, months, days
+- [Date Calculator](https://zcalculate.online/calculator/date-calculator): Date arithmetic and differences
+- [Time Calculator](https://zcalculate.online/calculator/time-calculator): Time addition, subtraction, conversion
+- [Hours Calculator](https://zcalculate.online/calculator/hours-calculator): Work hours and time tracking
+- [GPA Calculator](https://zcalculate.online/calculator/gpa-calculator): Grade Point Average computation
+- [Grade Calculator](https://zcalculate.online/calculator/grade-calculator): Weighted grade calculation
+- [Concrete Calculator](https://zcalculate.online/calculator/concrete-calculator): Volume estimation for construction
+- [Subnet Calculator](https://zcalculate.online/calculator/subnet-calculator): IP subnet mask and CIDR calculations
+- [Password Generator](https://zcalculate.online/calculator/password-generator): Secure password generation
+- [Unit Conversion Calculator](https://zcalculate.online/calculator/conversion-calculator): Length, weight, temperature, volume
+- [Screen Size Calculator](https://zcalculate.online/calculator/screen-size-calculator): Display calibration and PPI

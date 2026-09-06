@@ -114,25 +114,30 @@ const faqSchema = calc.faqs.length > 0 ? {
   }))
 } : null;
 
-// JSON-LD HowTo schema from manual data (enables Google How-To rich snippets)
-const howToSchema = calc.manual && calc.manual.length > 0 ? {
+// JSON-LD WebPage schema for on-page structured data completeness
+const webPageSchema = {
   "@context": "https://schema.org",
-  "@type": "HowTo",
-  "name": `How to Use the ${calc.name}`,
+  "@type": "WebPage",
+  "name": calc.seoTitle,
   "description": calc.seoDescription,
-  "totalTime": "PT2M",
-  "tool": {
-    "@type": "HowToTool",
-    "name": calc.name
+  "url": canonicalUrl,
+  "datePublished": publishDate,
+  "dateModified": modifiedDate,
+  "inLanguage": "en-US",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Zcalculate — Floating Web Calculator",
+    "url": "https://zcalculate.online"
   },
-  "step": calc.manual.map((m, i) => ({
-    "@type": "HowToStep",
-    "position": i + 1,
-    "name": m.name,
-    "text": m.description,
-    "url": `${canonicalUrl}#step-${i + 1}`
-  }))
-} : null;
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": calc.name,
+    "applicationCategory": "UtilityApplication"
+  },
+  "breadcrumb": {
+    "@id": `${canonicalUrl}#breadcrumb`
+  }
+};
 
 // BreadcrumbList schema
 const breadcrumbSchema = {
@@ -156,7 +161,7 @@ const categoryLabels: Record<string, string> = {
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} is:inline slot="head" />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} is:inline slot="head" />}
-  {howToSchema && <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} is:inline slot="head" />}
+  <script type="application/ld+json" set:html={JSON.stringify(webPageSchema)} is:inline slot="head" />
   <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline slot="head" />
   {calc.slug === 'scientific-calculator' && <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.2/math.min.js" is:inline slot="head" />}
 
